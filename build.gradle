@@ -32,7 +32,7 @@ version = "${version}"
 group = "${group}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "${jarName}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.7'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -45,8 +45,22 @@ minecraft {
     runDir = "idea"
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     compile files("$sourceSets.main.scala.outputDir")
+    embed('com.github.Nova-Committee:ServersideJsonL10n:1.0.0') {
+        exclude module: 'scala-library'
+        exclude module: 'scala-reflect'
+        exclude module: 'log4j-api'
+        exclude module: 'log4j-core'
+        exclude module: 'commons-io'
+        exclude module: 'commons-lang3'
+        exclude module: 'gson'
+        exclude module: 'guava'
+    }
 }
 
 processResources

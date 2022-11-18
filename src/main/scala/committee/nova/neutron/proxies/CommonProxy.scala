@@ -1,4 +1,4 @@
-package committee.nova.examplemod.proxies
+package committee.nova.neutron.proxies
 
 import cpw.mods.fml.common.event.{FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
 

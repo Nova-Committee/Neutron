@@ -1,16 +1,16 @@
 [
   {
-    "modid": "examplemod",
-    "name": "ExampleMod",
-    "description": "Example mixined scala mod!",
+    "modid": "neutron",
+    "name": "Neutron",
+    "description": "Neutron provides features like the Essentials spigot plugin.",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "",
     "updateUrl": "",
     "authorList": [
-      "Author"
+      "Tapio"
     ],
-    "credits": "",
+    "credits": "cnlimiter as the author of our parent project AtomEssentials",
     "logoFile": "",
     "screenshots": [],
     "dependencies": []
