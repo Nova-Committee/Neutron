@@ -1,11 +1,14 @@
 package committee.nova.neutron.server.command.impl
 
+import com.google.common.collect.ImmutableList
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import net.minecraft.command.{CommandBase, ICommandSender, WrongUsageException}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
+
+import java.util
 
 class CommandNeutron extends CommandBase {
   override def getCommandName: String = "neutron"
@@ -14,7 +17,7 @@ class CommandNeutron extends CommandBase {
 
   override def processCommand(sender: ICommandSender, args: Array[String]): Unit = {
     if (args.length != 1) {
-
+      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
     }
     args(0) match {
       case "reload" =>
@@ -40,5 +43,9 @@ class CommandNeutron extends CommandBase {
       case p: EntityPlayerMP => MinecraftServer.getServer.getConfigurationManager.func_152596_g(p.getGameProfile)
       case _ => true
     }
+  }
+
+  override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] = {
+    if (args.length != 1 || !sender.isInstanceOf[EntityPlayerMP]) ImmutableList.of() else ImmutableList.of("reload")
   }
 }
