@@ -35,13 +35,5 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
 
   override def getReceiver: UUID = receiver
 
-  override def equals(obj: Any): Boolean = {
-    obj match {
-      case t: TeleportToRequest => this.sender == t.getReceiver && this.receiver == t.getSender && this.ignored == t.getIgnored
-      case h: TeleportHereRequest => this.sender == h.sender && this.receiver == h.receiver
-      case _ => false
-    }
-  }
-
   override def hashCode(): Int = sender.hashCode() + receiver.hashCode()
 }

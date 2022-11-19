@@ -1,8 +1,7 @@
 package committee.nova.neutron
 
-import committee.nova.neutron.implicits.FMLServerStartingEventImplicit
 import committee.nova.neutron.proxies.CommonProxy
-import committee.nova.neutron.server.commands.impl.CommandTeleport._
+import committee.nova.neutron.server.commands.init.CommandInit
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event.{FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent, FMLServerStartingEvent}
 import cpw.mods.fml.common.{Mod, SidedProxy}
@@ -14,6 +13,7 @@ object Neutron {
   final val MODID = "neutron"
   final val packagePrefix = "committee.nova." + MODID + ".proxies."
 
+  //noinspection VarCouldBeVal
   @SidedProxy(serverSide = packagePrefix + "ServerProxy", clientSide = packagePrefix + "ClientProxy")
   var proxy: CommonProxy = _
 
@@ -26,7 +26,5 @@ object Neutron {
 
   @EventHandler def postInit(e: FMLPostInitializationEvent): Unit = proxy.postInit(e)
 
-  @EventHandler def onServerStarting(e: FMLServerStartingEvent): Unit = {
-    e.registerServerCommands(new Tpa, new TpCancel, new TpAccept, new TpDeny, new TpIgnore)
-  }
+  @EventHandler def onServerStarting(e: FMLServerStartingEvent): Unit = CommandInit.init(e)
 }

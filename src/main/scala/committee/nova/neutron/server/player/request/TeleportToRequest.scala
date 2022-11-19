@@ -1,7 +1,7 @@
 package committee.nova.neutron.server.player.request
 
-import committee.nova.neutron.api.player.INeutronPlayer
 import committee.nova.neutron.api.player.request.ITeleportRequest
+import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.util.Utilities
 
 import java.util.UUID
@@ -24,8 +24,7 @@ class TeleportToRequest(private val sender: UUID, private val receiver: UUID) ex
     val oS = Utilities.getPlayerByUUID(sender)
     val oR = Utilities.getPlayerByUUID(receiver)
     if (oS.isEmpty || oR.isEmpty) return false
-    oS.get.asInstanceOf[INeutronPlayer].teleportTo(oR.get)
-    //oS.get.teleportTo(oR.get)
+    oS.get.teleportTo(oR.get)
   }
 
   override def setIgnored(): Unit = ignored = true
@@ -35,14 +34,6 @@ class TeleportToRequest(private val sender: UUID, private val receiver: UUID) ex
   override def getSender: UUID = sender
 
   override def getReceiver: UUID = receiver
-
-  override def equals(obj: Any): Boolean = {
-    obj match {
-      case t: TeleportToRequest => this.sender == t.sender && this.receiver == t.receiver
-      case h: TeleportHereRequest => this.sender == h.getReceiver && this.receiver == h.getSender && this.ignored == h.getIgnored
-      case _ => false
-    }
-  }
 
   override def hashCode(): Int = sender.hashCode() + receiver.hashCode()
 }

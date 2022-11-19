@@ -6,6 +6,7 @@ import committee.nova.sjl10n.L10nUtilities.JsonText
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
+import net.minecraft.util.{ChatComponentText, IChatComponent}
 
 import java.util.UUID
 import scala.collection.JavaConversions._
@@ -34,4 +35,8 @@ object Utilities {
     l10nMap.put(lang, n)
     n
   }
+
+  def getSpace: IChatComponent = new ChatComponentText(" ")
+
+  def getEmpty: IChatComponent = new ChatComponentText("")
 }

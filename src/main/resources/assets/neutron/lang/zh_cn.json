@@ -1,0 +1,19 @@
+{
+  "msg.neutron.cmd.tp.cantTpYourSelf": "传送目标不能是你自己...",
+  "msg.neutron.cmd.cdTime": "传送冷却中: {0}刻",
+  "msg.neutron.cmd.tp.existed": "存在未处理的传送...",
+  "msg.neutron.cmd.tp.requestSent": "传送请求已发送。",
+  "msg.neutron.cmd.tp.timeout": "传送请求超时。",
+  "msg.neutron.cmd.tpa.request": "{0}想要传送到你的位置。",
+  "msg.neutron.cmd.tpahere.request": "{0}想要你传送到他的位置。",
+  "msg.neutron.cmd.action.cancel": "[取消]",
+  "msg.neutron.cmd.action.accept": "[接受]",
+  "msg.neutron.cmd.action.deny": "[拒绝]",
+  "msg.neutron.cmd.action.ignore": "[忽略]",
+  "msg.neutron.cmd.playerNotFound": "未找到目标玩家...",
+  "msg.neutron.cmd.reply.cancelled": "请求已取消。",
+  "msg.neutron.cmd.reply.invalid": "无待定请求。",
+  "msg.neutron.cmd.reply.accepted": "请求已接受，传送中...",
+  "msg.neutron.cmd.reply.denied": "请求已拒绝。",
+  "msg.neutron.cmd.reply.ignored": "已忽略{0}的请求。"
+}
