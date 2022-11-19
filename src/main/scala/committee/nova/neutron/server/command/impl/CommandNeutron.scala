@@ -17,7 +17,8 @@ class CommandNeutron extends CommandBase {
 
   override def processCommand(sender: ICommandSender, args: Array[String]): Unit = {
     if (args.length != 1) {
-      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }
     args(0) match {
       case "reload" =>

@@ -24,7 +24,8 @@ object CommandTeleport {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       if (args.length != 1) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
       Utilities.getPlayer(sender, args(0)) match {
@@ -78,7 +79,8 @@ object CommandTeleport {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       if (args.length != 1) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
       Utilities.getPlayer(sender, args(0)) match {
@@ -132,7 +134,8 @@ object CommandTeleport {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
       var success = false
@@ -161,7 +164,8 @@ object CommandTeleport {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
       var success = false
@@ -191,7 +195,8 @@ object CommandTeleport {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
       var success = false
@@ -220,7 +225,8 @@ object CommandTeleport {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender)))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
       var ignored = false
