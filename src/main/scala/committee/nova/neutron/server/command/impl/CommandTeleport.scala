@@ -1,7 +1,7 @@
-package committee.nova.neutron.server.commands.impl
+package committee.nova.neutron.server.command.impl
 
 import committee.nova.neutron.implicits.PlayerImplicit
-import committee.nova.neutron.server.commands.base.CommandSingleArgPlayer
+import committee.nova.neutron.server.command.base.CommandSingleArgPlayer
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.request.{TeleportHereRequest, TeleportToRequest}

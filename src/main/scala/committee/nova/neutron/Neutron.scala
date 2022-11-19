@@ -1,6 +1,6 @@
 package committee.nova.neutron
 
-import committee.nova.neutron.server.commands.init.CommandInit
+import committee.nova.neutron.server.command.init.CommandInit
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.event.handler.FMLEventHandler
 import cpw.mods.fml.common.Mod

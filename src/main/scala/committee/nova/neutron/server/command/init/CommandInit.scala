@@ -1,7 +1,7 @@
-package committee.nova.neutron.server.commands.init
+package committee.nova.neutron.server.command.init
 
 import committee.nova.neutron.implicits.FMLServerStartingEventImplicit
-import committee.nova.neutron.server.commands.impl.CommandTeleport._
+import committee.nova.neutron.server.command.impl.CommandTeleport._
 import cpw.mods.fml.common.event.FMLServerStartingEvent
 
 object CommandInit {
