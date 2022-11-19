@@ -11,7 +11,6 @@ object ServerConfig {
   def init(event: FMLPreInitializationEvent): Unit = {
     config = new Configuration(event.getSuggestedConfigurationFile)
     sync()
-    // TODO: neutron reload
   }
 
   def getLanguage: String = language
