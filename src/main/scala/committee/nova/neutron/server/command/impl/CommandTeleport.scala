@@ -65,6 +65,8 @@ object CommandTeleport {
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
   class TpaHere extends CommandSingleArgPlayer {
@@ -117,6 +119,8 @@ object CommandTeleport {
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
   class TpCancel extends CommandBase {
@@ -144,6 +148,8 @@ object CommandTeleport {
       sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.cancelled" else "msg.neutron.cmd.reply.invalid")
         .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
   class TpAccept extends CommandBase {
@@ -172,6 +178,8 @@ object CommandTeleport {
       sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.accepted" else "msg.neutron.cmd.reply.invalid")
         .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.GREEN else EnumChatFormatting.DARK_RED)))
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
   class TpDeny extends CommandBase {
@@ -199,6 +207,8 @@ object CommandTeleport {
       sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.denied" else "msg.neutron.cmd.reply.invalid")
         .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
   class TpIgnore extends CommandBase {
@@ -228,5 +238,7 @@ object CommandTeleport {
       if (!ignored) sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.invalid")
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 }
