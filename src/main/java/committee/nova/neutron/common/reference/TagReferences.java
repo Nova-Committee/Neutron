@@ -4,7 +4,8 @@ import committee.nova.neutron.api.INamed;
 
 public enum TagReferences implements INamed {
     NEUTRON_ROOT("Neutron"),
-    CD_TPA("cdTpa");
+    CD_TPA("cdTpa"),
+    ACCUMULATION_RTP("accRtp");
 
     TagReferences(String name) {
         this.name = name;

@@ -7,6 +7,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent
 
 object CommandInit {
   def init(e: FMLServerStartingEvent): Unit = {
-    e.registerServerCommands(new Tpa, new TpaHere, new TpCancel, new TpAccept, new TpDeny, new TpIgnore, new CommandNeutron)
+    e.registerServerCommands(new Tpa, new TpaHere, new TpCancel, new TpAccept, new TpDeny, new TpIgnore, new RTP, new CommandNeutron)
   }
 }

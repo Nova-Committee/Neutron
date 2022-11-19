@@ -12,8 +12,8 @@ object ServerStorage {
 
   def tick(): Unit = for (r <- teleportRequestSet) if (r.tick) {
     val msg = new ChatComponentServerTranslation("msg.neutron.cmd.tp.timeout").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_AQUA))
-    if (!r.getIgnored) Utilities.getPlayerByUUID(r.getReceiver).foreach(c => c.addChatMessage(msg))
-    Utilities.getPlayerByUUID(r.getSender).foreach(c => c.addChatMessage(msg))
+    if (!r.getIgnored) Utilities.Player.getPlayerByUUID(r.getReceiver).foreach(c => c.addChatMessage(msg))
+    Utilities.Player.getPlayerByUUID(r.getSender).foreach(c => c.addChatMessage(msg))
     teleportRequestSet.remove(r)
   }
 

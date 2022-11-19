@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements INeutronPlayer {
     private int cdTpa = 0;
+    private int rtpAccumulation = 0;
 
     public MixinEntityPlayer(World w) {
         super(w);
@@ -34,6 +35,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
     public void write(NBTTagCompound tag) {
         final NBTTagCompound neutronTag = new NBTTagCompound();
         neutronTag.setInteger(TagReferences.CD_TPA.getName(), getTpaCoolDown());
+        neutronTag.setInteger(TagReferences.ACCUMULATION_RTP.getName(), getRtpAccumulation());
         tag.setTag(TagReferences.NEUTRON_ROOT.getName(), neutronTag);
     }
 
@@ -42,6 +44,17 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
         if (!tag.hasKey(TagReferences.NEUTRON_ROOT.getName())) return;
         final NBTTagCompound neutronTag = tag.getCompoundTag(TagReferences.NEUTRON_ROOT.getName());
         setTpaCoolDown(neutronTag.getInteger(TagReferences.CD_TPA.getName()));
+        setRtpAccumulation(neutronTag.getInteger(TagReferences.ACCUMULATION_RTP.getName()));
+    }
+
+    @Override
+    public int getRtpAccumulation() {
+        return rtpAccumulation;
+    }
+
+    @Override
+    public void setRtpAccumulation(int rtpAccumulation) {
+        this.rtpAccumulation = rtpAccumulation;
     }
 
     @Override

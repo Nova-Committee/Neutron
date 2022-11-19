@@ -8,7 +8,7 @@ import committee.nova.neutron.util.Utilities
 import java.util.UUID
 
 class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) extends ITeleportRequest {
-  private var timeout = ServerConfig.getMaxTPExpirationTime
+  private var timeout = ServerConfig.getMaxTpExpirationTime
   private var ignored = false
 
   def this(sender: UUID, receiver: UUID, timeout: Int) = {
@@ -22,8 +22,8 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
   }
 
   override def apply: Boolean = {
-    val oS = Utilities.getPlayerByUUID(sender)
-    val oR = Utilities.getPlayerByUUID(receiver)
+    val oS = Utilities.Player.getPlayerByUUID(sender)
+    val oR = Utilities.Player.getPlayerByUUID(receiver)
     if (oS.isEmpty || oR.isEmpty) return false
     oR.get.teleportTo(oS.get)
   }

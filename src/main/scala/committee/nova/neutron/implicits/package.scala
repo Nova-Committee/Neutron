@@ -21,6 +21,10 @@ package object implicits {
     override def write(tag: NBTTagCompound): Unit = getNeutron.write(tag)
 
     override def read(tag: NBTTagCompound): Unit = getNeutron.read(tag)
+
+    override def getRtpAccumulation: Int = getNeutron.getRtpAccumulation
+
+    override def setRtpAccumulation(acc: Int): Unit = getNeutron.setRtpAccumulation(acc)
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {

@@ -4,6 +4,10 @@ import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 
 trait INeutronPlayer {
+  def getRtpAccumulation: Int
+
+  def setRtpAccumulation(acc: Int): Unit
+
   def getTpaCoolDown: Int
 
   def setTpaCoolDown(cd: Int): Unit
