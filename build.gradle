@@ -51,7 +51,7 @@ repositories {
 
 dependencies {
     compile files("$sourceSets.main.scala.outputDir")
-    embed('com.github.Nova-Committee:ServersideJsonL10n:Scala-1.0.0') {
+    embed('com.github.Nova-Committee:ServersideJsonL10n:Scala-1.2.0') {
         exclude module: 'scala-library'
         exclude module: 'scala-reflect'
         exclude module: 'log4j-api'
