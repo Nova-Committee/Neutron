@@ -17,7 +17,7 @@ object Neutron {
 
   @EventHandler def preInit(e: FMLPreInitializationEvent): Unit = {
     LOGGER = e.getModLog
-    if (isServerSide(e)) ServerConfig.init(e)
+    ServerConfig.init(e)
   }
 
   @EventHandler def init(e: FMLInitializationEvent): Unit = {

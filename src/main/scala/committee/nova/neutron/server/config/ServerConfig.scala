@@ -5,8 +5,8 @@ import net.minecraftforge.common.config.Configuration
 
 object ServerConfig {
   private var config: Configuration = _
-  private var language: String = "en_us"
-  private var tpTimeout: Int = 1200
+  private var language: String = _
+  private var tpTimeout: Int = _
 
   def init(event: FMLPreInitializationEvent): Unit = {
     config = new Configuration(event.getSuggestedConfigurationFile)

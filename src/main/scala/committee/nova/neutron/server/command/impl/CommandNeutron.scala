@@ -5,6 +5,7 @@ import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import net.minecraft.command.{CommandBase, ICommandSender, WrongUsageException}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
+import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 
 class CommandNeutron extends CommandBase {
   override def getCommandName: String = "neutron"
@@ -16,10 +17,20 @@ class CommandNeutron extends CommandBase {
 
     }
     args(0) match {
-      case "reload" => {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reloading"))
-        ServerConfig.sync()
-      }
+      case "reload" =>
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reload.inProgress")
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        try {
+          ServerConfig.sync()
+        } catch {
+          case e: Exception =>
+            e.printStackTrace()
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reload.error")
+              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+            return
+        }
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reload.success")
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
       case _ => throw new WrongUsageException("msg.neutron.cmd.wrongUsage")
     }
   }
