@@ -2,6 +2,7 @@ package committee.nova.neutron.server.commands.impl
 
 import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.commands.base.CommandSingleArgPlayer
+import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.request.{TeleportHereRequest, TeleportToRequest}
 import committee.nova.neutron.server.storage.ServerStorage
@@ -39,14 +40,14 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          val request = new TeleportToRequest(sender.getUniqueID, receiver.getUniqueID, 1200)
+          val request = new TeleportToRequest(sender.getUniqueID, receiver.getUniqueID, ServerConfig.getMaxTPExpirationTime)
           val sent = ServerStorage.addRequest(request)
           if (!sent) {
             sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.existed")
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", 1200).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTPExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           sender.addChatMessage(Utilities.getEmpty
             .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
               new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpcancel")
@@ -91,14 +92,14 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          val request = new TeleportHereRequest(sender.getUniqueID, receiver.getUniqueID, 1200)
+          val request = new TeleportHereRequest(sender.getUniqueID, receiver.getUniqueID, ServerConfig.getMaxTPExpirationTime)
           val sent = ServerStorage.addRequest(request)
           if (!sent) {
             sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.existed")
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", 1200).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTPExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           sender.addChatMessage(Utilities.getEmpty
             .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
               new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpcancel")

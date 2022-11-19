@@ -2,7 +2,7 @@
   "msg.neutron.cmd.tp.cantTpYourSelf": "传送目标不能是你自己...",
   "msg.neutron.cmd.cdTime": "传送冷却中: {0}刻",
   "msg.neutron.cmd.tp.existed": "存在未处理的传送...",
-  "msg.neutron.cmd.tp.requestSent": "传送请求已发送。",
+  "msg.neutron.cmd.tp.requestSent": "传送请求已发送。有效期：{0}刻",
   "msg.neutron.cmd.tp.timeout": "传送请求超时。",
   "msg.neutron.cmd.tpa.request": "{0}想要传送到你的位置。",
   "msg.neutron.cmd.tpahere.request": "{0}想要你传送到他的位置。",

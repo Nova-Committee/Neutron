@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Configuration
 object ServerConfig {
   private var config: Configuration = _
   private var language: String = "en_us"
+  private var tpTimeout: Int = 1200
 
   def init(event: FMLPreInitializationEvent): Unit = {
     config = new Configuration(event.getSuggestedConfigurationFile)
@@ -13,9 +14,16 @@ object ServerConfig {
     // TODO: neutron reload
   }
 
+  def getLanguage: String = language
+
+  def getMaxTPExpirationTime: Int = tpTimeout
+
   def sync(): Unit = {
     config.load()
+    config.addCustomCategoryComment(Configuration.COMMENT_SEPARATOR, "General settings")
     language = config.getString("language", Configuration.CATEGORY_GENERAL, "en_us", "Language ID of the server messages")
+    config.addCustomCategoryComment(Configuration.COMMENT_SEPARATOR, "Teleportation")
+    tpTimeout = config.getInt("tpTimeout", Configuration.CATEGORY_GENERAL, 1200, 200, 6000, "Max expiration time for teleportation requests")
     config.save()
   }
 }

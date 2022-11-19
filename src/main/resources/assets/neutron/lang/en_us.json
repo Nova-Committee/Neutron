@@ -2,7 +2,7 @@
   "msg.neutron.cmd.tp.cantTpYourSelf": "The teleportation target can't be yourself!",
   "msg.neutron.cmd.cdTime": "Teleportation on cool-down: {0} tick(s)",
   "msg.neutron.cmd.tp.existed": "Teleportation existed...",
-  "msg.neutron.cmd.tp.requestSent": "Request sent successfully.",
+  "msg.neutron.cmd.tp.requestSent": "Request sent successfully. Expiration Time: {0} tick(s)",
   "msg.neutron.cmd.tp.timeout": "Teleportation request timeout.",
   "msg.neutron.cmd.tpa.request": "{0} wanted to teleport to you",
   "msg.neutron.cmd.tpahere.request": "{0} wanted you to teleport there",

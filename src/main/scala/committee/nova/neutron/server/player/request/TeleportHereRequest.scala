@@ -2,12 +2,13 @@ package committee.nova.neutron.server.player.request
 
 import committee.nova.neutron.api.player.request.ITeleportRequest
 import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.util.Utilities
 
 import java.util.UUID
 
 class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) extends ITeleportRequest {
-  private var timeout = 1200
+  private var timeout = ServerConfig.getMaxTPExpirationTime
   private var ignored = false
 
   def this(sender: UUID, receiver: UUID, timeout: Int) = {
@@ -34,6 +35,4 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
   override def getSender: UUID = sender
 
   override def getReceiver: UUID = receiver
-
-  override def hashCode(): Int = sender.hashCode() + receiver.hashCode()
 }
