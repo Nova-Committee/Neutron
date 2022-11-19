@@ -20,9 +20,7 @@ object ServerConfig {
 
   def sync(): Unit = {
     config.load()
-    config.addCustomCategoryComment(Configuration.COMMENT_SEPARATOR, "General settings")
     language = config.getString("language", Configuration.CATEGORY_GENERAL, "en_us", "Language ID of the server messages")
-    config.addCustomCategoryComment(Configuration.COMMENT_SEPARATOR, "Teleportation")
     tpTimeout = config.getInt("tpTimeout", Configuration.CATEGORY_GENERAL, 1200, 200, 6000, "Max expiration time for teleportation requests")
     config.save()
   }
