@@ -23,6 +23,10 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
     private int cdTpa = 0;
     private int rtpAccumulation = 0;
     private final LinkedHashSet<IHome> homes = new LinkedHashSet<>();
+    private double formerX = Double.MIN_VALUE;
+    private double formerY = Double.MIN_VALUE;
+    private double formerZ = Double.MIN_VALUE;
+    private int formerDim = Integer.MIN_VALUE;
 
     public MixinEntityPlayer(World w) {
         super(w);
@@ -44,7 +48,13 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
         neutronTag.setInteger(TagReferences.ACCUMULATION_RTP.getName(), getRtpAccumulation());
         final NBTTagList homesTag = new NBTTagList();
         for (final IHome home : homes) homesTag.appendTag(home.serialize());
-        neutronTag.setTag("homes", homesTag);
+        neutronTag.setTag(TagReferences.HOMES.getName(), homesTag);
+        final NBTTagCompound formerPos = new NBTTagCompound();
+        formerPos.setDouble(TagReferences.X.getName(), formerX);
+        formerPos.setDouble(TagReferences.Y.getName(), formerY);
+        formerPos.setDouble(TagReferences.Z.getName(), formerZ);
+        formerPos.setInteger(TagReferences.DIM.getName(), formerDim);
+        neutronTag.setTag(TagReferences.FORMER_POS.getName(), formerPos);
         tag.setTag(TagReferences.NEUTRON_ROOT.getName(), neutronTag);
     }
 
@@ -53,11 +63,18 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
         final NBTTagCompound neutronTag = tag.getCompoundTag(TagReferences.NEUTRON_ROOT.getName());
         setTpaCoolDown(neutronTag.getInteger(TagReferences.CD_TPA.getName()));
         setRtpAccumulation(neutronTag.getInteger(TagReferences.ACCUMULATION_RTP.getName()));
-        if (neutronTag.hasKey("homes")) {
+        if (neutronTag.hasKey(TagReferences.HOMES.getName())) {
             homes.clear();
-            final NBTTagList homesTag = neutronTag.getTagList("homes", 10);
+            final NBTTagList homesTag = neutronTag.getTagList(TagReferences.HOMES.getName(), 10);
             final int size = homesTag.tagCount();
             for (int i = 0; i < size; i++) homes.add(new Home().deserialize(homesTag.getCompoundTagAt(i)));
+        }
+        if (neutronTag.hasKey(TagReferences.FORMER_POS.getName())) {
+            final NBTTagCompound former = neutronTag.getCompoundTag(TagReferences.FORMER_POS.getName());
+            formerX = former.getDouble(TagReferences.X.getName());
+            formerY = former.getDouble(TagReferences.Y.getName());
+            formerZ = former.getDouble(TagReferences.Z.getName());
+            formerDim = former.getInteger(TagReferences.DIM.getName());
         }
     }
 
@@ -104,5 +121,50 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
     public void setHomes(HashSet<IHome> homes) {
         this.homes.clear();
         this.homes.addAll(homes);
+    }
+
+    @Override
+    public double getFormerX() {
+        return formerX;
+    }
+
+    @Override
+    public double getFormerY() {
+        return formerY;
+    }
+
+    @Override
+    public double getFormerZ() {
+        return formerZ;
+    }
+
+    @Override
+    public int getFormerDim() {
+        return formerDim;
+    }
+
+    @Override
+    public void setFormerX(double x) {
+        formerX = x;
+    }
+
+    @Override
+    public void setFormerY(double y) {
+        formerY = y;
+    }
+
+    @Override
+    public void setFormerZ(double z) {
+        formerZ = z;
+    }
+
+    @Override
+    public void setFormerDim(int dim) {
+        formerDim = dim;
+    }
+
+    @Override
+    public boolean hasNoValidFormerPos() {
+        return formerDim == Integer.MIN_VALUE;
     }
 }

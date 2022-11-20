@@ -3,7 +3,9 @@ package committee.nova.neutron.server.player.request
 import committee.nova.neutron.api.player.request.ITeleportRequest
 import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.config.ServerConfig
+import committee.nova.neutron.server.event.impl.TeleportFromEvent
 import committee.nova.neutron.util.Utilities
+import net.minecraftforge.common.MinecraftForge
 
 import java.util.UUID
 
@@ -25,7 +27,9 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
     val oS = Utilities.Player.getPlayerByUUID(sender)
     val oR = Utilities.Player.getPlayerByUUID(receiver)
     if (oS.isEmpty || oR.isEmpty) return false
-    oR.get.teleportTo(oS.get)
+    val r = oR.get
+    MinecraftForge.EVENT_BUS.post(new TeleportFromEvent(r, r.dimension, r.posX, r.posY, r.posZ))
+    r.teleportTo(oS.get)
   }
 
   override def setIgnored(): Unit = ignored = true

@@ -10,6 +10,8 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatComponentText, IChatComponent}
 import net.minecraft.world.WorldServer
 
+import java.lang.{String => JString}
+import java.math.{RoundingMode, BigDecimal => JDecimal}
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
@@ -68,7 +70,9 @@ object Utilities {
   }
 
   object Location {
-    def getLiteralFromPosTuple3(pos: (Double, Double, Double)): String = s"[${pos._1}, ${pos._2}, ${pos._3}]"
+    def getLiteralFromPosTuple3(pos: (Double, Double, Double)): String = s"[${scale1(pos._1)}, ${scale1(pos._2)}, ${scale1(pos._3)}]"
+
+    private def scale1(d: Double): String = String.scale(d, 1)
   }
 
   object String {
@@ -79,6 +83,12 @@ object Utilities {
       buffer.delete(buffer.lastIndexOf(","), buffer.length())
       buffer.append("]")
       buffer.toString
+    }
+
+    def scale(d: Double, scale: Int): String = {
+      if (scale <= 0) return JString.valueOf(d)
+      val decimal = new JDecimal(d).setScale(scale, RoundingMode.HALF_UP)
+      JString.valueOf(decimal.doubleValue())
     }
   }
 }

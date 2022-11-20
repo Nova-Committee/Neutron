@@ -3,6 +3,8 @@
   "msg.neutron.cmd.action.accept": "[Accept]",
   "msg.neutron.cmd.action.deny": "[Deny]",
   "msg.neutron.cmd.action.ignore": "[Ignore]",
+  "msg.neutron.cmd.back.invalid": "No previous location before teleportation stored...",
+  "msg.neutron.cmd.back.success": "You were teleported back to previous location {0}.",
   "msg.neutron.cmd.home.notFound": "No home matches the name \"{0}\"...",
   "msg.neutron.cmd.home.vague": "You have {0} homes: {1}. Please define the name of the home you want to take action on.",
   "msg.neutron.cmd.home.invalid": "You have not set your home yet....",

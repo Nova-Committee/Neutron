@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableList
 import committee.nova.neutron.api.player.storage.IHome
 import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.config.ServerConfig
+import committee.nova.neutron.server.event.impl.TeleportFromEvent
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.storage.{Home => SHome}
 import committee.nova.neutron.util.Utilities
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
+import net.minecraftforge.common.MinecraftForge
 
 import java.util
 import scala.collection.JavaConversions._
@@ -35,6 +37,7 @@ object CommandLocation {
             return
           case 1 =>
             val home = homes.asScala.head
+            MinecraftForge.EVENT_BUS.post(new TeleportFromEvent(sender, sender.dimension, sender.posX, sender.posY, sender.posZ))
             if (home.getDim != sender.dimension) sender.travelToDimension(home.getDim)
             val pos = home.getPos
             sender.playerNetServerHandler.setPlayerLocation(pos._1, pos._2, pos._3, sender.rotationYaw, sender.rotationPitch)
@@ -55,6 +58,7 @@ object CommandLocation {
       }
       val name = args(0)
       homes.asScala.foreach(home => if (name == home.getName) {
+        MinecraftForge.EVENT_BUS.post(new TeleportFromEvent(sender, sender.dimension, sender.posX, sender.posY, sender.posZ))
         if (home.getDim != sender.dimension) sender.travelToDimension(home.getDim)
         val pos = home.getPos
         sender.playerNetServerHandler.setPlayerLocation(pos._1, pos._2, pos._3, sender.rotationYaw, sender.rotationPitch)
@@ -170,6 +174,33 @@ object CommandLocation {
           case _ => ""
         }).toSeq: _*)
       }
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+  }
+
+  class Back extends CommandBase {
+    override def getCommandName: String = "back"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/back"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      if (args.length != 0) {
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
+      }
+      if (sender.hasNoValidFormerPos) {
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.invalid")
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)))
+        return
+      }
+      if (sender.getFormerDim != sender.dimension) sender.travelToDimension(sender.getFormerDim)
+      sender.playerNetServerHandler.setPlayerLocation(sender.getFormerX, sender.getFormerY, sender.getFormerZ, sender.rotationYaw, sender.rotationPitch)
+      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromPosTuple3((sender.getFormerX, sender.getFormerY, sender.getFormerZ)))
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true

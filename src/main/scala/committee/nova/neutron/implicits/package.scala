@@ -26,6 +26,24 @@ package object implicits {
     override def getHomes: JSet[IHome] = getNeutron.getHomes
 
     override def setHomes(homes: JSet[IHome]): Unit = getNeutron.setHomes(homes)
+
+    override def getFormerX: Double = getNeutron.getFormerX
+
+    override def getFormerY: Double = getNeutron.getFormerY
+
+    override def getFormerZ: Double = getNeutron.getFormerZ
+
+    override def getFormerDim: Int = getNeutron.getFormerDim
+
+    override def setFormerX(x: Double): Unit = getNeutron.setFormerX(x)
+
+    override def setFormerY(y: Double): Unit = getNeutron.setFormerY(y)
+
+    override def setFormerZ(z: Double): Unit = getNeutron.setFormerZ(z)
+
+    override def setFormerDim(dim: Int): Unit = getNeutron.setFormerDim(dim)
+
+    override def hasNoValidFormerPos: Boolean = getNeutron.hasNoValidFormerPos
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {
