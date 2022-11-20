@@ -1,5 +1,6 @@
 package committee.nova.neutron.server.command.impl
 
+import com.google.common.collect.ImmutableList
 import committee.nova.neutron.api.player.storage.IHome
 import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.config.ServerConfig
@@ -15,7 +16,7 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.util.control.Breaks.{break, breakable}
 
-object CommandHome {
+object CommandLocation {
   class Home extends CommandBase {
     override def getCommandName: String = "home"
 
@@ -64,6 +65,16 @@ object CommandHome {
       )
       sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.notFound", name)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+    }
+
+    override def addTabCompletionOptions(c: ICommandSender, args: Array[String]): util.List[_] = {
+      if (args.length != 1) return ImmutableList.of()
+      c match {
+        case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, p.getHomes.collect({
+          case h: IHome => h.getName
+          case _ => ""
+        }).toSeq: _*)
+      }
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
@@ -150,5 +161,17 @@ object CommandHome {
       sender.addChatMessage(new ChatComponentServerTranslation(if (removed) "msg.neutron.cmd.home.del.success" else "msg.neutron.cmd.home.notFound", name)
         .setChatStyle(new ChatStyle().setColor(if (removed) EnumChatFormatting.YELLOW else EnumChatFormatting.RED)))
     }
+
+    override def addTabCompletionOptions(c: ICommandSender, args: Array[String]): util.List[_] = {
+      if (args.length != 1) return ImmutableList.of()
+      c match {
+        case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, p.getHomes.collect({
+          case h: IHome => h.getName
+          case _ => ""
+        }).toSeq: _*)
+      }
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 }
