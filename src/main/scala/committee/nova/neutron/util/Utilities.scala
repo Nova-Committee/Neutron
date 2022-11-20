@@ -54,13 +54,20 @@ object Utilities {
     }
 
     @tailrec
-    def getSafePosToTeleport(world: WorldServer, x: Int, z: Int, tries: Int): Option[(Int, Int, Int)] = {
+    def getSafePosToTeleport(world: WorldServer, x: Int, z: Int, tries: Int): Option[(Double, Double, Double)] = {
       val dist = ServerConfig.getRtpMaxVerticalAxisRange
-      val x1 = x - 2 * dist + world.rand.nextInt(dist)
-      val z1 = z - 2 * dist + world.rand.nextInt(dist)
+      val x1 = x - dist + world.rand.nextInt(2 * dist)
+      val z1 = z - dist + world.rand.nextInt(2 * dist)
       val y = getSafeHeight(world, x1, z1)
-      if (y != Int.MinValue) return Some((x1, y, z1))
+      if (y != Int.MinValue) {
+        world.markBlockForUpdate(x1, y, z1)
+        return Some((x1 + 0.5, y + 0.2, z1 + 0.5))
+      }
       if (tries >= ServerConfig.getRtpMaxTriesOnFindingPosition) None else getSafePosToTeleport(world, x, z, tries + 1)
     }
+  }
+
+  object Location {
+    def getLiteralFromPosTuple3(pos: (Double, Double, Double)): String = s"[${pos._1}, ${pos._2}, ${pos._3}]"
   }
 }

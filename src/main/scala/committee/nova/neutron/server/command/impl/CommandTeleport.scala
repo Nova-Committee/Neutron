@@ -276,13 +276,17 @@ object CommandTeleport {
       val yaw = sender.rotationYaw
       val pitch = sender.rotationPitch
       val target = Utilities.Teleportation.getSafePosToTeleport(sender.worldObj.asInstanceOf[WorldServer], sender.posX.floor.toInt, sender.posZ.floor.toInt, 0)
-      target.foreach(p => sender.playerNetServerHandler.setPlayerLocation(p._1, p._2, p._3, yaw, pitch))
+      val world = sender.worldObj
+      target.foreach(p => {
+        sender.ridingEntity = null
+        sender.playerNetServerHandler.setPlayerLocation(p._1, p._2, p._3, yaw, pitch)
+      })
       if (target.isDefined) {
         sender.setRtpAccumulation(sender.getRtpAccumulation + ServerConfig.getRtpChancesRecoveryTime)
-        sender.worldObj.playSoundAtEntity(sender, "mob.endermen.portal", 1.0F, 1.0F)
-        sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 60, 0))
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
-          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+        world.playSoundAtEntity(sender, "mob.endermen.portal", 1.0F, 1.0F)
+        sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0))
+        target.foreach(p => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", Utilities.Location.getLiteralFromPosTuple3(p), (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))))
       }
       else sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.triesExceeded", ServerConfig.getRtpMaxTriesOnFindingPosition)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))

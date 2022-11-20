@@ -4,7 +4,7 @@
   "msg.neutron.cmd.action.deny": "[拒绝]",
   "msg.neutron.cmd.action.ignore": "[忽略]",
   "msg.neutron.cmd.rtp.ranOut": "随机传送机会耗尽。你将在{0}刻后得到一次机会。",
-  "msg.neutron.cmd.rtp.success": "随机传送成功！你现在还有{0}次随机传送机会。",
+  "msg.neutron.cmd.rtp.success": "成功随机传送至{0}！你现在还有{1}次随机传送机会。",
   "msg.neutron.cmd.rtp.triesExceeded": "在{0}次尝试后仍未能成功找到随机传送目标坐标，请考虑稍后再试。本次不消耗随机传送机会。",
   "msg.neutron.cmd.tp.cantTpYourSelf": "传送目标不能是你自己...",
   "msg.neutron.cmd.tp.cd": "传送冷却中：{0}刻",
