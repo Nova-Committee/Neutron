@@ -2,7 +2,7 @@ package committee.nova.neutron
 
 import committee.nova.neutron.server.command.init.CommandInit
 import committee.nova.neutron.server.config.ServerConfig
-import committee.nova.neutron.server.event.handler.FMLEventHandler
+import committee.nova.neutron.server.event.handler.{FMLEventHandler, ForgeEventHandler}
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event._
@@ -22,6 +22,7 @@ object Neutron {
 
   @EventHandler def init(e: FMLInitializationEvent): Unit = {
     FMLEventHandler.init()
+    ForgeEventHandler.init()
   }
 
   @EventHandler def postInit(e: FMLPostInitializationEvent): Unit = {}

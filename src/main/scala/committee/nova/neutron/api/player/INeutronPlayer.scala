@@ -1,7 +1,9 @@
 package committee.nova.neutron.api.player
 
+import committee.nova.neutron.api.player.storage.IHome
 import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.nbt.NBTTagCompound
+
+import java.util.{HashSet => JSet}
 
 trait INeutronPlayer {
   def getRtpAccumulation: Int
@@ -14,7 +16,7 @@ trait INeutronPlayer {
 
   def teleportTo(that: EntityPlayerMP): Boolean
 
-  def write(tag: NBTTagCompound): Unit
+  def getHomes: JSet[IHome]
 
-  def read(tag: NBTTagCompound): Unit
+  def setHomes(homes: JSet[IHome]): Unit
 }

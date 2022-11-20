@@ -1,11 +1,12 @@
 package committee.nova.neutron
 
 import committee.nova.neutron.api.player.INeutronPlayer
+import committee.nova.neutron.api.player.storage.IHome
 import cpw.mods.fml.common.event.FMLServerStartingEvent
 import net.minecraft.command.ICommand
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
-import net.minecraft.nbt.NBTTagCompound
 
+import java.util.{HashSet => JSet}
 import scala.language.implicitConversions
 
 package object implicits {
@@ -18,13 +19,13 @@ package object implicits {
 
     override def teleportTo(that: EntityPlayerMP): Boolean = getNeutron.teleportTo(that)
 
-    override def write(tag: NBTTagCompound): Unit = getNeutron.write(tag)
-
-    override def read(tag: NBTTagCompound): Unit = getNeutron.read(tag)
-
     override def getRtpAccumulation: Int = getNeutron.getRtpAccumulation
 
     override def setRtpAccumulation(acc: Int): Unit = getNeutron.setRtpAccumulation(acc)
+
+    override def getHomes: JSet[IHome] = getNeutron.getHomes
+
+    override def setHomes(homes: JSet[IHome]): Unit = getNeutron.setHomes(homes)
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {

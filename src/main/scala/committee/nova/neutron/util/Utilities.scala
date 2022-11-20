@@ -70,4 +70,15 @@ object Utilities {
   object Location {
     def getLiteralFromPosTuple3(pos: (Double, Double, Double)): String = s"[${pos._1}, ${pos._2}, ${pos._3}]"
   }
+
+  object String {
+    def convertCollectionToString[T](traversable: Traversable[T], convertor: T => String): String = {
+      val buffer = new StringBuffer()
+      buffer.append("[")
+      traversable.foreach(c => buffer.append(convertor.apply(c).+(", ")))
+      buffer.delete(buffer.lastIndexOf(","), buffer.length())
+      buffer.append("]")
+      buffer.toString
+    }
+  }
 }

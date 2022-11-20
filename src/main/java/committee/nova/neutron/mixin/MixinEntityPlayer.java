@@ -1,21 +1,28 @@
 package committee.nova.neutron.mixin;
 
 import committee.nova.neutron.api.player.INeutronPlayer;
+import committee.nova.neutron.api.player.storage.IHome;
 import committee.nova.neutron.common.reference.TagReferences;
+import committee.nova.neutron.server.player.storage.Home;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements INeutronPlayer {
     private int cdTpa = 0;
     private int rtpAccumulation = 0;
+    private final LinkedHashSet<IHome> homes = new LinkedHashSet<>();
 
     public MixinEntityPlayer(World w) {
         super(w);
@@ -31,20 +38,27 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
         read(tag);
     }
 
-    @Override
     public void write(NBTTagCompound tag) {
         final NBTTagCompound neutronTag = new NBTTagCompound();
         neutronTag.setInteger(TagReferences.CD_TPA.getName(), getTpaCoolDown());
         neutronTag.setInteger(TagReferences.ACCUMULATION_RTP.getName(), getRtpAccumulation());
+        final NBTTagList homesTag = new NBTTagList();
+        for (final IHome home : homes) homesTag.appendTag(home.serialize());
+        neutronTag.setTag("homes", homesTag);
         tag.setTag(TagReferences.NEUTRON_ROOT.getName(), neutronTag);
     }
 
-    @Override
     public void read(NBTTagCompound tag) {
         if (!tag.hasKey(TagReferences.NEUTRON_ROOT.getName())) return;
         final NBTTagCompound neutronTag = tag.getCompoundTag(TagReferences.NEUTRON_ROOT.getName());
         setTpaCoolDown(neutronTag.getInteger(TagReferences.CD_TPA.getName()));
         setRtpAccumulation(neutronTag.getInteger(TagReferences.ACCUMULATION_RTP.getName()));
+        if (neutronTag.hasKey("homes")) {
+            homes.clear();
+            final NBTTagList homesTag = neutronTag.getTagList("homes", 10);
+            final int size = homesTag.tagCount();
+            for (int i = 0; i < size; i++) homes.add(new Home().deserialize(homesTag.getCompoundTagAt(i)));
+        }
     }
 
     @Override
@@ -79,5 +93,16 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
             return false;
         }
         return true;
+    }
+
+    @Override
+    public HashSet<IHome> getHomes() {
+        return homes;
+    }
+
+    @Override
+    public void setHomes(HashSet<IHome> homes) {
+        this.homes.clear();
+        this.homes.addAll(homes);
     }
 }
