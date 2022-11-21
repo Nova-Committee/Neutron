@@ -179,7 +179,6 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
             c.setTpaCoolDown(ServerConfig.getTpCoolDown)
           })
-          // TODO:
           ServerStorage.teleportRequestSet.remove(r)
           break()
         }
@@ -254,7 +253,7 @@ object CommandTeleport {
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
-  class RTP extends CommandBase {
+  class Rtp extends CommandBase {
     override def getCommandName: String = "rtp"
 
     override def getCommandUsage(sender: ICommandSender): String = "/rtp"

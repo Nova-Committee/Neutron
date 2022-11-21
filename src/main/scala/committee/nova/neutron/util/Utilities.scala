@@ -76,10 +76,10 @@ object Utilities {
   }
 
   object String {
-    def convertCollectionToString[T](traversable: Traversable[T], convertor: T => String): String = {
+    def convertCollectionToString[T](iterator: Iterator[T], convertor: (T, Int) => String): String = {
       val buffer = new StringBuffer()
       buffer.append("[")
-      traversable.foreach(c => buffer.append(convertor.apply(c).+(", ")))
+      iterator.zipWithIndex.foreach(c => buffer.append(convertor.apply(c._1, c._2).+(", ")))
       buffer.delete(buffer.lastIndexOf(","), buffer.length())
       buffer.append("]")
       buffer.toString

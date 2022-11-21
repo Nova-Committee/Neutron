@@ -1,25 +1,12 @@
 package committee.nova.neutron.api.player.storage
 
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.Vec3
 
-trait IHome {
+trait IHome extends IPosWithDim {
   def getName: String
 
   def setName(name: String): Unit
-
-  def getDim: Int
-
-  def setDim(dim: Int): Unit
-
-  def getPos: (Double, Double, Double)
-
-  def setPos(pos: (Double, Double, Double)): Unit
-
-  def getX: Double = getPos._1
-
-  def getY: Double = getPos._2
-
-  def getZ: Double = getPos._3
 
   def serialize: NBTTagCompound = {
     val tag = new NBTTagCompound
@@ -34,7 +21,7 @@ trait IHome {
   def deserialize(tag: NBTTagCompound): IHome = {
     setName(tag.getString("name"))
     setDim(tag.getInteger("dim"))
-    setPos((tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")))
+    setPos(Vec3.createVectorHelper(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")))
     this
   }
 

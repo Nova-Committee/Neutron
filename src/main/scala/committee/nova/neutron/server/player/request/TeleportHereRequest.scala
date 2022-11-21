@@ -28,7 +28,7 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
     val oR = Utilities.Player.getPlayerByUUID(receiver)
     if (oS.isEmpty || oR.isEmpty) return false
     val r = oR.get
-    MinecraftForge.EVENT_BUS.post(new TeleportFromEvent(r, r.dimension, r.posX, r.posY, r.posZ))
+    MinecraftForge.EVENT_BUS.post(TeleportFromEvent(r, r.dimension, r.posX, r.posY, r.posZ))
     r.teleportTo(oS.get)
   }
 

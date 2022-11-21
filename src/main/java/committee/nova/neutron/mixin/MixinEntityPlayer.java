@@ -2,8 +2,11 @@ package committee.nova.neutron.mixin;
 
 import committee.nova.neutron.api.player.INeutronPlayer;
 import committee.nova.neutron.api.player.storage.IHome;
+import committee.nova.neutron.api.player.storage.IPosWithDim;
 import committee.nova.neutron.common.reference.TagReferences;
+import committee.nova.neutron.server.player.storage.FormerPos;
 import committee.nova.neutron.server.player.storage.Home;
+import committee.nova.neutron.util.collection.LimitedLinkedList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,10 +26,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
     private int cdTpa = 0;
     private int rtpAccumulation = 0;
     private final LinkedHashSet<IHome> homes = new LinkedHashSet<>();
-    private double formerX = Double.MIN_VALUE;
-    private double formerY = Double.MIN_VALUE;
-    private double formerZ = Double.MIN_VALUE;
-    private int formerDim = Integer.MIN_VALUE;
+    private final LimitedLinkedList<IPosWithDim> formerPosQueue = new LimitedLinkedList<>();
 
     public MixinEntityPlayer(World w) {
         super(w);
@@ -49,11 +49,8 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
         final NBTTagList homesTag = new NBTTagList();
         for (final IHome home : homes) homesTag.appendTag(home.serialize());
         neutronTag.setTag(TagReferences.HOMES.getName(), homesTag);
-        final NBTTagCompound formerPos = new NBTTagCompound();
-        formerPos.setDouble(TagReferences.X.getName(), formerX);
-        formerPos.setDouble(TagReferences.Y.getName(), formerY);
-        formerPos.setDouble(TagReferences.Z.getName(), formerZ);
-        formerPos.setInteger(TagReferences.DIM.getName(), formerDim);
+        final NBTTagList formerPos = new NBTTagList();
+        for (final IPosWithDim pos : formerPosQueue) formerPos.appendTag(pos.serialize());
         neutronTag.setTag(TagReferences.FORMER_POS.getName(), formerPos);
         tag.setTag(TagReferences.NEUTRON_ROOT.getName(), neutronTag);
     }
@@ -70,11 +67,11 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
             for (int i = 0; i < size; i++) homes.add(new Home().deserialize(homesTag.getCompoundTagAt(i)));
         }
         if (neutronTag.hasKey(TagReferences.FORMER_POS.getName())) {
-            final NBTTagCompound former = neutronTag.getCompoundTag(TagReferences.FORMER_POS.getName());
-            formerX = former.getDouble(TagReferences.X.getName());
-            formerY = former.getDouble(TagReferences.Y.getName());
-            formerZ = former.getDouble(TagReferences.Z.getName());
-            formerDim = former.getInteger(TagReferences.DIM.getName());
+            formerPosQueue.clear();
+            final NBTTagList formerPosTag = neutronTag.getTagList(TagReferences.FORMER_POS.getName(), 10);
+            final int size = formerPosTag.tagCount();
+            for (int i = 0; i < size; i++)
+                formerPosQueue.add(new FormerPos().deserialize(formerPosTag.getCompoundTagAt(i)));
         }
     }
 
@@ -124,47 +121,13 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements INeu
     }
 
     @Override
-    public double getFormerX() {
-        return formerX;
+    public LimitedLinkedList<IPosWithDim> getFormerPos() {
+        return formerPosQueue;
     }
 
     @Override
-    public double getFormerY() {
-        return formerY;
-    }
-
-    @Override
-    public double getFormerZ() {
-        return formerZ;
-    }
-
-    @Override
-    public int getFormerDim() {
-        return formerDim;
-    }
-
-    @Override
-    public void setFormerX(double x) {
-        formerX = x;
-    }
-
-    @Override
-    public void setFormerY(double y) {
-        formerY = y;
-    }
-
-    @Override
-    public void setFormerZ(double z) {
-        formerZ = z;
-    }
-
-    @Override
-    public void setFormerDim(int dim) {
-        formerDim = dim;
-    }
-
-    @Override
-    public boolean hasNoValidFormerPos() {
-        return formerDim == Integer.MIN_VALUE;
+    public void setFormerPos(LimitedLinkedList<IPosWithDim> former) {
+        this.formerPosQueue.clear();
+        this.formerPosQueue.addAll(former);
     }
 }

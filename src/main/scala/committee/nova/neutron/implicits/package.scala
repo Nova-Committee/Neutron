@@ -1,7 +1,8 @@
 package committee.nova.neutron
 
 import committee.nova.neutron.api.player.INeutronPlayer
-import committee.nova.neutron.api.player.storage.IHome
+import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
+import committee.nova.neutron.util.collection.LimitedLinkedList
 import cpw.mods.fml.common.event.FMLServerStartingEvent
 import net.minecraft.command.ICommand
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
@@ -27,23 +28,9 @@ package object implicits {
 
     override def setHomes(homes: JSet[IHome]): Unit = getNeutron.setHomes(homes)
 
-    override def getFormerX: Double = getNeutron.getFormerX
+    override def getFormerPos: LimitedLinkedList[IPosWithDim] = getNeutron.getFormerPos
 
-    override def getFormerY: Double = getNeutron.getFormerY
-
-    override def getFormerZ: Double = getNeutron.getFormerZ
-
-    override def getFormerDim: Int = getNeutron.getFormerDim
-
-    override def setFormerX(x: Double): Unit = getNeutron.setFormerX(x)
-
-    override def setFormerY(y: Double): Unit = getNeutron.setFormerY(y)
-
-    override def setFormerZ(z: Double): Unit = getNeutron.setFormerZ(z)
-
-    override def setFormerDim(dim: Int): Unit = getNeutron.setFormerDim(dim)
-
-    override def hasNoValidFormerPos: Boolean = getNeutron.hasNoValidFormerPos
+    override def setFormerPos(former: LimitedLinkedList[IPosWithDim]): Unit = getNeutron.setFormerPos(former)
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {

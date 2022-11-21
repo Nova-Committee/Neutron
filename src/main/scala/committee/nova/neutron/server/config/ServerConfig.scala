@@ -13,6 +13,7 @@ object ServerConfig {
   private var rtpMaxVerticalAxisRange: Int = _
   private var rtpMaxTriesOnFindingPosition: Int = _
   private var maxHomeNumber: Int = _
+  private var maxFormerPosStorage: Int = _
 
   def init(event: FMLPreInitializationEvent): Unit = {
     config = new Configuration(event.getSuggestedConfigurationFile)
@@ -35,6 +36,8 @@ object ServerConfig {
 
   def getMaxHomeNumber: Int = maxHomeNumber
 
+  def getMaxFormerPosStorage: Int = maxFormerPosStorage
+
   def sync(): Unit = {
     config.load()
     language = config.getString("language", Configuration.CATEGORY_GENERAL, "en_us", "Language ID of the server messages")
@@ -45,6 +48,7 @@ object ServerConfig {
     rtpMaxVerticalAxisRange = config.getInt("rtpMaxVerticalAxisRange", Configuration.CATEGORY_GENERAL, 10000, 1000, 200000, "Max distance on a vertical axis to the player's original position when random teleporting")
     rtpMaxTriesOnFindingPosition = config.getInt("rtpMaxTriesOnFindingPosition", Configuration.CATEGORY_GENERAL, 10, 1, 100, "Max tries on finding a rtp target position. If exceeded, player's rtp chances won't be consumed")
     maxHomeNumber = config.getInt("maxHomeNumber", Configuration.CATEGORY_GENERAL, 5, 0, 50, "Max number of the homes player can set")
+    maxFormerPosStorage = config.getInt("maxFormerPosStorage", Configuration.CATEGORY_GENERAL, 5, 1, 15, "Max number of the recent former positions of the player stored. Used for the /back command")
     config.save()
   }
 }

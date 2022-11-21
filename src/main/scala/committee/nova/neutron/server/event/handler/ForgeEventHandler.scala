@@ -1,8 +1,11 @@
 package committee.nova.neutron.server.event.handler
 
 import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.event.impl.TeleportFromEvent
+import committee.nova.neutron.server.player.storage.FormerPos
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import net.minecraft.util.Vec3
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.player.PlayerEvent
 
@@ -18,18 +21,12 @@ class ForgeEventHandler {
     newPlayer.setTpaCoolDown(oldPlayer.getTpaCoolDown)
     newPlayer.setRtpAccumulation(oldPlayer.getRtpAccumulation)
     newPlayer.setHomes(oldPlayer.getHomes)
-    newPlayer.setFormerX(oldPlayer.getFormerX)
-    newPlayer.setFormerY(oldPlayer.getFormerY)
-    newPlayer.setFormerZ(oldPlayer.getFormerZ)
-    newPlayer.setFormerDim(oldPlayer.getFormerDim)
+    newPlayer.setFormerPos(oldPlayer.getFormerPos)
   }
 
   @SubscribeEvent
   def onTeleport(event: TeleportFromEvent): Unit = {
     val player = event.player
-    player.setFormerX(event.oldX)
-    player.setFormerY(event.oldY)
-    player.setFormerZ(event.oldZ)
-    player.setFormerDim(event.oldDim)
+    player.getFormerPos.addWithLimit(new FormerPos(event.oldDim, Vec3.createVectorHelper(event.oldX, event.oldY, event.oldZ)), ServerConfig.getMaxFormerPosStorage)
   }
 }
