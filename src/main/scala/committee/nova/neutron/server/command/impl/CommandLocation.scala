@@ -209,7 +209,7 @@ object CommandLocation {
         case y if y > 1 =>
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.vague", y,
             Utilities.Str.convertCollectionToString(former.iterator, (f: IPosWithDim, i: Int) =>
-              s"(${i + 1}. DIM${f.getDim}: ${Utilities.Location.getLiteralFromPosTuple3((f.getX, f.getY, f.getZ))})"
+              s"${i + 1}. DIM${f.getDim}: ${Utilities.Location.getLiteralFromPosTuple3((f.getX, f.getY, f.getZ))}"
               , "", ""))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
           return
