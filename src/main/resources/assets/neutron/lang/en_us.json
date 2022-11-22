@@ -30,12 +30,12 @@
   "msg.neutron.cmd.reload.inProgress": "Reloading neutron configurations...",
   "msg.neutron.cmd.reload.error": "Error occurred when reloading neutron configurations.",
   "msg.neutron.cmd.reload.success": "Neutron configurations reloaded!",
-  "msg.neutron.cmd.reply.cancelled": "Request cancelled.",
-  "msg.neutron.cmd.reply.invalid": "No pending request.",
-  "msg.neutron.cmd.reply.accepted": "Request accepted, teleporting...",
-  "msg.neutron.cmd.reply.denied": "Request denied.",
-  "msg.neutron.cmd.reply.ignored": "Request from {0} ignored.",
+  "msg.neutron.cmd.reply.tp.cancelled": "Request [{0}] cancelled.",
+  "msg.neutron.cmd.reply.tp.invalid": "No matching request found.",
+  "msg.neutron.cmd.reply.tp.accepted": "Request [{0}] accepted, teleporting...",
+  "msg.neutron.cmd.reply.tp.denied": "Request [{0}] denied.",
+  "msg.neutron.cmd.reply.tp.ignored": "Request [{0}] ignored.",
   "msg.neutron.cmd.usage": "Usage: {0}",
-  "msg.neutron.init.onClient": "Attention: The mod was designed for servers. It will really work on the client only when you host a LAN world!",
+  "msg.neutron.init.onClient": "Attention: The mod was designed for servers. It will really work on the \"client\" only when you host a LAN world!",
   "phr.neutron.unknownPlayer": "Unknown Player"
 }

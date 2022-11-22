@@ -14,6 +14,8 @@ import net.minecraft.potion.{Potion, PotionEffect}
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 import net.minecraft.world.WorldServer
 
+import java.util.UUID
+import scala.util.Try
 import scala.util.control.Breaks.{break, breakable}
 
 object CommandTeleport {
@@ -50,21 +52,22 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
+          val id = request.getId.toString
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           sender.addChatMessage(Utilities.L10n.getEmpty
             .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
-              new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpcancel")
+              new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpcancel $id")
             ))))
           receiver.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tpa.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
           receiver.addChatMessage(Utilities.L10n.getEmpty
             .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept"))))
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpaccept $id"))))
             .appendSibling(Utilities.L10n.getSpace)
             .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.deny").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny"))))
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpdeny $id"))))
             .appendSibling(Utilities.L10n.getSpace)
             .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpignore")))))
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpignore $id")))))
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
@@ -130,28 +133,48 @@ object CommandTeleport {
   class TpCancel extends CommandBase {
     override def getCommandName: String = "tpcancel"
 
-    override def getCommandUsage(sender: ICommandSender): String = "/tpcancel"
+    override def getCommandUsage(sender: ICommandSender): String = Utilities.Str.convertStringArgsToString("/tpcancel", "/tpcancel [TPID]")
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
-          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-        return
+      args.length match {
+        case 0 =>
+          var info = ""
+          var success = false
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet.toList.reverse if r.getSender == sender.getUniqueID) {
+              val receiver = r.getReceiver
+              info = r.getInfo
+              success = ServerStorage.teleportRequestSet.remove(r)
+              if (success) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
+                .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED))))
+              break()
+            }
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.cancelled" else "msg.neutron.cmd.reply.tp.invalid",
+            if (success) info else "")
+            .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
+        case 1 =>
+          var success = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet if r.getSender == sender.getUniqueID && r.getId == Try(UUID.fromString(args(0))).getOrElse(null)) {
+              val receiver = r.getReceiver
+              info = r.getInfo
+              success = ServerStorage.teleportRequestSet.remove(r)
+              if (success) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
+                .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED))))
+              break()
+            }
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.cancelled" else "msg.neutron.cmd.reply.tp.invalid",
+            if (success) info else "")
+            .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
+        case _ =>
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
       }
-      var success = false
-      breakable {
-        for (r <- ServerStorage.teleportRequestSet if r.getSender == sender.getUniqueID) {
-          val receiver = r.getReceiver
-          success = ServerStorage.teleportRequestSet.remove(r)
-          if (success) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.cancelled")
-            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED))))
-          break()
-        }
-      }
-      sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.cancelled" else "msg.neutron.cmd.reply.invalid")
-        .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
@@ -165,26 +188,50 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
-          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-        return
+      args.length match {
+        case 0 =>
+          var success = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet.toList.reverse if r.getReceiver == sender.getUniqueID) {
+              info = r.getInfo
+              success = r.apply
+              if (success) Utilities.Player.getPlayerByUUID(r.getSender).foreach(c => {
+                c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.accepted", info)
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+                c.setTpaCoolDown(ServerConfig.getTpCoolDown)
+              })
+              ServerStorage.teleportRequestSet.remove(r)
+              break()
+            }
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.accepted" else "msg.neutron.cmd.reply.tp.invalid",
+            if (success) info else "")
+            .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.GREEN else EnumChatFormatting.DARK_RED)))
+        case 1 =>
+          var success = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet if r.getReceiver == sender.getUniqueID && r.getId == Try(UUID.fromString(args(0))).getOrElse(null)) {
+              info = r.getInfo
+              success = r.apply
+              if (success) Utilities.Player.getPlayerByUUID(r.getSender).foreach(c => {
+                c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.accepted", info)
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+                c.setTpaCoolDown(ServerConfig.getTpCoolDown)
+              })
+              ServerStorage.teleportRequestSet.remove(r)
+              break()
+            }
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.accepted" else "msg.neutron.cmd.reply.tp.invalid",
+            if (success) info else "")
+            .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.GREEN else EnumChatFormatting.DARK_RED)))
+        case _ =>
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
       }
-      var success = false
-      breakable {
-        for (r <- ServerStorage.teleportRequestSet if r.getReceiver == sender.getUniqueID) {
-          success = r.apply
-          if (success) Utilities.Player.getPlayerByUUID(r.getSender).foreach(c => {
-            c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.accepted")
-              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-            c.setTpaCoolDown(ServerConfig.getTpCoolDown)
-          })
-          ServerStorage.teleportRequestSet.remove(r)
-          break()
-        }
-      }
-      sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.accepted" else "msg.neutron.cmd.reply.invalid")
-        .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.GREEN else EnumChatFormatting.DARK_RED)))
+
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
@@ -198,26 +245,48 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+      args.length match {
+        case 0 =>
+          var success = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet.toList.reverse if r.getReceiver == sender.getUniqueID) {
+              val s = r.getSender
+              info = r.getInfo
+              success = ServerStorage.teleportRequestSet.remove(r)
+              if (success) Utilities.Player.getPlayerByUUID(s).foreach(c => {
+                c.setTpaCoolDown(ServerConfig.getTpCoolDown)
+                c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.denied", info)
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+              })
+              break()
+            }
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.denied" else "msg.neutron.cmd.reply.tp.invalid",
+            if (success) info else "")
+            .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
+        case 1 =>
+          var success = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet if r.getReceiver == sender.getUniqueID && r.getId == Try(UUID.fromString(args(0))).getOrElse(null)) {
+              val s = r.getSender
+              info = r.getInfo
+              success = ServerStorage.teleportRequestSet.remove(r)
+              if (success) Utilities.Player.getPlayerByUUID(s).foreach(c => {
+                c.setTpaCoolDown(ServerConfig.getTpCoolDown)
+                c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.denied", info)
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+              })
+              break()
+            }
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.denied" else "msg.neutron.cmd.reply.tp.invalid",
+            if (success) info else "")
+            .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
+        case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-        return
       }
-      var success = false
-      breakable {
-        for (r <- ServerStorage.teleportRequestSet if r.getReceiver == sender.getUniqueID) {
-          val s = r.getSender
-          success = ServerStorage.teleportRequestSet.remove(r)
-          if (success) Utilities.Player.getPlayerByUUID(s).foreach(c => {
-            c.setTpaCoolDown(ServerConfig.getTpCoolDown)
-            c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.denied")
-              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-          })
-          break()
-        }
-      }
-      sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.denied" else "msg.neutron.cmd.reply.invalid")
-        .setChatStyle(new ChatStyle().setColor(if (success) EnumChatFormatting.YELLOW else EnumChatFormatting.DARK_RED)))
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
@@ -231,23 +300,42 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      if (args.length != 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+      args.length match {
+        case 0 =>
+          var ignored = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet.toList.reverse if r.getReceiver == sender.getUniqueID && !r.getIgnored) {
+              info = r.getInfo
+              r.setIgnored()
+              ignored = true
+              sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.ignored", info)
+                .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+              break()
+            }
+          }
+          if (!ignored) sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.invalid")
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+        case 1 =>
+          var ignored = false
+          var info = ""
+          breakable {
+            for (r <- ServerStorage.teleportRequestSet if (r.getReceiver == sender.getUniqueID && !r.getIgnored
+              && r.getId == Try(UUID.fromString(args(0))).getOrElse(null))) {
+              info = r.getInfo
+              r.setIgnored()
+              ignored = true
+              sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.ignored", info)
+                .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+              break()
+            }
+          }
+          if (!ignored) sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.invalid")
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+        case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-        return
       }
-      var ignored = false
-      breakable {
-        for (r <- ServerStorage.teleportRequestSet if r.getReceiver == sender.getUniqueID && !r.getIgnored) {
-          r.setIgnored()
-          ignored = true
-          Utilities.Player.getPlayerByUUID(r.getSender).foreach(rp => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.ignored", rp.getDisplayName)
-            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW))))
-          break()
-        }
-      }
-      if (!ignored) sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.invalid")
-        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true

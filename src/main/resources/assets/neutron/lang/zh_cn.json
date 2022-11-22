@@ -30,12 +30,12 @@
   "msg.neutron.cmd.reload.inProgress": "重载 Neutron 配置文件...",
   "msg.neutron.cmd.reload.error": "重载 Neutron 配置文件时发生错误",
   "msg.neutron.cmd.reload.success": "Neutron 配置文件已重载！",
-  "msg.neutron.cmd.reply.cancelled": "请求已取消。",
-  "msg.neutron.cmd.reply.invalid": "无待定请求。",
-  "msg.neutron.cmd.reply.accepted": "请求已接受，传送中...",
-  "msg.neutron.cmd.reply.denied": "请求已拒绝。",
-  "msg.neutron.cmd.reply.ignored": "已忽略{0}的请求。",
+  "msg.neutron.cmd.reply.tp.cancelled": "请求[{0}]已取消。",
+  "msg.neutron.cmd.reply.tp.invalid": "找不到指定的请求。",
+  "msg.neutron.cmd.reply.tp.accepted": "请求[{0}]已接受，传送中...",
+  "msg.neutron.cmd.reply.tp.denied": "请求[{0}]已拒绝。",
+  "msg.neutron.cmd.reply.tp.ignored": "请求[{0}]已忽略。",
   "msg.neutron.cmd.usage": "用法：{0}",
-  "msg.neutron.init.onClient": "注意：本模组是为服务端设计的。只有在你开放一个局域网世界时，它才会真正地在客户端上生效！",
+  "msg.neutron.init.onClient": "注意：本模组是为服务端设计的。只有在你开放一个局域网世界时，它才会真正地在“客户端”上生效！",
   "phr.neutron.unknownPlayer": "未知玩家"
 }

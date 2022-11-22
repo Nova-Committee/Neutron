@@ -10,6 +10,7 @@ import net.minecraftforge.common.MinecraftForge
 import java.util.UUID
 
 class TeleportToRequest(private val sender: UUID, private val receiver: UUID) extends ITeleportRequest {
+  private val id = UUID.randomUUID()
   private var timeout = ServerConfig.getMaxTpExpirationTime
   private var ignored = false
 
@@ -41,4 +42,6 @@ class TeleportToRequest(private val sender: UUID, private val receiver: UUID) ex
   override def getReceiver: UUID = receiver
 
   override def getInfo: String = s"${Utilities.Player.getPlayerNameByUUID(getSender)} >> ${Utilities.Player.getPlayerNameByUUID(getReceiver)}"
+
+  override def getId: UUID = id
 }

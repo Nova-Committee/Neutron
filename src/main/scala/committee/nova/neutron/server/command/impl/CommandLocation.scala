@@ -46,7 +46,7 @@ object CommandLocation {
           return
         case y if y > 1 =>
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y,
-            Utilities.Str.convertCollectionToString(homes.iterator, (h: IHome, i: Int) => s"(${i + 1}. ${h.getName})"))
+            Utilities.Str.convertCollectionToString(homes.iterator, (h: IHome, i: Int) => s"(${i + 1}. ${h.getName})", "[", "]"))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
           return
       }
@@ -149,7 +149,7 @@ object CommandLocation {
           return
         }
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", homes.size(),
-          Utilities.Str.convertCollectionToString(homes.iterator, (h: IHome, i: Int) => s"(${i + 1}. ${h.getName})"))
+          Utilities.Str.convertCollectionToString(homes.iterator, (h: IHome, i: Int) => s"(${i + 1}. ${h.getName})", "[", "]"))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
         return
       }
@@ -210,7 +210,7 @@ object CommandLocation {
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.vague", y,
             Utilities.Str.convertCollectionToString(former.iterator, (f: IPosWithDim, i: Int) =>
               s"(${i + 1}. DIM${f.getDim}: ${Utilities.Location.getLiteralFromPosTuple3((f.getX, f.getY, f.getZ))})"
-            ))
+              , "", ""))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
           return
       }

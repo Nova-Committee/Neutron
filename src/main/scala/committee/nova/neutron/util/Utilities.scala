@@ -89,13 +89,17 @@ object Utilities {
   }
 
   object Str {
-    def convertCollectionToString[T](iterator: Iterator[T], convertor: (T, Int) => String): String = {
+    def convertCollectionToString[T](iterator: Iterator[T], convertor: (T, Int) => String, prefix: String, suffix: String): String = {
       val buffer = new StringBuffer()
-      buffer.append("[")
+      buffer.append(prefix)
       iterator.zipWithIndex.foreach(c => buffer.append(convertor.apply(c._1, c._2).+(", ")))
       buffer.delete(buffer.lastIndexOf(","), buffer.length())
-      buffer.append("]")
+      buffer.append(suffix)
       buffer.toString
+    }
+
+    def convertStringArgsToString(array: String*): String = {
+      convertCollectionToString[String](array.toIterator, (s, i) => s, "", "")
     }
 
     def scale(d: Double, scale: Int): String = {
