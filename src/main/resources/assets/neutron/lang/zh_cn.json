@@ -24,7 +24,7 @@
   "msg.neutron.cmd.tp.existed": "存在未处理的传送...",
   "msg.neutron.cmd.tp.playerNotFound": "未找到目标玩家{0}...",
   "msg.neutron.cmd.tp.requestSent": "传送请求已发送。有效期：{0}刻",
-  "msg.neutron.cmd.tp.timeout": "传送请求超时。",
+  "msg.neutron.cmd.tp.timeout": "传送请求[{0}]超时。",
   "msg.neutron.cmd.tpa.request": "{0}想要传送到你的位置。",
   "msg.neutron.cmd.tpahere.request": "{0}想要你传送到他的位置。",
   "msg.neutron.cmd.reload.inProgress": "重载 Neutron 配置文件...",
@@ -35,5 +35,7 @@
   "msg.neutron.cmd.reply.accepted": "请求已接受，传送中...",
   "msg.neutron.cmd.reply.denied": "请求已拒绝。",
   "msg.neutron.cmd.reply.ignored": "已忽略{0}的请求。",
-  "msg.neutron.cmd.usage": "用法：{0}"
+  "msg.neutron.cmd.usage": "用法：{0}",
+  "msg.neutron.init.onClient": "注意：本模组是为服务端设计的。只有在你开放一个局域网世界时，它才会真正地在客户端上生效！",
+  "phr.neutron.unknownPlayer": "未知玩家"
 }

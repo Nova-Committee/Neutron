@@ -39,4 +39,6 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
   override def getSender: UUID = sender
 
   override def getReceiver: UUID = receiver
+
+  override def getInfo: String = s"${Utilities.Player.getPlayerNameByUUID(getSender)} << ${Utilities.Player.getPlayerNameByUUID(getReceiver)}"
 }

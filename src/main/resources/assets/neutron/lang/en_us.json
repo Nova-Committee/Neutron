@@ -24,7 +24,7 @@
   "msg.neutron.cmd.tp.existed": "Teleportation existed...",
   "msg.neutron.cmd.tp.playerNotFound": "Target player {0} not found...",
   "msg.neutron.cmd.tp.requestSent": "Request sent successfully. Expiration Time: {0} tick(s).",
-  "msg.neutron.cmd.tp.timeout": "Teleportation request timeout.",
+  "msg.neutron.cmd.tp.timeout": "Teleportation request [{0}] timeout.",
   "msg.neutron.cmd.tpa.request": "{0} wanted to teleport to you.",
   "msg.neutron.cmd.tpahere.request": "{0} wanted you to teleport there.",
   "msg.neutron.cmd.reload.inProgress": "Reloading neutron configurations...",
@@ -35,5 +35,7 @@
   "msg.neutron.cmd.reply.accepted": "Request accepted, teleporting...",
   "msg.neutron.cmd.reply.denied": "Request denied.",
   "msg.neutron.cmd.reply.ignored": "Request from {0} ignored.",
-  "msg.neutron.cmd.usage": "Usage: {0}"
+  "msg.neutron.cmd.usage": "Usage: {0}",
+  "msg.neutron.init.onClient": "Attention: The mod was designed for servers. It will really work on the client only when you host a LAN world!",
+  "phr.neutron.unknownPlayer": "Unknown Player"
 }

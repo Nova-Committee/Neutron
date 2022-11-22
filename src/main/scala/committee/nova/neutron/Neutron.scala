@@ -3,6 +3,7 @@ package committee.nova.neutron
 import committee.nova.neutron.server.command.init.CommandInit
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.event.handler.{FMLEventHandler, ForgeEventHandler}
+import committee.nova.neutron.util.Utilities
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event._
@@ -18,6 +19,8 @@ object Neutron {
   @EventHandler def preInit(e: FMLPreInitializationEvent): Unit = {
     LOGGER = e.getModLog
     ServerConfig.init(e)
+    val initialLang = Utilities.L10n.initializeL10n(ServerConfig.getLanguage)
+    if (e.getSide == Side.CLIENT) LOGGER.warn(initialLang.get("msg.neutron.init.onClient"))
   }
 
   @EventHandler def init(e: FMLInitializationEvent): Unit = {

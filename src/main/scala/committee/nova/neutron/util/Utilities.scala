@@ -2,6 +2,7 @@ package committee.nova.neutron.util
 
 import committee.nova.neutron.Neutron
 import committee.nova.neutron.server.config.ServerConfig
+import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.sjl10n.L10nUtilities
 import committee.nova.sjl10n.L10nUtilities.JsonText
 import net.minecraft.command.{CommandBase, ICommandSender}
@@ -16,6 +17,7 @@ import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 import scala.collection.mutable
+import scala.util.Try
 
 object Utilities {
   object L10n {
@@ -28,6 +30,11 @@ object Utilities {
       n
     }
 
+    def initializeL10n(lang: String): JsonText = {
+      if (lang != "en_us") getL10n(lang)
+      getL10n("en_us")
+    }
+
     def getSpace: IChatComponent = new ChatComponentText(" ")
 
     def getEmpty: IChatComponent = new ChatComponentText("")
@@ -37,6 +44,12 @@ object Utilities {
     def getPlayer(sender: ICommandSender, name: String): Option[EntityPlayerMP] = Option(CommandBase.getPlayer(sender, name))
 
     def getPlayerByName(name: String): Option[EntityPlayerMP] = Option(MinecraftServer.getServer.getConfigurationManager.func_152612_a(name))
+
+    def getPlayerNameByUUID(uuid: UUID): String = {
+      ServerStorage.uuid2Name.get(uuid)
+        .orElse(Try(getPlayerByUUID(uuid).get.getDisplayName).toOption)
+        .getOrElse(L10n.getL10n(ServerConfig.getLanguage).get("phr.neutron.unknownPlayer"))
+    }
 
     def getPlayerByUUID(uuid: UUID): Option[EntityPlayerMP] = {
       for (o <- MinecraftServer.getServer.getConfigurationManager.playerEntityList) {
@@ -72,10 +85,10 @@ object Utilities {
   object Location {
     def getLiteralFromPosTuple3(pos: (Double, Double, Double)): String = s"[${scale1(pos._1)}, ${scale1(pos._2)}, ${scale1(pos._3)}]"
 
-    private def scale1(d: Double): String = String.scale(d, 1)
+    private def scale1(d: Double): String = Str.scale(d, 1)
   }
 
-  object String {
+  object Str {
     def convertCollectionToString[T](iterator: Iterator[T], convertor: (T, Int) => String): String = {
       val buffer = new StringBuffer()
       buffer.append("[")

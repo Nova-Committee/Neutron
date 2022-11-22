@@ -14,4 +14,6 @@ trait ITeleportRequest {
   def getSender: UUID
 
   def getReceiver: UUID
+
+  def getInfo: String
 }
