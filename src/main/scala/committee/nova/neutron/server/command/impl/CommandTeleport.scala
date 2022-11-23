@@ -39,7 +39,7 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          val cd = receiver.getTpaCoolDown
+          val cd = sender.getTpaCoolDown
           if (cd > 0) {
             sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.cd", String.valueOf(cd))
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
@@ -95,7 +95,7 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          val cd = receiver.getTpaCoolDown
+          val cd = sender.getTpaCoolDown
           if (cd > 0) {
             sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.cd", String.valueOf(cd))
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
