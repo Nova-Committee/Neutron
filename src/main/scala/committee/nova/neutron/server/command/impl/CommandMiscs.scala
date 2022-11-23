@@ -40,5 +40,7 @@ object CommandMiscs {
       val sender = c.asInstanceOf[EntityPlayerMP]
       sender.displayGUIChest(new InventoryTrashcan(sender))
     }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 }
