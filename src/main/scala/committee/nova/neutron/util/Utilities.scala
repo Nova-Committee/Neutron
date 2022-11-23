@@ -23,6 +23,8 @@ object Utilities {
   object L10n {
     val l10nMap: mutable.Map[String, JsonText] = new mutable.HashMap[String, JsonText]()
 
+    def getFromCurrentLang(key: String): String = getL10n(ServerConfig.getLanguage).get(key)
+
     def getL10n(lang: String): JsonText = {
       l10nMap.foreach(m => if (lang == m._1) return m._2)
       val n = L10nUtilities.create(Neutron.MODID, lang)

@@ -15,7 +15,7 @@ import net.minecraftforge.common.MinecraftForge
 
 import java.util
 import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
+import scala.collection.mutable
 import scala.util.Try
 import scala.util.control.Breaks.{break, breakable}
 
@@ -36,7 +36,7 @@ object CommandLocation {
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)))
           return
         case 1 =>
-          val home = homes.asScala.head
+          val home = homes.head
           MinecraftForge.EVENT_BUS.post(TeleportFromEvent(sender, sender.dimension, sender.posX, sender.posY, sender.posZ))
           if (home.getDim != sender.dimension) sender.travelToDimension(home.getDim)
           val pos = home.getPos
@@ -56,7 +56,7 @@ object CommandLocation {
         return
       }
       val name = args(0)
-      homes.asScala.foreach(home => if (name == home.getName) {
+      homes.foreach(home => if (name == home.getName) {
         MinecraftForge.EVENT_BUS.post(TeleportFromEvent(sender, sender.dimension, sender.posX, sender.posY, sender.posZ))
         if (home.getDim != sender.dimension) sender.travelToDimension(home.getDim)
         val pos = home.getPos
@@ -94,7 +94,7 @@ object CommandLocation {
       val l = args.length
       val homes = sender.getHomes
       if (l == 0) {
-        setHomeForPlayer(sender, SHome.getNextUnOccupiedHomeName(1, homes.asScala.map(h => h.getName).toArray), homes)
+        setHomeForPlayer(sender, SHome.getNextUnOccupiedHomeName(1, homes.map(h => h.getName).toArray), homes)
         return
       }
       if (l != 1) {
@@ -107,7 +107,7 @@ object CommandLocation {
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
 
-    private def setHomeForPlayer(sender: EntityPlayerMP, name: String, homes: util.HashSet[IHome]): Unit = {
+    private def setHomeForPlayer(sender: EntityPlayerMP, name: String, homes: mutable.LinkedHashSet[IHome]): Unit = {
       if (homes.size() >= ServerConfig.getMaxHomeNumber) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.set.exceeded"))
         return

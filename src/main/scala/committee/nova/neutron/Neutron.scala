@@ -20,7 +20,7 @@ object Neutron {
     LOGGER = e.getModLog
     ServerConfig.init(e)
     val initialLang = Utilities.L10n.initializeL10n(ServerConfig.getLanguage)
-    if (e.getSide == Side.CLIENT) LOGGER.warn(initialLang.get("msg.neutron.init.onClient"))
+    if (e.getSide == Side.CLIENT) LOGGER.warn(initialLang.get("msg.neutron.warn.clientInit"))
   }
 
   @EventHandler def init(e: FMLInitializationEvent): Unit = {

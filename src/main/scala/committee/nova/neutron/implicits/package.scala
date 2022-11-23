@@ -1,39 +1,54 @@
 package committee.nova.neutron
 
-import committee.nova.neutron.api.player.INeutronPlayer
 import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
+import committee.nova.neutron.api.reference.INamed
+import committee.nova.neutron.server.player.storage.NeutronEEP
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import cpw.mods.fml.common.event.FMLServerStartingEvent
 import net.minecraft.command.ICommand
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 
-import java.util.{HashSet => JSet}
+import scala.collection.mutable
 import scala.language.implicitConversions
 
 package object implicits {
-  implicit class PlayerImplicit(val player: EntityPlayer) extends INeutronPlayer {
-    private def getNeutron: INeutronPlayer = player.asInstanceOf[INeutronPlayer]
+  implicit class PlayerImplicit(val player: EntityPlayer) {
+    private def getNeutron: NeutronEEP = player.getExtendedProperties(NeutronEEP.id).asInstanceOf[NeutronEEP]
 
-    override def getTpaCoolDown: Int = getNeutron.getTpaCoolDown
+    def getTpaCoolDown: Int = getNeutron.getTpaCoolDown
 
-    override def setTpaCoolDown(cd: Int): Unit = getNeutron.setTpaCoolDown(cd)
+    def setTpaCoolDown(cd: Int): Unit = getNeutron.setTpaCoolDown(cd)
 
-    override def teleportTo(that: EntityPlayerMP): Boolean = getNeutron.teleportTo(that)
+    def teleportTo(that: EntityPlayerMP): Boolean = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return false
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      try {
+        if (mp.dimension != that.dimension) mp.travelToDimension(that.dimension)
+        mp.playerNetServerHandler.setPlayerLocation(that.posX, that.posY, that.posZ, that.rotationYaw, that.rotationPitch)
+      } catch {
+        case e: Exception =>
+          e.printStackTrace()
+          return false
+      }
+      true
+    }
 
-    override def getRtpAccumulation: Int = getNeutron.getRtpAccumulation
+    def getRtpAccumulation: Int = getNeutron.getRtpAccumulation
 
-    override def setRtpAccumulation(acc: Int): Unit = getNeutron.setRtpAccumulation(acc)
+    def setRtpAccumulation(acc: Int): Unit = getNeutron.setRtpAccumulation(acc)
 
-    override def getHomes: JSet[IHome] = getNeutron.getHomes
+    def getHomes: mutable.LinkedHashSet[IHome] = getNeutron.getHomes
 
-    override def setHomes(homes: JSet[IHome]): Unit = getNeutron.setHomes(homes)
+    def setHomes(homes: mutable.LinkedHashSet[IHome]): Unit = getNeutron.setHomes(homes)
 
-    override def getFormerPos: LimitedLinkedList[IPosWithDim] = getNeutron.getFormerPos
+    def getFormerPos: LimitedLinkedList[IPosWithDim] = getNeutron.getFormerPos
 
-    override def setFormerPos(former: LimitedLinkedList[IPosWithDim]): Unit = getNeutron.setFormerPos(former)
+    def setFormerPos(former: LimitedLinkedList[IPosWithDim]): Unit = getNeutron.setFormerPos(former)
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {
     def registerServerCommands(cmds: ICommand*): Unit = cmds.foreach(c => event.registerServerCommand(c))
   }
+
+  implicit def named2Str(named: INamed): String = named.getName
 }

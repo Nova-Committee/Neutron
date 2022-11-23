@@ -19,6 +19,7 @@ buildscript {
         }
     }
 }
+
 configurations {
     embed
     compile.extendsFrom(embed)
@@ -37,8 +38,6 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
-tasks.compileJava.dependsOn compileScala
-tasks.compileScala.dependsOn.remove("compileJava")
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
@@ -50,7 +49,6 @@ repositories {
 }
 
 dependencies {
-    compile files("$sourceSets.main.scala.outputDir")
     embed('com.github.Nova-Committee:ServersideJsonL10n:Scala-1.2.0') {
         exclude module: 'scala-library'
         exclude module: 'scala-reflect'
@@ -63,119 +61,22 @@ dependencies {
     }
 }
 
-processResources
-        {
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-//##########################################################################################################
-//########################################    Mixin  Part   ################################################
-//##########################################################################################################
-//Add
-//--tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.examplemod.json
-//to your client and server program arguments if working in a dev environment.
-def yourMixinConfig = "mixins.${modId}.json"
-def refMapForYourConfig = "mixins.${modId}.refmap.json"
-def relativePathToMixinAP = 'libs/mixin-0.8-SNAPSHOT.jar'
-
-def embedMixin = !project.hasProperty("nomixin");
-
-if (!embedMixin) {
-    version += "-mixinless"
-}
-
-repositories {
-    maven {
-        name = "sponge"
-        url = "https://repo.spongepowered.org/maven/"
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }
-
-dependencies {
-    if (embedMixin) {
-        embed('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-            // Mixin includes a lot of dependencies that are too up-to-date
-            exclude module: 'launchwrapper'
-            exclude module: 'guava'
-            exclude module: 'gson'
-            exclude module: 'commons-io'
-            exclude module: 'log4j-core'
-        }
-    } else {
-        compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-            // Mixin includes a lot of dependencies that are too up-to-date
-            exclude module: 'launchwrapper'
-            exclude module: 'guava'
-            exclude module: 'gson'
-            exclude module: 'commons-io'
-            exclude module: 'log4j-core'
-        }
-    }
-}
-
-def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + refMapForYourConfig
-
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
 
 jar {
-    from refMap
-    manifest {
-        attributes.put("TweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-        attributes.put("FMLCorePluginContainsFMLMod", true)
-        attributes.put("ForceLoadAsMod", true)
-        attributes.put("MixinConfigs", yourMixinConfig)
-    }
-
-    // embed libraries in jar
     from configurations.embed.collect {
         exclude '**/LICENSE.txt'
         it.isDirectory() ? it : zipTree(it)
-    }
-}
-
-reobf {
-    addExtraSrgFile mixinSrg
-}
-
-afterEvaluate {
-    def fixedRelPathToAP = relativePathToMixinAP
-    if (fixedRelPathToAP.startsWith('./') || fixedRelPathToAP.startsWith('.\\')) {
-        fixedRelPathToAP = fixedRelPathToAP.substring(2)
-    } else if (fixedRelPathToAP.startsWith('/') || fixedRelPathToAP.startsWith('\\')) {
-        fixedRelPathToAP = fixedRelPathToAP.substring(1)
-    }
-
-    tasks.compileJava {
-        println "Path: " + projectDir.absolutePath
-        options.compilerArgs += [
-                // There's a bug in the AnnotationProcessor for 0.7.11 that will generate the annotations pointing to the parent class instead of subclass
-                // resulting in the mixin not being applied.  This is fixed in 0.8, however 0.8 needs guava > 21.0, and minecraft ships with 17.0.
-                // So as a hacky workaround... ship with 0.7.11, but use the AP from 0.8 for compiling
-                "-processorpath", projectDir.absolutePath + '/' + fixedRelPathToAP,
-                "-processor", "org.spongepowered.tools.obfuscation.MixinObfuscationProcessorInjection,org.spongepowered.tools.obfuscation.MixinObfuscationProcessorTargets",
-                "-Xlint:-sunapi", "-XDenableSunApiLintControl", "-XDignore.symbol.file",
-                "-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${refMap}"
-        ]
-    }
-}
-
-sourceSets {
-    main {
-        scala {
-            outputDir = file("$buildDir/classes/scala/main")
-        }
-        java {
-            outputDir = file("$buildDir/classes/java/main")
-        }
-        ext.refMap = refMapForYourConfig
     }
 }

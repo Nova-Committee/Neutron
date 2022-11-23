@@ -1,6 +1,8 @@
 package committee.nova.neutron.server.player.storage
 
 import committee.nova.neutron.api.player.storage.IPosWithDim
+import committee.nova.neutron.implicits.named2Str
+import committee.nova.neutron.util.reference.Tags
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.Vec3
 
@@ -24,16 +26,16 @@ class FormerPos extends IPosWithDim {
 
   def serialize: NBTTagCompound = {
     val tag = new NBTTagCompound
-    tag.setInteger("dim", getDim)
-    tag.setDouble("x", getX)
-    tag.setDouble("y", getY)
-    tag.setDouble("z", getZ)
+    tag.setInteger(Tags.DIM, getDim)
+    tag.setDouble(Tags.X, getX)
+    tag.setDouble(Tags.Y, getY)
+    tag.setDouble(Tags.Z, getZ)
     tag
   }
 
   def deserialize(tag: NBTTagCompound): IPosWithDim = {
-    setDim(tag.getInteger("dim"))
-    setPos(Vec3.createVectorHelper(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")))
+    setDim(tag.getInteger(Tags.DIM))
+    setPos(Vec3.createVectorHelper(tag.getDouble(Tags.X), tag.getDouble(Tags.Y), tag.getDouble(Tags.Z)))
     this
   }
 }
