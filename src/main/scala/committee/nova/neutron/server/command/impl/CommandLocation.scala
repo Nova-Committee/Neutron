@@ -45,9 +45,9 @@ object CommandLocation {
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
         case y if y > 1 =>
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y,
-            Utilities.Str.convertCollectionToString(homes.iterator, (h: IHome, i: Int) => s"(${i + 1}. ${h.getName})", "[", "]"))
-            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+          Utilities.L10n.getComponentArrayFromIterator(homes.iterator, (h: IHome, i: Int) => s"${i + 1}. ${h.getName} > DIM${h.getDim}:${Utilities.Location.getLiteralFromVec3(h.getPos)}")
+            .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
           return
       }
       if (l != 1) {
@@ -148,9 +148,10 @@ object CommandLocation {
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
           return
         }
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", homes.size(),
-          Utilities.Str.convertCollectionToString(homes.iterator, (h: IHome, i: Int) => s"(${i + 1}. ${h.getName})", "[", "]"))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", homes.size())
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+        Utilities.L10n.getComponentArrayFromIterator(homes.iterator, (h: IHome, i) => s"${i + 1}. ${h.getName} > DIM${h.getDim}:${Utilities.Location.getLiteralFromVec3(h.getPos)}")
+          .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
         return
       }
       val name = args(0)
@@ -203,15 +204,15 @@ object CommandLocation {
           val dim = pos.getDim
           if (dim != sender.dimension) sender.travelToDimension(dim)
           sender.playerNetServerHandler.setPlayerLocation(pos.getX, pos.getY, pos.getZ, sender.rotationYaw, sender.rotationPitch)
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromPosTuple3((pos.getX, pos.getY, pos.getZ)))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromVec3(pos.getPos))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
         case y if y > 1 =>
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.vague", y,
-            Utilities.Str.convertCollectionToString(former.iterator, (f: IPosWithDim, i: Int) =>
-              s"${i + 1}. DIM${f.getDim}: ${Utilities.Location.getLiteralFromPosTuple3((f.getX, f.getY, f.getZ))}"
-              , "", ""))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.vague", y)
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+          Utilities.L10n.getComponentArrayFromIterator(former.iterator, (f: IPosWithDim, i) =>
+            s"${i + 1}. DIM${f.getDim}:${Utilities.Location.getLiteralFromVec3(f.getPos)}")
+            .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
           return
       }
       Try(Integer.parseInt(args(0))).toOption match {
@@ -226,7 +227,7 @@ object CommandLocation {
           val dim = pos.getDim
           if (dim != sender.dimension) sender.travelToDimension(dim)
           sender.playerNetServerHandler.setPlayerLocation(pos.getX, pos.getY, pos.getZ, sender.rotationYaw, sender.rotationPitch)
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromPosTuple3((pos.getX, pos.getY, pos.getZ)))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromVec3(pos.getPos))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.invalidNumber")
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
@@ -236,7 +237,8 @@ object CommandLocation {
     override def addTabCompletionOptions(c: ICommandSender, args: Array[String]): util.List[_] = {
       if (args.length != 1) return ImmutableList.of()
       c match {
-        case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, Range.inclusive(1, p.getHomes.size).map(i => String.valueOf(i)).toSeq: _*)
+        case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, Range.inclusive(1, p.getHomes.size).map(i => String.valueOf(i)): _*)
+        case _ => ImmutableList.of()
       }
     }
 

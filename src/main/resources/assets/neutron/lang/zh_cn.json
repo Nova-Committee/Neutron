@@ -6,10 +6,10 @@
   "msg.neutron.cmd.back.invalid": "没有已保存的先前位置...",
   "msg.neutron.cmd.back.invalidNumber": "请检查你输入的序号，它可能格式有误，或是数值不合理。",
   "msg.neutron.cmd.back.success": "你已被传送回先前位置{0}.",
-  "msg.neutron.cmd.back.vague": "存储了{0}处先前位置：{1}。请指定你要传送回的位置的序号。",
+  "msg.neutron.cmd.back.vague": "存储了{0}处先前位置。请指定你要传送回的位置的序号。存储的位置：",
   "msg.neutron.cmd.hat": "希望你喜欢新帽子！",
   "msg.neutron.cmd.home.notFound": "未找到名为“{0}”的家...",
-  "msg.neutron.cmd.home.vague": "设置了{0}个家：{1}。请定义你要执行操作的家的名称。",
+  "msg.neutron.cmd.home.vague": "设置了{0}个家。请定义你要执行操作的家的名称。已设置的家：",
   "msg.neutron.cmd.home.invalid": "你还没有设置家...",
   "msg.neutron.cmd.home.del.success": "成功删除名为“{0}”的家。",
   "msg.neutron.cmd.home.teleport.success": "传送到名为“{0}”的家。",
@@ -36,6 +36,7 @@
   "msg.neutron.cmd.reply.tp.denied": "请求[{0}]已拒绝。",
   "msg.neutron.cmd.reply.tp.ignored": "请求[{0}]已忽略。",
   "msg.neutron.cmd.usage": "用法：{0}",
+  "msg.neutron.err.eepInit": "错误：试图在非玩家实体上初始化 Neutron EEP。",
   "msg.neutron.warn.clientInit": "注意：本模组是为服务端设计的。只有在你开放一个局域网世界时，它才会真正地在“客户端”上生效！",
   "phr.neutron.unknownPlayer": "未知玩家"
 }

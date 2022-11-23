@@ -8,7 +8,7 @@ import committee.nova.sjl10n.L10nUtilities.JsonText
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.{ChatComponentText, IChatComponent}
+import net.minecraft.util.{ChatComponentText, IChatComponent, Vec3}
 import net.minecraft.world.WorldServer
 
 import java.lang.{String => JString}
@@ -35,6 +35,12 @@ object Utilities {
     def initializeL10n(lang: String): JsonText = {
       if (lang != "en_us") getL10n(lang)
       getL10n("en_us")
+    }
+
+    def getComponentArrayFromIterator[T](iterator: Iterator[T], converter: (T, Int) => String): mutable.MutableList[IChatComponent] = {
+      val list = new mutable.MutableList[IChatComponent]
+      iterator.zipWithIndex.foreach(z => list.+=(new ChatComponentText(converter.apply(z._1, z._2))))
+      list
     }
 
     def getSpace: IChatComponent = new ChatComponentText(" ")
@@ -77,27 +83,29 @@ object Utilities {
     }
 
     @tailrec
-    def getSafePosToTeleport(world: WorldServer, x: Int, z: Int, tries: Int): Option[(Double, Double, Double)] = {
+    def getSafePosToTeleport(world: WorldServer, x: Int, z: Int, tries: Int): Option[Vec3] = {
       val dist = ServerConfig.getRtpMaxVerticalAxisRange
       val x1 = x - dist + world.rand.nextInt(2 * dist)
       val z1 = z - dist + world.rand.nextInt(2 * dist)
       val y = getSafeHeight(world, x1, z1)
       if (y != Int.MinValue) {
         world.markBlockForUpdate(x1, y, z1)
-        return Some((x1 + 0.5, y + 0.2, z1 + 0.5))
+        return Some(Vec3.createVectorHelper(x1 + 0.5, y + 0.2, z1 + 0.5))
       }
       if (tries >= ServerConfig.getRtpMaxTriesOnFindingPosition) None else getSafePosToTeleport(world, x, z, tries + 1)
     }
   }
 
   object Location {
-    def getLiteralFromPosTuple3(pos: (Double, Double, Double)): String = s"[${scale1(pos._1)}, ${scale1(pos._2)}, ${scale1(pos._3)}]"
+    def getLiteralFromPosTuple3(x: Double, y: Double, z: Double): String = s"[${scale1(x)}, ${scale1(y)}, ${scale1(z)}]"
+
+    def getLiteralFromVec3(pos: Vec3): String = getLiteralFromPosTuple3(pos.xCoord, pos.yCoord, pos.zCoord)
 
     private def scale1(d: Double): String = Str.scale(d, 1)
   }
 
   object Str {
-    def convertCollectionToString[T](iterator: Iterator[T], convertor: (T, Int) => String, prefix: String, suffix: String): String = {
+    def convertIteratorToString[T](iterator: Iterator[T], convertor: (T, Int) => String, prefix: String, suffix: String): String = {
       val buffer = new StringBuffer()
       buffer.append(prefix)
       iterator.zipWithIndex.foreach(c => buffer.append(convertor.apply(c._1, c._2).+(", ")))
@@ -107,7 +115,7 @@ object Utilities {
     }
 
     def convertStringArgsToString(array: String*): String = {
-      convertCollectionToString[String](array.toIterator, (s, i) => s, "", "")
+      convertIteratorToString[String](array.toIterator, (s, i) => s, "", "")
     }
 
     def scale(d: Double, scale: Int): String = {

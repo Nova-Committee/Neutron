@@ -372,13 +372,13 @@ object CommandTeleport {
       val world = sender.worldObj
       target.foreach(p => {
         sender.ridingEntity = null
-        sender.playerNetServerHandler.setPlayerLocation(p._1, p._2, p._3, yaw, pitch)
+        sender.playerNetServerHandler.setPlayerLocation(p.xCoord, p.yCoord, p.zCoord, yaw, pitch)
       })
       if (target.isDefined) {
         sender.setRtpAccumulation(sender.getRtpAccumulation + ServerConfig.getRtpChancesRecoveryTime)
         world.playSoundAtEntity(sender, "mob.endermen.portal", 1.0F, 1.0F)
         sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0))
-        target.foreach(p => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", Utilities.Location.getLiteralFromPosTuple3(p), (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
+        target.foreach(p => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", Utilities.Location.getLiteralFromVec3(p), (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))))
       }
       else sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.triesExceeded", ServerConfig.getRtpMaxTriesOnFindingPosition)
