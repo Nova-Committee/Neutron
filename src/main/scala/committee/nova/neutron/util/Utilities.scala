@@ -40,6 +40,12 @@ object Utilities {
     def getSpace: IChatComponent = new ChatComponentText(" ")
 
     def getEmpty: IChatComponent = new ChatComponentText("")
+
+    def mergeComponent(parent: IChatComponent, children: IChatComponent*): IChatComponent = {
+      var merged = parent
+      for (c <- children) merged = merged.appendSibling(c)
+      merged
+    }
   }
 
   object Player {

@@ -53,21 +53,26 @@ object CommandTeleport {
             return
           }
           val id = request.getId.toString
+          //sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+          //sender.addChatMessage(Utilities.L10n.getEmpty
+          //  .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
+          //    new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpcancel $id")
+          //  ))))
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-          sender.addChatMessage(Utilities.L10n.getEmpty
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
-              new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpcancel $id")
-            ))))
-          receiver.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tpa.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-          receiver.addChatMessage(Utilities.L10n.getEmpty
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpaccept $id"))))
-            .appendSibling(Utilities.L10n.getSpace)
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.deny").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpdeny $id"))))
-            .appendSibling(Utilities.L10n.getSpace)
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpignore $id")))))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
+            new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpcancel $id"))))
+          receiver.addChatMessage(
+            new ChatComponentServerTranslation("msg.neutron.cmd.tpa.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+          receiver.addChatMessage(Utilities.L10n.mergeComponent(
+            new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpaccept $id"))),
+            Utilities.L10n.getSpace,
+            new ChatComponentServerTranslation("msg.neutron.cmd.action.deny").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpdeny $id"))),
+            Utilities.L10n.getSpace,
+            new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpignore $id")))
+          ))
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
@@ -108,21 +113,22 @@ object CommandTeleport {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-          sender.addChatMessage(Utilities.L10n.getEmpty
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
-              new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpcancel")
-            ))))
-          receiver.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tpahere.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-          receiver.addChatMessage(Utilities.L10n.getEmpty
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept"))))
-            .appendSibling(Utilities.L10n.getSpace)
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.deny").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny"))))
-            .appendSibling(Utilities.L10n.getSpace)
-            .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
-              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpignore")))))
+          sender.addChatMessage(
+            new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
+            new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpcancel"))))
+          receiver.addChatMessage(
+            new ChatComponentServerTranslation("msg.neutron.cmd.tpahere.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+          receiver.addChatMessage(Utilities.L10n.mergeComponent(
+            new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept"))),
+            Utilities.L10n.getSpace,
+            new ChatComponentServerTranslation("msg.neutron.cmd.action.deny").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny"))),
+            Utilities.L10n.getSpace,
+            new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
+              .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpignore")))
+          ))
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
