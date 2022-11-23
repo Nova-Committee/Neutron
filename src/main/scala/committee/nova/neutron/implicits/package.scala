@@ -7,6 +7,8 @@ import committee.nova.neutron.util.collection.LimitedLinkedList
 import cpw.mods.fml.common.event.FMLServerStartingEvent
 import net.minecraft.command.ICommand
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 import scala.language.implicitConversions
@@ -44,6 +46,13 @@ package object implicits {
     def getFormerPos: LimitedLinkedList[IPosWithDim] = getNeutron.getFormerPos
 
     def setFormerPos(former: LimitedLinkedList[IPosWithDim]): Unit = getNeutron.setFormerPos(former)
+  }
+
+  implicit class ItemStackImplicit(val stack: ItemStack) {
+    def getOrCreateTag: NBTTagCompound = {
+      if (!stack.hasTagCompound) stack.stackTagCompound = new NBTTagCompound
+      stack.getTagCompound
+    }
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {

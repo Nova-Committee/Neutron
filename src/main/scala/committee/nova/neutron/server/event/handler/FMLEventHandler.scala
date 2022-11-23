@@ -1,11 +1,16 @@
 package committee.nova.neutron.server.event.handler
 
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
+import committee.nova.neutron.server.event.impl.InteractableItemClickEvent
 import committee.nova.neutron.server.storage.ServerStorage
+import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.gameevent.TickEvent.{Phase, PlayerTickEvent, ServerTickEvent}
+import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraftforge.common.MinecraftForge
+import org.spongepowered.asm.mixin.MixinEnvironment.Side
 
 object FMLEventHandler {
   def init(): Unit = FMLCommonHandler.instance().bus().register(new FMLEventHandler)
@@ -17,8 +22,14 @@ class FMLEventHandler {
 
   @SubscribeEvent
   def onPlayerTick(e: PlayerTickEvent): Unit = {
-    if (e.phase == Phase.END) return
+    if (e.side != Side.SERVER) return
     val player = e.player
+    val currentStack = player.inventory.getItemStack
+    if (currentStack != null && currentStack.getOrCreateTag.getBoolean(Tags.FOR_INTERACTION)) {
+      MinecraftForge.EVENT_BUS.post(new InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], currentStack))
+      player.inventory.setItemStack(null)
+    }
+    if (e.phase == Phase.END) return
     // RTP Accumulation
     if (player.getRtpAccumulation > 0) {
       val max = ServerConfig.getMaxRtpChances * ServerConfig.getRtpChancesRecoveryTime

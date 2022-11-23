@@ -1,6 +1,7 @@
 package committee.nova.neutron.server.command.impl
 
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
+import committee.nova.neutron.server.ui.impl.InventoryTrashcan
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
@@ -27,5 +28,17 @@ object CommandMiscs {
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+  }
+
+  class Trashcan extends CommandBase {
+    override def getCommandName: String = "trashcan"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/trashcan"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.displayGUIChest(new InventoryTrashcan(sender))
+    }
   }
 }

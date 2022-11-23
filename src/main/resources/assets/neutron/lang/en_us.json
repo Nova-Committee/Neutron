@@ -1,4 +1,5 @@
 {
+  "inv.neutron.trashcan": "Trashcan",
   "msg.neutron.cmd.action.cancel": "[Cancel]",
   "msg.neutron.cmd.action.accept": "[Accept]",
   "msg.neutron.cmd.action.deny": "[Deny]",

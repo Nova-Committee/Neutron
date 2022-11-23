@@ -20,6 +20,8 @@ object Tags {
   case object Z extends Named("z")
 
   case object DIM extends Named("dim")
+
+  case object FOR_INTERACTION extends Named("used4interaction")
 }
 
 
