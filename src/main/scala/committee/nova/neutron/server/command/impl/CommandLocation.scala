@@ -233,6 +233,13 @@ object CommandLocation {
       }
     }
 
+    override def addTabCompletionOptions(c: ICommandSender, args: Array[String]): util.List[_] = {
+      if (args.length != 1) return ImmutableList.of()
+      c match {
+        case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, Range.inclusive(1, p.getHomes.size).map(i => String.valueOf(i)).toSeq: _*)
+      }
+    }
+
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 }
