@@ -8,9 +8,9 @@ import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.gameevent.TickEvent.{Phase, PlayerTickEvent, ServerTickEvent}
+import cpw.mods.fml.relauncher.Side
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.common.MinecraftForge
-import org.spongepowered.asm.mixin.MixinEnvironment.Side
 
 object FMLEventHandler {
   def init(): Unit = FMLCommonHandler.instance().bus().register(new FMLEventHandler)
@@ -22,11 +22,11 @@ class FMLEventHandler {
 
   @SubscribeEvent
   def onPlayerTick(e: PlayerTickEvent): Unit = {
-    if (e.side != Side.SERVER) return
+    if (e.side == Side.CLIENT) return
     val player = e.player
     val currentStack = player.inventory.getItemStack
-    if (currentStack != null && currentStack.getOrCreateTag.getBoolean(Tags.FOR_INTERACTION)) {
-      MinecraftForge.EVENT_BUS.post(new InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], currentStack))
+    if (currentStack != null && currentStack.getOrCreateTag.hasKey(Tags.FOR_INTERACTION)) {
+      MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], currentStack))
       player.inventory.setItemStack(null)
     }
     if (e.phase == Phase.END) return
