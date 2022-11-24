@@ -13,6 +13,7 @@ import net.minecraft.world.WorldServer
 
 import java.lang.{String => JString}
 import java.math.{RoundingMode, BigDecimal => JDecimal}
+import java.text.MessageFormat
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
@@ -24,6 +25,8 @@ object Utilities {
     val l10nMap: mutable.Map[String, JsonText] = new mutable.HashMap[String, JsonText]()
 
     def getFromCurrentLang(key: String): String = getL10n(ServerConfig.getLanguage).get(key)
+
+    def getFromCurrentLang(key: String, args: Any*): String = MessageFormat.format(getFromCurrentLang(key), args.toArray.asInstanceOf[Array[AnyRef]].toSeq: _*)
 
     def getL10n(lang: String): JsonText = {
       l10nMap.foreach(m => if (lang == m._1) return m._2)
@@ -62,7 +65,7 @@ object Utilities {
     def getPlayerNameByUUID(uuid: UUID): String = {
       ServerStorage.uuid2Name.get(uuid)
         .orElse(Try(getPlayerByUUID(uuid).get.getDisplayName).toOption)
-        .getOrElse(L10n.getL10n(ServerConfig.getLanguage).get("phr.neutron.unknownPlayer"))
+        .getOrElse(L10n.getFromCurrentLang("phr.neutron.unknownPlayer"))
     }
 
     def getPlayerByUUID(uuid: UUID): Option[EntityPlayerMP] = {

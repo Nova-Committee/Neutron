@@ -1,5 +1,9 @@
 {
-  "inv.neutron.trashcan": "Trashcan",
+  "button.neutron.next": "Next",
+  "button.neutron.previous": "Previous",
+  "ui.neutron.home": "Homes",
+  "ui.neutron.trashcan": "Trashcan",
+  "ui.neutron.page": "Page {0}",
   "msg.neutron.cmd.action.cancel": "[Cancel]",
   "msg.neutron.cmd.action.accept": "[Accept]",
   "msg.neutron.cmd.action.deny": "[Deny]",
@@ -8,6 +12,7 @@
   "msg.neutron.cmd.back.invalidNumber": "Please check the ordinal number you entered, it may not be in the right format, or the value may not be reasonable",
   "msg.neutron.cmd.back.success": "You were teleported back to previous location {0}.",
   "msg.neutron.cmd.back.vague": "You have {0} former locations stored. Please define the ordinal number of the location you want to teleport back to. Locations list:",
+  "msg.neutron.cmd.err.illegalArg": "Illegal argument {0}.",
   "msg.neutron.cmd.hat": "Enjoy your new hat!",
   "msg.neutron.cmd.home.notFound": "No home matches the name \"{0}\"...",
   "msg.neutron.cmd.home.vague": "You have {0} homes. Please define the name of the home you want to take action on. Homes list:",

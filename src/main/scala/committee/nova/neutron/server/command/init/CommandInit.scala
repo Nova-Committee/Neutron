@@ -1,6 +1,7 @@
 package committee.nova.neutron.server.command.init
 
 import committee.nova.neutron.implicits.FMLServerStartingEventImplicit
+import committee.nova.neutron.server.command.impl.CommandInteractable.HomeGui
 import committee.nova.neutron.server.command.impl.CommandLocation.{Back, DelHome, Home, SetHome}
 import committee.nova.neutron.server.command.impl.CommandMiscs.{Hat, Trashcan}
 import committee.nova.neutron.server.command.impl.CommandNeutron
@@ -13,7 +14,8 @@ object CommandInit {
       new Tpa, new TpaHere, new TpCancel, new TpAccept, new TpDeny, new TpIgnore, new Rtp,
       new CommandNeutron,
       new Home, new SetHome, new DelHome, new Back,
-      new Hat, new Trashcan
+      new Hat, new Trashcan,
+      new HomeGui
     )
   }
 }

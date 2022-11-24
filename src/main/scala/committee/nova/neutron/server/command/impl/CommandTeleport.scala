@@ -189,7 +189,7 @@ object CommandTeleport {
   class TpAccept extends CommandBase {
     override def getCommandName: String = "tpaccept"
 
-    override def getCommandUsage(sender: ICommandSender): String = "/tpaccept"
+    override def getCommandUsage(sender: ICommandSender): String = Utilities.Str.convertStringArgsToString("/tpaccept", "/tpaccept [TPID]")
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
@@ -246,7 +246,7 @@ object CommandTeleport {
   class TpDeny extends CommandBase {
     override def getCommandName: String = "tpdeny"
 
-    override def getCommandUsage(sender: ICommandSender): String = "/tpdeny"
+    override def getCommandUsage(sender: ICommandSender): String = Utilities.Str.convertStringArgsToString("/tpdeny", "/tpdeny [TPID]")
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
@@ -301,7 +301,7 @@ object CommandTeleport {
   class TpIgnore extends CommandBase {
     override def getCommandName: String = "tpignore"
 
-    override def getCommandUsage(sender: ICommandSender): String = "/tpignore"
+    override def getCommandUsage(sender: ICommandSender): String = Utilities.Str.convertStringArgsToString("/tpignore", "/tpignore [TPID]")
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return

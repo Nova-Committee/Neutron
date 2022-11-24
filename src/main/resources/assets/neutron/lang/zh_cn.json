@@ -1,5 +1,9 @@
 {
-  "inv.neutron.trashcan": "垃圾桶",
+  "button.neutron.next": "下一页",
+  "button.neutron.previous": "上一页",
+  "ui.neutron.home": "家",
+  "ui.neutron.trashcan": "垃圾桶",
+  "ui.neutron.page": "第{0}页",
   "msg.neutron.cmd.action.cancel": "[取消]",
   "msg.neutron.cmd.action.accept": "[接受]",
   "msg.neutron.cmd.action.deny": "[拒绝]",
@@ -8,6 +12,7 @@
   "msg.neutron.cmd.back.invalidNumber": "请检查你输入的序号，它可能格式有误，或是数值不合理。",
   "msg.neutron.cmd.back.success": "你已被传送回先前位置{0}.",
   "msg.neutron.cmd.back.vague": "存储了{0}处先前位置。请指定你要传送回的位置的序号。存储的位置：",
+  "msg.neutron.cmd.err.illegalArg": "不合法参数：{0}.",
   "msg.neutron.cmd.hat": "希望你喜欢新帽子！",
   "msg.neutron.cmd.home.notFound": "未找到名为“{0}”的家...",
   "msg.neutron.cmd.home.vague": "设置了{0}个家。请定义你要执行操作的家的名称。已设置的家：",

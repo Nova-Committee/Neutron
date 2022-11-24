@@ -10,6 +10,7 @@ import committee.nova.neutron.server.player.storage.{Home => SHome}
 import committee.nova.neutron.util.Utilities
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatStyle, EnumChatFormatting, Vec3}
 import net.minecraftforge.common.MinecraftForge
 
@@ -41,14 +42,17 @@ object CommandLocation {
           if (home.getDim != sender.dimension) sender.travelToDimension(home.getDim)
           val pos = home.getPos
           sender.playerNetServerHandler.setPlayerLocation(pos.xCoord, pos.yCoord, pos.zCoord, sender.rotationYaw, sender.rotationPitch)
+          sender.closeScreen()
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.teleport.success", home.getName)
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
-        case y if y > 1 =>
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-          Utilities.L10n.getComponentArrayFromIterator(homes.iterator, (h: IHome, i: Int) => s"${i + 1}. ${h.getName} > DIM${h.getDim}:${Utilities.Location.getLiteralFromVec3(h.getPos)}")
-            .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
+        case y if y > 1 => {
+          //sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+          //Utilities.L10n.getComponentArrayFromIterator(homes.iterator, (h: IHome, i: Int) => s"${i + 1}. ${h.getName} > DIM${h.getDim}:${Utilities.Location.getLiteralFromVec3(h.getPos)}")
+          //  .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
+          MinecraftServer.getServer.getCommandManager.executeCommand(sender, "/homegui")
           return
+        }
       }
       if (l != 1) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
@@ -61,6 +65,7 @@ object CommandLocation {
         if (home.getDim != sender.dimension) sender.travelToDimension(home.getDim)
         val pos = home.getPos
         sender.playerNetServerHandler.setPlayerLocation(pos.xCoord, pos.yCoord, pos.zCoord, sender.rotationYaw, sender.rotationPitch)
+        sender.closeScreen()
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.teleport.success", home.getName)
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
         return

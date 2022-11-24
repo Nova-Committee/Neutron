@@ -21,7 +21,11 @@ object Tags {
 
   case object DIM extends Named("dim")
 
-  case object FOR_INTERACTION extends Named("used4interaction")
+  case object INTERACTABLE extends Named("interactable")
+
+  case object HOME_GUI extends Named("homeGui")
+
+  case object CMD extends Named("cmd")
 }
 
 

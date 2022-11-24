@@ -2,15 +2,11 @@ package committee.nova.neutron.server.event.handler
 
 import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
-import committee.nova.neutron.server.event.impl.InteractableItemClickEvent
 import committee.nova.neutron.server.storage.ServerStorage
-import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import cpw.mods.fml.common.gameevent.TickEvent.{Phase, PlayerTickEvent, ServerTickEvent}
 import cpw.mods.fml.relauncher.Side
-import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraftforge.common.MinecraftForge
 
 object FMLEventHandler {
   def init(): Unit = FMLCommonHandler.instance().bus().register(new FMLEventHandler)
@@ -24,12 +20,20 @@ class FMLEventHandler {
   def onPlayerTick(e: PlayerTickEvent): Unit = {
     if (e.side == Side.CLIENT) return
     val player = e.player
-    val currentStack = player.inventory.getItemStack
-    if (currentStack != null && currentStack.getOrCreateTag.hasKey(Tags.FOR_INTERACTION)) {
-      MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], currentStack))
-      player.inventory.setItemStack(null)
-    }
-    if (e.phase == Phase.END) return
+    //for (index <- 0 until player.inventory.getSizeInventory) {
+    //  val stack = player.inventory.getStackInSlot(index)
+    //  if (stack != null && stack.hasTagCompound && stack.getTagCompound.hasKey(Tags.INTERACTABLE)) {
+    //    MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], stack))
+    //    player.inventory.setInventorySlotContents(index, null)
+    //  }
+    //}
+    if (e.phase == Phase.START) return
+    //val currentStack = player.inventory.getItemStack
+    //if (currentStack != null && currentStack.hasTagCompound && currentStack.getTagCompound.hasKey(Tags.INTERACTABLE)) {
+    //  MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], currentStack))
+    //  player.inventory.setItemStack(null)
+    //  player.inventory.markDirty()
+    //}
     // RTP Accumulation
     if (player.getRtpAccumulation > 0) {
       val max = ServerConfig.getMaxRtpChances * ServerConfig.getRtpChancesRecoveryTime

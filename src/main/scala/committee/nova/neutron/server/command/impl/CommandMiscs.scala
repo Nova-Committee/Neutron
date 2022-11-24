@@ -1,7 +1,7 @@
 package committee.nova.neutron.server.command.impl
 
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
-import committee.nova.neutron.server.ui.impl.InventoryTrashcan
+import committee.nova.neutron.server.ui.inventory.impl.InventoryTrashcan
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
