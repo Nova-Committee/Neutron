@@ -1,6 +1,9 @@
 {
+  "button.neutron.first": "已是首页",
+  "button.neutron.last": "已是末页",
   "button.neutron.next": "下一页",
   "button.neutron.previous": "上一页",
+  "ui.neutron.back": "先前位置",
   "ui.neutron.home": "家",
   "ui.neutron.trashcan": "垃圾桶",
   "ui.neutron.page": "第{0}页",
@@ -9,7 +12,7 @@
   "msg.neutron.cmd.action.deny": "[拒绝]",
   "msg.neutron.cmd.action.ignore": "[忽略]",
   "msg.neutron.cmd.back.invalid": "没有已保存的先前位置...",
-  "msg.neutron.cmd.back.invalidNumber": "请检查你输入的序号，它可能格式有误，或是数值不合理。",
+  "msg.neutron.cmd.back.invalidNumber": "请检查你输入的序号，其数值可能不合理。",
   "msg.neutron.cmd.back.success": "你已被传送回先前位置{0}.",
   "msg.neutron.cmd.back.vague": "存储了{0}处先前位置。请指定你要传送回的位置的序号。存储的位置：",
   "msg.neutron.cmd.err.illegalArg": "不合法参数：{0}.",
@@ -44,5 +47,8 @@
   "msg.neutron.cmd.usage": "用法：{0}",
   "msg.neutron.err.eepInit": "错误：试图在非玩家实体上初始化 Neutron EEP。",
   "msg.neutron.warn.clientInit": "注意：本模组是为服务端设计的。只有在你开放一个局域网世界时，它才会真正地在“客户端”上生效！",
+  "msg.neutron.ui.trashcan": "清理了{0}个物品！",
+  "phr.neutron.position": "位置：{0}",
+  "phr.neutron.formerPos": "先前位置#{0}",
   "phr.neutron.unknownPlayer": "未知玩家"
 }

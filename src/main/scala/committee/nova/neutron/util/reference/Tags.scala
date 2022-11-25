@@ -23,9 +23,9 @@ object Tags {
 
   case object INTERACTABLE extends Named("interactable")
 
-  case object HOME_GUI extends Named("homeGui")
-
   case object CMD extends Named("cmd")
+
+  case object TOOLTIPABLE extends Named("tooltipable")
 }
 
 

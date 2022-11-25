@@ -52,18 +52,12 @@ class NeutronEEP extends IExtendedEntityProperties {
     if (neutronTag.hasKey(Tags.HOMES)) {
       homes.clear()
       val homesTag = neutronTag.getTagList(Tags.HOMES, 10)
-      val size = homesTag.tagCount
-      for (i <- 0 until size) {
-        homes.add(new Home().deserialize(homesTag.getCompoundTagAt(i)))
-      }
+      for (i <- 0 until homesTag.tagCount) homes.add(new Home().deserialize(homesTag.getCompoundTagAt(i)))
     }
     if (neutronTag.hasKey(Tags.FORMER_POS)) {
       formerPosQueue.clear()
       val formerPosTag = neutronTag.getTagList(Tags.FORMER_POS, 10)
-      val size = formerPosTag.tagCount
-      for (i <- 0 until size) {
-        formerPosQueue.add(new FormerPos().deserialize(formerPosTag.getCompoundTagAt(i)))
-      }
+      for (i <- 0 until formerPosTag.tagCount) formerPosQueue.add(new FormerPos().deserialize(formerPosTag.getCompoundTagAt(i)))
     }
   }
 

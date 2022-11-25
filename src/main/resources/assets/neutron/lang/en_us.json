@@ -1,6 +1,9 @@
 {
+  "button.neutron.first": "First Page Already",
+  "button.neutron.last": "Last Page Already",
   "button.neutron.next": "Next",
   "button.neutron.previous": "Previous",
+  "ui.neutron.back": "Former Positions",
   "ui.neutron.home": "Homes",
   "ui.neutron.trashcan": "Trashcan",
   "ui.neutron.page": "Page {0}",
@@ -9,7 +12,7 @@
   "msg.neutron.cmd.action.deny": "[Deny]",
   "msg.neutron.cmd.action.ignore": "[Ignore]",
   "msg.neutron.cmd.back.invalid": "No previous location before teleportation stored...",
-  "msg.neutron.cmd.back.invalidNumber": "Please check the ordinal number you entered, it may not be in the right format, or the value may not be reasonable",
+  "msg.neutron.cmd.back.invalidNumber": "Please check the ordinal number you entered, whose value may not be reasonable",
   "msg.neutron.cmd.back.success": "You were teleported back to previous location {0}.",
   "msg.neutron.cmd.back.vague": "You have {0} former locations stored. Please define the ordinal number of the location you want to teleport back to. Locations list:",
   "msg.neutron.cmd.err.illegalArg": "Illegal argument {0}.",
@@ -44,5 +47,8 @@
   "msg.neutron.cmd.usage": "Usage: {0}",
   "msg.neutron.err.eepInit": "Error: Unexpectedly tried to init NeutronEEP with a non-player entity.",
   "msg.neutron.warn.clientInit": "Attention: The mod was designed for servers. It will really work on the \"client\" only when you host a LAN world!",
+  "msg.neutron.ui.trashcan": "{0} item stacks cleaned!",
+  "phr.neutron.position": "Position: {0}",
+  "phr.neutron.formerPos": "Former Pos #{0}",
   "phr.neutron.unknownPlayer": "Unknown Player"
 }

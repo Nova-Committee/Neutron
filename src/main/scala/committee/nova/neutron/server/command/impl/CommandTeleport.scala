@@ -366,18 +366,16 @@ object CommandTeleport {
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         return
       }
-      val yaw = sender.rotationYaw
-      val pitch = sender.rotationPitch
       val target = Utilities.Teleportation.getSafePosToTeleport(sender.worldObj.asInstanceOf[WorldServer], sender.posX.floor.toInt, sender.posZ.floor.toInt, 0)
       val world = sender.worldObj
       target.foreach(p => {
         sender.ridingEntity = null
-        sender.playerNetServerHandler.setPlayerLocation(p.xCoord, p.yCoord, p.zCoord, yaw, pitch)
+        sender.teleport(sender.dimension, p.xCoord, p.yCoord, p.zCoord, sender.rotationYaw, sender.rotationPitch)
+        sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0))
       })
       if (target.isDefined) {
         sender.setRtpAccumulation(sender.getRtpAccumulation + ServerConfig.getRtpChancesRecoveryTime)
         world.playSoundAtEntity(sender, "mob.endermen.portal", 1.0F, 1.0F)
-        sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0))
         target.foreach(p => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", Utilities.Location.getLiteralFromVec3(p), (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))))
       }

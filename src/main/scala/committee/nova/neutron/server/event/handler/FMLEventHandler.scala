@@ -20,20 +20,7 @@ class FMLEventHandler {
   def onPlayerTick(e: PlayerTickEvent): Unit = {
     if (e.side == Side.CLIENT) return
     val player = e.player
-    //for (index <- 0 until player.inventory.getSizeInventory) {
-    //  val stack = player.inventory.getStackInSlot(index)
-    //  if (stack != null && stack.hasTagCompound && stack.getTagCompound.hasKey(Tags.INTERACTABLE)) {
-    //    MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], stack))
-    //    player.inventory.setInventorySlotContents(index, null)
-    //  }
-    //}
     if (e.phase == Phase.START) return
-    //val currentStack = player.inventory.getItemStack
-    //if (currentStack != null && currentStack.hasTagCompound && currentStack.getTagCompound.hasKey(Tags.INTERACTABLE)) {
-    //  MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(player.asInstanceOf[EntityPlayerMP], currentStack))
-    //  player.inventory.setItemStack(null)
-    //  player.inventory.markDirty()
-    //}
     // RTP Accumulation
     if (player.getRtpAccumulation > 0) {
       val max = ServerConfig.getMaxRtpChances * ServerConfig.getRtpChancesRecoveryTime

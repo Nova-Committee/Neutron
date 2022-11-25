@@ -17,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
-import net.minecraftforge.event.entity.player.PlayerEvent
+import net.minecraftforge.event.entity.player.{ItemTooltipEvent, PlayerEvent}
 
 object ForgeEventHandler {
   def init(): Unit = MinecraftForge.EVENT_BUS.register(new ForgeEventHandler)
@@ -58,6 +58,14 @@ class ForgeEventHandler {
   def onInteractableItemClick(event: InteractableItemClickEvent): Unit = {
     val tag = event.stack.getOrCreateTag.getCompoundTag(Tags.INTERACTABLE)
     MinecraftServer.getServer.getCommandManager.executeCommand(event.player, tag.getString(Tags.CMD))
+  }
+
+  @SubscribeEvent
+  def onItemTooltip(event: ItemTooltipEvent): Unit = {
+    val stack = event.itemStack
+    if (!stack.hasTagCompound || !stack.getTagCompound.hasKey(Tags.TOOLTIPABLE)) return
+    val tooltipList = stack.getTagCompound.getTagList(Tags.TOOLTIPABLE, 8)
+    for (i <- 0 until tooltipList.tagCount) event.toolTip.add(tooltipList.getStringTagAt(i))
   }
 
   @SubscribeEvent

@@ -33,10 +33,8 @@ class ContainerInteractable(playerInv: InventoryPlayer, extraInv: IInventory) ex
     val stack = getSlot(index).getStack
     mp.sendContainerToPlayer(mp.inventoryContainer)
     mp.sendContainerToPlayer(mp.openContainer)
-    if (stack != null && stack.hasTagCompound && stack.getTagCompound.hasKey(Tags.INTERACTABLE)) {
-      MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(mp, stack))
-      return null
-    }
+    if (stack == null || !stack.hasTagCompound || !stack.getTagCompound.hasKey(Tags.INTERACTABLE)) return null
+    MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(mp, stack))
     null
   }
 
