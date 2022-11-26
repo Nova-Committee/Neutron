@@ -1,11 +1,11 @@
 package committee.nova.neutron.server.command.impl
 
 import com.google.common.collect.ImmutableList
+import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import net.minecraft.command.{CommandBase, ICommandSender, WrongUsageException}
 import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 
 import java.util
@@ -41,7 +41,7 @@ class CommandNeutron extends CommandBase {
 
   override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = {
     sender match {
-      case p: EntityPlayerMP => MinecraftServer.getServer.getConfigurationManager.func_152596_g(p.getGameProfile)
+      case p: EntityPlayerMP => p.isOp
       case _ => true
     }
   }

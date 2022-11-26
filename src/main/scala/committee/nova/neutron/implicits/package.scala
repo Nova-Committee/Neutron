@@ -2,6 +2,7 @@ package committee.nova.neutron
 
 import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
 import committee.nova.neutron.api.reference.INamed
+import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.storage.NeutronEEP
 import committee.nova.neutron.server.ui.container.ContainerInteractable
 import committee.nova.neutron.util.collection.LimitedLinkedList
@@ -9,10 +10,13 @@ import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.event.FMLServerStartingEvent
 import net.minecraft.command.ICommand
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
-import net.minecraft.inventory.IInventory
+import net.minecraft.inventory.{ContainerPlayer, IInventory}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList, NBTTagString}
 import net.minecraft.network.play.server.{S29PacketSoundEffect, S2DPacketOpenWindow}
+import net.minecraft.potion.{Potion, PotionEffect}
+import net.minecraft.server.MinecraftServer
+import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 
 import scala.collection.mutable
 import scala.language.implicitConversions
@@ -51,6 +55,19 @@ package object implicits {
       true
     }
 
+    def healAndFeed(): Unit = {
+      player.extinguish()
+      player.setAir(300)
+      player.clearActivePotions()
+      player.addPotionEffect(new PotionEffect(Potion.resistance.id, 60, 0))
+      player.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 60, 0))
+      player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 60, 0))
+      player.setHealth(player.getMaxHealth)
+      player.getFoodStats.addStats(20, 20.0F)
+      player.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.heal.acted")
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+    }
+
     def displayGUIInteractable(interactable: IInventory): Unit = {
       if (!player.isInstanceOf[EntityPlayerMP]) return
       val mp = player.asInstanceOf[EntityPlayerMP]
@@ -61,6 +78,20 @@ package object implicits {
       mp.openContainer.windowId = mp.currentWindowId;
       mp.openContainer.addCraftingToCrafters(mp);
     }
+
+    def displaySelfInventory(): Unit = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      if (mp.openContainer != mp.inventoryContainer) mp.closeScreen()
+      mp.getNextWindowId()
+      val inv = mp.inventory
+      mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 0, inv.getInventoryName, inv.getSizeInventory, inv.hasCustomInventoryName))
+      mp.openContainer = new ContainerPlayer(inv, false, mp)
+      mp.openContainer.windowId = mp.currentWindowId;
+      mp.openContainer.addCraftingToCrafters(mp);
+    }
+
+    def isOp: Boolean = MinecraftServer.getServer.getConfigurationManager.func_152596_g(player.getGameProfile)
 
     def getTpaCoolDown: Int = getNeutron.getTpaCoolDown
 

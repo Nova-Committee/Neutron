@@ -35,7 +35,7 @@ object CommandTeleport {
       Utilities.Player.getPlayer(sender, args(0)) match {
         case Some(receiver) =>
           if (sender == receiver) {
-            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.cantTpYourSelf")
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.self")
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
@@ -96,7 +96,7 @@ object CommandTeleport {
       Utilities.Player.getPlayer(sender, args(0)) match {
         case Some(receiver) =>
           if (sender == receiver) {
-            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.cantTpYourSelf")
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.self")
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             return
           }
