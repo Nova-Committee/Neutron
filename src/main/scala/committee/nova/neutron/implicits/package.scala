@@ -5,6 +5,7 @@ import committee.nova.neutron.api.reference.INamed
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.storage.NeutronEEP
 import committee.nova.neutron.server.ui.container.ContainerInteractable
+import committee.nova.neutron.server.ui.container.vanilla.{ContainerRemoteAnvil, ContainerRemoteWorkbench}
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.event.FMLServerStartingEvent
@@ -77,6 +78,26 @@ package object implicits {
       mp.openContainer = new ContainerInteractable(mp.inventory, interactable);
       mp.openContainer.windowId = mp.currentWindowId;
       mp.openContainer.addCraftingToCrafters(mp);
+    }
+
+    def displayGUIRemoteWorkbench(): Unit = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      mp.getNextWindowId()
+      mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 1, "Crafting", 9, true))
+      mp.openContainer = new ContainerRemoteWorkbench(mp)
+      mp.openContainer.windowId = mp.currentWindowId
+      mp.openContainer.addCraftingToCrafters(mp)
+    }
+
+    def displayGUIRemoteAnvil(): Unit = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      mp.getNextWindowId()
+      mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 8, "Repairing", 9, true))
+      mp.openContainer = new ContainerRemoteAnvil(mp)
+      mp.openContainer.windowId = mp.currentWindowId
+      mp.openContainer.addCraftingToCrafters(mp)
     }
 
     def displaySelfInventory(): Unit = {

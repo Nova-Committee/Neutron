@@ -66,4 +66,46 @@ object CommandPlayer {
       case _ => false
     }
   }
+
+  class Craft extends CommandBase {
+    override def getCommandName: String = "craft"
+
+    override def getCommandUsage(sender: ICommandSender): String = "craft"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.displayGUIRemoteWorkbench()
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+  }
+
+  class EnderChest extends CommandBase {
+    override def getCommandName: String = "enderchest"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/enderchest"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.displayGUIChest(sender.getInventoryEnderChest)
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+  }
+
+  class Anvil extends CommandBase {
+    override def getCommandName: String = "anvil"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/anvil"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.displayGUIRemoteAnvil()
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+  }
 }
