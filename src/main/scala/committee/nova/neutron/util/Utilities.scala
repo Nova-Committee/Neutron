@@ -1,5 +1,6 @@
 package committee.nova.neutron.util
 
+import committee.nova.dateutils.DateUtils
 import committee.nova.neutron.Neutron
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.storage.ServerStorage
@@ -13,7 +14,7 @@ import net.minecraft.world.WorldServer
 
 import java.lang.{String => JString}
 import java.math.{RoundingMode, BigDecimal => JDecimal}
-import java.text.MessageFormat
+import java.text.{DecimalFormat, MessageFormat}
 import java.util.UUID
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
@@ -38,6 +39,12 @@ object Utilities {
     def initializeL10n(lang: String): JsonText = {
       if (lang != "en_us") getL10n(lang)
       getL10n("en_us")
+    }
+
+    def formatDate(raw: String): String = {
+      var formatted = raw
+      for (i <- DateUtils.units.reverse) formatted = formatted.replaceAllLiterally(i, getFromCurrentLang(s"time.neutron.$i"))
+      formatted
     }
 
     def getComponentArrayFromIterator[T](iterator: Iterator[T], converter: (T, Int) => String): mutable.MutableList[IChatComponent] = {
@@ -108,6 +115,8 @@ object Utilities {
   }
 
   object Str {
+    val timeFormatter = new DecimalFormat("########0.000");
+
     def convertIteratorToString[T](iterator: Iterator[T], convertor: (T, Int) => String, prefix: String, suffix: String): String = {
       val buffer = new StringBuffer()
       buffer.append(prefix)
@@ -125,6 +134,14 @@ object Utilities {
       if (scale <= 0) return JString.valueOf(d)
       val decimal = new JDecimal(d).setScale(scale, RoundingMode.HALF_UP)
       JString.valueOf(decimal.doubleValue())
+    }
+  }
+
+  object Math {
+    def mean(values: Array[Long]): Long = {
+      var sum = 0L
+      for (v <- values) sum += v
+      sum / values.length
     }
   }
 }

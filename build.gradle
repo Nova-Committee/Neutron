@@ -59,6 +59,7 @@ dependencies {
         exclude module: 'gson'
         exclude module: 'guava'
     }
+    embed('com.github.Nova-Committee:DateUtils:Java-1.1.0')
 }
 
 processResources {
