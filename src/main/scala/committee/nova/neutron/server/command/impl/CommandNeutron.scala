@@ -19,6 +19,7 @@ class CommandNeutron extends CommandBase {
     if (args.length != 1) {
       sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+      return
     }
     args(0) match {
       case "reload" =>

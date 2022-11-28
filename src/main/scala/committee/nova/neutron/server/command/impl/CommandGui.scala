@@ -50,6 +50,7 @@ object CommandGui {
       if (args.length != 0) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
       }
       sender.displayGUIRemoteWorkbench()
     }
@@ -68,6 +69,7 @@ object CommandGui {
       if (args.length != 0) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
       }
       sender.displayGUIChest(sender.getInventoryEnderChest)
     }
@@ -86,6 +88,7 @@ object CommandGui {
       if (args.length != 0) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
       }
       sender.displayGUIRemoteAnvil()
     }
