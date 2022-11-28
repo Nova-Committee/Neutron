@@ -6,7 +6,7 @@ import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.Utilities.Str.timeFormatter
-import net.minecraft.command.{CommandBase, ICommandSender, WrongUsageException}
+import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatComponentTranslation, ChatStyle, EnumChatFormatting}
@@ -41,8 +41,7 @@ class CommandNeutron extends CommandBase {
         }
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.neutron.reload.success")
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-      case "gc" => {
-        // tps
+      case e@("gc" | "tps") => {
         for (dim <- DimensionManager.getIDs) {
           val worldTickTime = Utilities.Math.mean(MinecraftServer.getServer.worldTickTimes.get(dim)) * 1.0E-6D
           val worldTps = 20.0 min (1000 / worldTickTime)
@@ -68,7 +67,8 @@ class CommandNeutron extends CommandBase {
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))
         )
       }
-      case _ => throw new WrongUsageException("msg.neutron.cmd.wrongUsage")
+      case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }
   }
 
@@ -79,9 +79,8 @@ class CommandNeutron extends CommandBase {
     }
   }
 
-  override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] = {
-    CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else Array("reload", "gc")): _*)
-  }
+  override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] =
+    CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else Array("reload", "gc", "tps")): _*)
 
   private def getColorFromTps(tps: Double): EnumChatFormatting = tps match {
     case a if a >= 19.0 => EnumChatFormatting.AQUA
