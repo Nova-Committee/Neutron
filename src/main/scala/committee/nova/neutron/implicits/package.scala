@@ -3,7 +3,7 @@ package committee.nova.neutron
 import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
 import committee.nova.neutron.api.reference.INamed
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
-import committee.nova.neutron.server.player.storage.NeutronEEP
+import committee.nova.neutron.server.player.storage.{MuteStatus, NeutronEEP}
 import committee.nova.neutron.server.ui.container.ContainerInteractable
 import committee.nova.neutron.server.ui.container.vanilla.{ContainerRemoteAnvil, ContainerRemoteWorkbench}
 import committee.nova.neutron.util.collection.LimitedLinkedList
@@ -129,6 +129,8 @@ package object implicits {
     def getFormerPos: LimitedLinkedList[IPosWithDim] = getNeutron.getFormerPos
 
     def setFormerPos(former: LimitedLinkedList[IPosWithDim]): Unit = getNeutron.setFormerPos(former)
+
+    def getMuteStatus: MuteStatus = getNeutron.getMuteStatus
   }
 
   implicit class ItemStackImplicit(val stack: ItemStack) {

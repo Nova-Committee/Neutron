@@ -41,8 +41,8 @@ object CommandItemStack {
             case 2 => {
               val target = Utilities.Player.getPlayer(p, args(1))
               if (target.isEmpty) {
-                p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(1))
-                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+                p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(1))
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
                 return
               }
               target.foreach(t => {

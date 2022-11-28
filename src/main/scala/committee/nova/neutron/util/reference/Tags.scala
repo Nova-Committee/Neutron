@@ -13,6 +13,14 @@ object Tags {
 
   case object FORMER_POS extends Named("formerPos")
 
+  case object MUTE_STATUS extends Named("muteStatus")
+
+  case object APPLIED extends Named("applied")
+
+  case object BY_CONSOLE extends Named("byConsole")
+
+  case object NOTE extends Named("note")
+
   case object X extends Named("x")
 
   case object Y extends Named("y")

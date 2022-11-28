@@ -1,10 +1,11 @@
 package committee.nova.neutron.server.command.init
 
 import committee.nova.neutron.implicits.FMLServerStartingEventImplicit
-import committee.nova.neutron.server.command.impl.CommandInteractable.{BackGui, HomeGui}
-import committee.nova.neutron.server.command.impl.CommandItemStack.Repair
-import committee.nova.neutron.server.command.impl.CommandLocation.{Back, DelHome, Home, SetHome}
-import committee.nova.neutron.server.command.impl.CommandMiscs.{Hat, Trashcan}
+import committee.nova.neutron.server.command.impl.CommandGui._
+import committee.nova.neutron.server.command.impl.CommandInteractable._
+import committee.nova.neutron.server.command.impl.CommandItemStack._
+import committee.nova.neutron.server.command.impl.CommandLocation._
+import committee.nova.neutron.server.command.impl.CommandMiscs._
 import committee.nova.neutron.server.command.impl.CommandNeutron
 import committee.nova.neutron.server.command.impl.CommandPlayer._
 import committee.nova.neutron.server.command.impl.CommandTeleport._
@@ -18,7 +19,8 @@ object CommandInit {
       new Home, new SetHome, new DelHome, new Back,
       new Hat, new Trashcan,
       new HomeGui, new BackGui,
-      new Heal, new InvSee, new Craft, new EnderChest, new Anvil,
+      new Heal, new Mute, new Unmute,
+      new InvSee, new Craft, new EnderChest, new Anvil,
       new Repair
     )
   }

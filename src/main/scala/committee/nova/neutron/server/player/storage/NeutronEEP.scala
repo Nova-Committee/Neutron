@@ -26,6 +26,7 @@ class NeutronEEP extends IExtendedEntityProperties {
   private var rtpAccumulation: Int = 0
   private val homes: mutable.LinkedHashSet[IHome] = new mutable.LinkedHashSet[IHome]
   private val formerPosQueue: LimitedLinkedList[IPosWithDim] = new LimitedLinkedList[IPosWithDim]
+  private val muteStatus: MuteStatus = new MuteStatus
 
   override def saveNBTData(tag: NBTTagCompound): Unit = {
     val neutronTag = new NBTTagCompound
@@ -41,6 +42,11 @@ class NeutronEEP extends IExtendedEntityProperties {
       formerPos.appendTag(pos.serialize)
     }
     neutronTag.setTag(Tags.FORMER_POS, formerPos)
+    val mute = new NBTTagCompound
+    mute.setBoolean(Tags.APPLIED, muteStatus.isApplied)
+    mute.setBoolean(Tags.BY_CONSOLE, muteStatus.isExecutedByConsole)
+    mute.setString(Tags.NOTE, muteStatus.getNote)
+    neutronTag.setTag(Tags.MUTE_STATUS, mute)
     tag.setTag(Tags.NEUTRON_ROOT, neutronTag)
   }
 
@@ -58,6 +64,12 @@ class NeutronEEP extends IExtendedEntityProperties {
       formerPosQueue.clear()
       val formerPosTag = neutronTag.getTagList(Tags.FORMER_POS, 10)
       for (i <- 0 until formerPosTag.tagCount) formerPosQueue.add(new FormerPos().deserialize(formerPosTag.getCompoundTagAt(i)))
+    }
+    if (neutronTag.hasKey(Tags.MUTE_STATUS)) {
+      val mute = neutronTag.getCompoundTag(Tags.MUTE_STATUS)
+      muteStatus.setApplied(mute.getBoolean(Tags.APPLIED))
+      muteStatus.setExecutedByConsole(mute.getBoolean(Tags.BY_CONSOLE))
+      muteStatus.setNote(mute.getString(Tags.NOTE))
     }
   }
 
@@ -91,4 +103,6 @@ class NeutronEEP extends IExtendedEntityProperties {
     formerPosQueue.clear()
     formerPosQueue.addAll(former)
   }
+
+  def getMuteStatus: MuteStatus = muteStatus
 }
