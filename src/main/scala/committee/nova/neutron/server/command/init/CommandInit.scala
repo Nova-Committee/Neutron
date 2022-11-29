@@ -10,8 +10,13 @@ import committee.nova.neutron.server.command.impl.CommandNeutron
 import committee.nova.neutron.server.command.impl.CommandPlayer._
 import committee.nova.neutron.server.command.impl.CommandTeleport._
 import cpw.mods.fml.common.event.FMLServerStartingEvent
+import net.minecraft.command.ICommand
+
+import scala.collection.mutable
 
 object CommandInit {
+  val commands: mutable.LinkedHashSet[ICommand] = new mutable.LinkedHashSet[ICommand]()
+
   def init(e: FMLServerStartingEvent): Unit = {
     e.registerServerCommands(
       new Tpa, new TpaHere, new TpCancel, new TpAccept, new TpDeny, new TpIgnore, new Rtp,

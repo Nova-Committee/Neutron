@@ -2,6 +2,7 @@ package committee.nova.neutron
 
 import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
 import committee.nova.neutron.api.reference.INamed
+import committee.nova.neutron.server.command.init.CommandInit
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.storage.{MuteStatus, NeutronEEP}
 import committee.nova.neutron.server.ui.container.ContainerInteractable
@@ -9,7 +10,7 @@ import committee.nova.neutron.server.ui.container.vanilla.{ContainerRemoteAnvil,
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.event.FMLServerStartingEvent
-import net.minecraft.command.ICommand
+import net.minecraft.command.{ICommand, ICommandSender}
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.inventory.{ContainerPlayer, IInventory}
 import net.minecraft.item.ItemStack
@@ -148,6 +149,13 @@ package object implicits {
     }
   }
 
+  implicit class ICommandSenderImplicit(val sender: ICommandSender) {
+    def isOp: Boolean = sender match {
+      case p: EntityPlayerMP => p.isOp
+      case _ => true
+    }
+  }
+
   implicit class NBTTagCompoundImplicit(val tag: NBTTagCompound) {
     def getOrCreateTag(name: String): NBTTagCompound = {
       if (!tag.hasKey(name)) tag.setTag(name, new NBTTagCompound)
@@ -156,7 +164,10 @@ package object implicits {
   }
 
   implicit class FMLServerStartingEventImplicit(val event: FMLServerStartingEvent) {
-    def registerServerCommands(cmds: ICommand*): Unit = cmds.foreach(c => event.registerServerCommand(c))
+    def registerServerCommands(cmds: ICommand*): Unit = cmds.foreach(c => {
+      event.registerServerCommand(c)
+      CommandInit.commands.add(c)
+    })
   }
 
   implicit def named2Str(named: INamed): String = named.getName

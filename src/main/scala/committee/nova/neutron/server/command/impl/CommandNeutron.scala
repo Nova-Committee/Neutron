@@ -1,7 +1,8 @@
 package committee.nova.neutron.server.command.impl
 
 import committee.nova.dateutils.DateUtils
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits.{ICommandSenderImplicit, PlayerImplicit}
+import committee.nova.neutron.server.command.init.CommandInit
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
@@ -9,7 +10,7 @@ import committee.nova.neutron.util.Utilities.Str.timeFormatter
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.{ChatComponentTranslation, ChatStyle, EnumChatFormatting}
+import net.minecraft.util.{ChatComponentText, ChatComponentTranslation, ChatStyle, EnumChatFormatting}
 import net.minecraftforge.common.DimensionManager
 
 import java.lang.management.ManagementFactory
@@ -18,12 +19,24 @@ import java.util
 class CommandNeutron extends CommandBase {
   override def getCommandName: String = "neutron"
 
-  override def getCommandUsage(sender: ICommandSender): String = "/neutron reload"
+  override def getCommandUsage(sender: ICommandSender): String = if (!sender.isInstanceOf[EntityPlayerMP] || sender.asInstanceOf[EntityPlayerMP].isOp)
+    Utilities.Str.convertStringArgsToString("/neutron help", "/neutron gc") else "/neutron help"
 
   override def processCommand(sender: ICommandSender, args: Array[String]): Unit = {
     if (args.length != 1) {
       sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+      return
+    }
+    if (args(0).equals("help")) {
+      CommandInit.commands.filter(c => c.canCommandSenderUseCommand(sender)).foreach(c =>
+        sender.addChatMessage(new ChatComponentText(s"${c.getCommandName} >> ${c.getCommandUsage(sender)}"))
+      )
+      return
+    }
+    if (!sender.isOp) {
+      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.noPerm")
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
       return
     }
     args(0) match {
@@ -72,15 +85,11 @@ class CommandNeutron extends CommandBase {
     }
   }
 
-  override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = {
-    sender match {
-      case p: EntityPlayerMP => p.isOp
-      case _ => true
-    }
-  }
+  override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
 
   override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] =
-    CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else Array("reload", "gc", "tps")): _*)
+    CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else if (sender.isOp) Array("reload", "gc", "tps", "help") else Array("help")
+      ): _*)
 
   private def getColorFromTps(tps: Double): EnumChatFormatting = tps match {
     case a if a >= 19.0 => EnumChatFormatting.AQUA

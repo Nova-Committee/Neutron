@@ -24,7 +24,7 @@ object CommandLocation {
   class Home extends CommandBase {
     override def getCommandName: String = "home"
 
-    override def getCommandUsage(sender: ICommandSender): String = "/home [homeName]"
+    override def getCommandUsage(sender: ICommandSender): String = "/home [HomeName]"
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
@@ -89,7 +89,7 @@ object CommandLocation {
   class SetHome extends CommandBase {
     override def getCommandName: String = "sethome"
 
-    override def getCommandUsage(sender: ICommandSender): String = "/sethome"
+    override def getCommandUsage(sender: ICommandSender): String = "/sethome ([HomeName])"
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
