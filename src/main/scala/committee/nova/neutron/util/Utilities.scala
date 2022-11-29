@@ -3,13 +3,15 @@ package committee.nova.neutron.util
 import committee.nova.dateutils.DateUtils
 import committee.nova.neutron.Neutron
 import committee.nova.neutron.server.config.ServerConfig
+import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.sjl10n.L10nUtilities
 import committee.nova.sjl10n.L10nUtilities.JsonText
 import net.minecraft.command.{CommandBase, ICommandSender}
+import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.{ChatComponentText, IChatComponent, Vec3}
+import net.minecraft.util.{ChatComponentText, DamageSource, IChatComponent, Vec3}
 import net.minecraft.world.WorldServer
 
 import java.lang.{String => JString}
@@ -65,6 +67,10 @@ object Utilities {
   }
 
   object Player {
+    val suicide: DamageSource = new DamageSource("suicide") {
+      override def func_151519_b(e: EntityLivingBase): IChatComponent = new ChatComponentServerTranslation("ann.neutron.suicide", e.func_145748_c_.getFormattedText)
+    }.setDamageBypassesArmor().setDamageAllowedInCreativeMode()
+
     def getPlayer(sender: ICommandSender, name: String): Option[EntityPlayerMP] = Option(CommandBase.getPlayer(sender, name))
 
     def getPlayerByName(name: String): Option[EntityPlayerMP] = Option(MinecraftServer.getServer.getConfigurationManager.func_152612_a(name))

@@ -14,6 +14,7 @@ object ServerConfig {
   private var rtpMaxTriesOnFindingPosition: Int = _
   private var maxHomeNumber: Int = _
   private var maxFormerPosStorage: Int = _
+  private var keepStatsAfterSuicide: Boolean = _
 
   def init(event: FMLPreInitializationEvent): Unit = {
     config = new Configuration(event.getSuggestedConfigurationFile)
@@ -38,6 +39,8 @@ object ServerConfig {
 
   def getMaxFormerPosStorage: Int = maxFormerPosStorage
 
+  def shouldKeepStatsAfterSuicide: Boolean = keepStatsAfterSuicide
+
   def sync(): Unit = {
     config.load()
     language = config.getString("language", Configuration.CATEGORY_GENERAL, "en_us", "Language ID of the server messages")
@@ -49,6 +52,7 @@ object ServerConfig {
     rtpMaxTriesOnFindingPosition = config.getInt("rtpMaxTriesOnFindingPosition", Configuration.CATEGORY_GENERAL, 10, 1, 100, "Max tries on finding a rtp target position. If exceeded, player's rtp chances won't be consumed")
     maxHomeNumber = config.getInt("maxHomeNumber", Configuration.CATEGORY_GENERAL, 5, 0, 50, "Max number of the homes player can set")
     maxFormerPosStorage = config.getInt("maxFormerPosStorage", Configuration.CATEGORY_GENERAL, 5, 1, 15, "Max number of the recent former positions of the player stored. Used for the /back command")
+    keepStatsAfterSuicide = config.getBoolean("keepStatsAfterSuicide", Configuration.CATEGORY_GENERAL, false, "If set to true, the original health and food stat of the player will be kept after suiciding")
     config.save()
   }
 }

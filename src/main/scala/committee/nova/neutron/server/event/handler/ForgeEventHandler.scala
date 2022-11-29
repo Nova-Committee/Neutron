@@ -4,7 +4,8 @@ import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.event.impl.{InteractableItemClickEvent, TeleportFromEvent}
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
-import committee.nova.neutron.server.player.storage.{FormerPos, NeutronEEP}
+import committee.nova.neutron.server.player.NeutronEEP
+import committee.nova.neutron.server.player.storage.FormerPos
 import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
@@ -46,6 +47,13 @@ class ForgeEventHandler {
     val tag = new NBTTagCompound
     oldPlayer.getExtendedProperties(NeutronEEP.id).saveNBTData(tag)
     newPlayer.getExtendedProperties(NeutronEEP.id).loadNBTData(tag)
+    if (event.wasDeath && ServerConfig.shouldKeepStatsAfterSuicide) {
+      val suicide = newPlayer.getStatsBeforeSuicide
+      if (!suicide.isValid) return
+      newPlayer.setHealth(suicide.getHealth)
+      newPlayer.getFoodStats.addStats(suicide.getFoodLevel, suicide.getSaturation)
+      suicide.setValid(false)
+    }
   }
 
   @SubscribeEvent

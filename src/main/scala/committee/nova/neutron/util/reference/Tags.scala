@@ -15,6 +15,14 @@ object Tags {
 
   case object MUTE_STATUS extends Named("muteStatus")
 
+  case object STATS_BEFORE_SUICIDE extends Named("suicide")
+
+  case object HEALTH extends Named("health")
+
+  case object FOOD_LEVEL extends Named("foodLevel")
+
+  case object SATURATION extends Named("saturation")
+
   case object APPLIED extends Named("applied")
 
   case object BY_CONSOLE extends Named("byConsole")

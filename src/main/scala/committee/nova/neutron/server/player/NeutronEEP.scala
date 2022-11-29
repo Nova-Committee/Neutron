@@ -1,8 +1,9 @@
-package committee.nova.neutron.server.player.storage
+package committee.nova.neutron.server.player
 
 import committee.nova.neutron.Neutron
 import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
 import committee.nova.neutron.implicits.named2Str
+import committee.nova.neutron.server.player.storage.{FormerPos, Home, MuteStatus, StatsBeforeSuicide}
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import committee.nova.neutron.util.reference.Tags
@@ -27,6 +28,7 @@ class NeutronEEP extends IExtendedEntityProperties {
   private val homes: mutable.LinkedHashSet[IHome] = new mutable.LinkedHashSet[IHome]
   private val formerPosQueue: LimitedLinkedList[IPosWithDim] = new LimitedLinkedList[IPosWithDim]
   private val muteStatus: MuteStatus = new MuteStatus
+  private val statsBeforeSuicide: StatsBeforeSuicide = new StatsBeforeSuicide
 
   override def saveNBTData(tag: NBTTagCompound): Unit = {
     val neutronTag = new NBTTagCompound
@@ -47,6 +49,13 @@ class NeutronEEP extends IExtendedEntityProperties {
     mute.setBoolean(Tags.BY_CONSOLE, muteStatus.isExecutedByConsole)
     mute.setString(Tags.NOTE, muteStatus.getNote)
     neutronTag.setTag(Tags.MUTE_STATUS, mute)
+    if (statsBeforeSuicide.isValid) {
+      val suicide = new NBTTagCompound
+      suicide.setFloat(Tags.HEALTH, statsBeforeSuicide.getHealth)
+      suicide.setInteger(Tags.FOOD_LEVEL, statsBeforeSuicide.getFoodLevel)
+      suicide.setFloat(Tags.SATURATION, statsBeforeSuicide.getSaturation)
+      neutronTag.setTag(Tags.STATS_BEFORE_SUICIDE, suicide)
+    }
     tag.setTag(Tags.NEUTRON_ROOT, neutronTag)
   }
 
@@ -70,6 +79,13 @@ class NeutronEEP extends IExtendedEntityProperties {
       muteStatus.setApplied(mute.getBoolean(Tags.APPLIED))
       muteStatus.setExecutedByConsole(mute.getBoolean(Tags.BY_CONSOLE))
       muteStatus.setNote(mute.getString(Tags.NOTE))
+    }
+    if (neutronTag.hasKey(Tags.STATS_BEFORE_SUICIDE)) {
+      statsBeforeSuicide.setValid(true)
+      val suicide = neutronTag.getCompoundTag(Tags.STATS_BEFORE_SUICIDE)
+      statsBeforeSuicide.setHealth(suicide.getFloat(Tags.HEALTH))
+      statsBeforeSuicide.setFoodLevel(suicide.getInteger(Tags.FOOD_LEVEL))
+      statsBeforeSuicide.setSaturation(suicide.getFloat(Tags.SATURATION))
     }
   }
 
@@ -105,4 +121,6 @@ class NeutronEEP extends IExtendedEntityProperties {
   }
 
   def getMuteStatus: MuteStatus = muteStatus
+
+  def getStatsBeforeSuicide: StatsBeforeSuicide = statsBeforeSuicide
 }

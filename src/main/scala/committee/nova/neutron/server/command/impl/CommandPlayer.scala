@@ -2,6 +2,7 @@ package committee.nova.neutron.server.command.impl
 
 import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.command.base.CommandSingleArgPlayer
+import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
 import net.minecraft.command.{CommandBase, ICommandSender}
@@ -40,6 +41,27 @@ object CommandPlayer {
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean =
       !sender.isInstanceOf[EntityPlayerMP] || sender.asInstanceOf[EntityPlayerMP].isOp
+  }
+
+  class Suicide extends CommandBase {
+    override def getCommandName: String = "suicide"
+
+    override def getCommandUsage(sender: ICommandSender): String = "suicide"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      if (ServerConfig.shouldKeepStatsAfterSuicide) {
+        val suicide = sender.getStatsBeforeSuicide
+        suicide.setValid(true)
+        suicide.setHealth(sender.getHealth)
+        suicide.setFoodLevel(sender.getFoodStats.getFoodLevel)
+        suicide.setSaturation(sender.getFoodStats.getSaturationLevel)
+      }
+      sender.attackEntityFrom(Utilities.Player.suicide, Float.MaxValue)
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 
   class Mute extends CommandSingleArgPlayer {
