@@ -73,10 +73,9 @@ class ForgeEventHandler {
   @SubscribeEvent
   def onEntityJoinWorld(event: EntityJoinWorldEvent): Unit = {
     event.entity match {
-      case i: EntityItem => {
+      case i: EntityItem =>
         val stack = i.getEntityItem
         if (stack.hasTagCompound && stack.getTagCompound.hasKey(Tags.INTERACTABLE)) event.setCanceled(true)
-      }
       case _ =>
     }
   }

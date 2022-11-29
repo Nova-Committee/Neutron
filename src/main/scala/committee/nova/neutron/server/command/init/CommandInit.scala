@@ -24,7 +24,7 @@ object CommandInit {
       new Home, new SetHome, new DelHome, new Back,
       new Hat, new Trashcan,
       new HomeGui, new BackGui,
-      new Heal, new Mute, new Unmute,
+      new Heal, new Mute, new Unmute, new FlySpeed, new WalkSpeed,
       new InvSee, new Craft, new EnderChest, new Anvil,
       new Repair
     )

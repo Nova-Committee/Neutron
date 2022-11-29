@@ -115,7 +115,7 @@ object Utilities {
   }
 
   object Str {
-    val timeFormatter = new DecimalFormat("########0.000");
+    val timeFormatter = new DecimalFormat("########0.000")
 
     def convertIteratorToString[T](iterator: Iterator[T], convertor: (T, Int) => String, prefix: String, suffix: String): String = {
       val buffer = new StringBuffer()
@@ -127,7 +127,7 @@ object Utilities {
     }
 
     def convertStringArgsToString(array: String*): String = {
-      convertIteratorToString[String](array.toIterator, (s, i) => s, "", "")
+      convertIteratorToString[String](array.toIterator.filter(s => s.nonEmpty), (s, i) => s, "", "")
     }
 
     def scale(d: Double, scale: Int): String = {

@@ -24,24 +24,23 @@ object CommandItemStack {
 
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       c match {
-        case p: EntityPlayerMP => {
+        case p: EntityPlayerMP =>
           args.length match {
             case 0 => repairItem(p, p, p.getHeldItem)
             case 1 => args(0) match {
               case "hand" => repairItem(p, p, p.getHeldItem)
               case "all" => repairItems(p, p)
-              case y => {
+              case y =>
                 val target = Utilities.Player.getPlayer(p, y)
                 target.foreach(t => repairItem(p, t, t.getHeldItem))
                 if (target.isDefined) return
                 p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", y)
                   .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-              }
             }
-            case 2 => {
+            case 2 =>
               val target = Utilities.Player.getPlayer(p, args(1))
               if (target.isEmpty) {
-                p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(1))
+                p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(1))
                   .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
                 return
               }
@@ -53,21 +52,18 @@ object CommandItemStack {
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
                 }
               })
-            }
             case _ => p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(p))
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
           }
-        }
-        case z => {
+        case z =>
           args.length match {
-            case 1 => {
+            case 1 =>
               val target = Utilities.Player.getPlayer(z, args(0))
               target.foreach(t => repairItem(z, t, t.getHeldItem))
               if (target.isDefined) return
               z.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-            }
-            case 2 => {
+            case 2 =>
               val target = Utilities.Player.getPlayer(z, args(1))
               if (target.isEmpty) {
                 z.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(1))
@@ -82,11 +78,9 @@ object CommandItemStack {
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
                 }
               })
-            }
             case _ => z.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(z))
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
           }
-        }
       }
     }
 
@@ -119,14 +113,12 @@ object CommandItemStack {
     override def addTabCompletionOptions(c: ICommandSender, args: Array[String]): util.List[_] = {
       val a = Array("hand", "all")
       args.length match {
-        case 1 => {
+        case 1 =>
           val c = new mutable.MutableList[String].++(a).++(MinecraftServer.getServer.getAllUsernames)
           CommandBase.getListOfStringsMatchingLastWord(args, c: _*)
-        }
-        case 2 => {
+        case 2 =>
           if (a.contains(args(0))) CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer.getAllUsernames.toSeq: _*)
           else ImmutableList.of()
-        }
       }
     }
 

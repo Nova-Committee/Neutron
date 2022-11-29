@@ -20,10 +20,9 @@ object CommandInteractable {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       args.length match {
-        case 0 => {
+        case 0 =>
           sender.displayGUIInteractable(new InventoryHome(sender, 1))
-        }
-        case 1 => {
+        case 1 =>
           val f = Try(Integer.parseInt(args(0)))
           if (f.isSuccess) {
             sender.displayGUIInteractable(new InventoryHome(sender, f.get))
@@ -31,7 +30,6 @@ object CommandInteractable {
           }
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-        }
         case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
       }
@@ -49,10 +47,9 @@ object CommandInteractable {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
       args.length match {
-        case 0 => {
+        case 0 =>
           sender.displayGUIInteractable(new InventoryBack(sender, 1))
-        }
-        case 1 => {
+        case 1 =>
           val f = Try(Integer.parseInt(args(0)))
           if (f.isSuccess) {
             sender.displayGUIInteractable(new InventoryBack(sender, f.get))
@@ -60,7 +57,6 @@ object CommandInteractable {
           }
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-        }
         case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
       }

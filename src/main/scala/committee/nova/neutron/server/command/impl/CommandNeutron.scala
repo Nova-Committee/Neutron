@@ -54,7 +54,7 @@ class CommandNeutron extends CommandBase {
         }
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.neutron.reload.success")
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-      case e@("gc" | "tps") => {
+      case _@("gc" | "tps") =>
         for (dim <- DimensionManager.getIDs) {
           val worldTickTime = Utilities.Math.mean(MinecraftServer.getServer.worldTickTimes.get(dim)) * 1.0E-6D
           val worldTps = 20.0 min (1000 / worldTickTime)
@@ -79,7 +79,6 @@ class CommandNeutron extends CommandBase {
           world.loadedEntityList.size, world.loadedTileEntityList.size)
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))
         )
-      }
       case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }

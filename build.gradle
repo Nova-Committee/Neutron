@@ -80,4 +80,7 @@ jar {
         exclude '**/LICENSE.txt'
         it.isDirectory() ? it : zipTree(it)
     }
+    manifest {
+        attributes 'FMLAT': 'neutron_at.cfg'
+    }
 }

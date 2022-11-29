@@ -8,6 +8,9 @@ import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 
+import java.lang.{Float => JFloat}
+import scala.util.Try
+
 object CommandPlayer {
   class Heal extends CommandBase {
     override def getCommandName: String = "heal"
@@ -28,7 +31,7 @@ object CommandPlayer {
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
             return
           })
-          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0))
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(0))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
         case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
@@ -52,7 +55,7 @@ object CommandPlayer {
       }
       val target = Utilities.Player.getPlayer(sender, args(0))
       if (target.isEmpty) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(0))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
         return
       }
@@ -75,6 +78,8 @@ object CommandPlayer {
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean =
       !sender.isInstanceOf[EntityPlayerMP] || sender.asInstanceOf[EntityPlayerMP].isOp
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = false
   }
 
   class Unmute extends CommandSingleArgPlayer {
@@ -90,7 +95,7 @@ object CommandPlayer {
       }
       val target = Utilities.Player.getPlayer(sender, args(0))
       if (target.isEmpty) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0))
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(0))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
         return
       }
@@ -108,5 +113,109 @@ object CommandPlayer {
       sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.unmute.success", targetPlayer.getDisplayName)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = false
+  }
+
+  class FlySpeed extends CommandSingleArgPlayer {
+    override def getCommandName: String = "flyspeed"
+
+    override def getCommandUsage(sender: ICommandSender): String = Utilities.Str.convertStringArgsToString(
+      "/flyspeed [UserName] [Multiplier]",
+      if (sender.isInstanceOf[EntityPlayerMP]) "/flyspeed [Multiplier]" else "",
+      if (sender.isInstanceOf[EntityPlayerMP]) "/flyspeed" else ""
+    )
+
+    override def processCommand(sender: ICommandSender, args: Array[String]): Unit = {
+      args.length match {
+        case 0 => sender match {
+          case player: EntityPlayerMP => player.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.flySpeed.current", player.capabilities.flySpeed / 0.05F)
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+          case _ =>
+        }
+        case 1 =>
+          sender match {
+            case player: EntityPlayerMP =>
+              val multiplier = Try(JFloat.parseFloat(args(0)) * 0.05F)
+              if (multiplier.isFailure) {
+                player.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+                return
+              }
+              player.setFlySpeed(multiplier.get)
+            case _ =>
+          }
+        case 2 =>
+          val target = Utilities.Player.getPlayer(sender, args(0))
+          if (target.isEmpty) {
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(0))
+              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+            return
+          }
+          val multiplier = Try(JFloat.parseFloat(args(1)) * 0.05F)
+          if (multiplier.isFailure) {
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
+              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+            return
+          }
+          target.get.setFlySpeed(multiplier.get)
+      }
+    }
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = false
+
+    override def getExtraCompletion(sender: ICommandSender, args: Array[String]): Array[String] = if (args.length == 1 || args.length == 2)
+      Array("0.5", "1.0", "1.5", "2.0") else Array()
+  }
+
+  class WalkSpeed extends CommandSingleArgPlayer {
+    override def getCommandName: String = "walkspeed"
+
+    override def getCommandUsage(sender: ICommandSender): String = Utilities.Str.convertStringArgsToString(
+      "/walkspeed [UserName] [Multiplier]",
+      if (sender.isInstanceOf[EntityPlayerMP]) "/walkspeed [Multiplier]" else "",
+      if (sender.isInstanceOf[EntityPlayerMP]) "/walkspeed" else ""
+    )
+
+    override def processCommand(sender: ICommandSender, args: Array[String]): Unit = {
+      args.length match {
+        case 0 => sender match {
+          case player: EntityPlayerMP => player.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.walkSpeed.current", player.capabilities.walkSpeed / 0.1F)
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+          case _ =>
+        }
+        case 1 =>
+          sender match {
+            case player: EntityPlayerMP =>
+              val multiplier = Try(JFloat.parseFloat(args(0)) * 0.1F)
+              if (multiplier.isFailure) {
+                player.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+                return
+              }
+              player.setWalkSpeed(multiplier.get)
+            case _ =>
+          }
+        case 2 =>
+          val target = Utilities.Player.getPlayer(sender, args(0))
+          if (target.isEmpty) {
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(0))
+              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+            return
+          }
+          val multiplier = Try(JFloat.parseFloat(args(1)) * 0.1F)
+          if (multiplier.isFailure) {
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
+              .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+            return
+          }
+          target.get.setWalkSpeed(multiplier.get)
+      }
+    }
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = false
+
+    override def getExtraCompletion(sender: ICommandSender, args: Array[String]): Array[String] = if (args.length == 1 || args.length == 2)
+      Array("0.5", "1.0", "1.5", "2.0") else Array()
   }
 }

@@ -73,11 +73,13 @@ object CommandTeleport {
             new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
               .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpignore $id")))
           ))
-        case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound", args(0)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+        case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(0)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = CommandSingleArgPlayer.filterSelf.apply(name, player)
   }
 
   class TpaHere extends CommandSingleArgPlayer {
@@ -129,11 +131,13 @@ object CommandTeleport {
             new ChatComponentServerTranslation("msg.neutron.cmd.action.ignore").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)
               .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpignore")))
           ))
-        case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.playerNotFound").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+        case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
       }
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = CommandSingleArgPlayer.filterSelf.apply(name, player)
   }
 
   class TpCancel extends CommandBase {

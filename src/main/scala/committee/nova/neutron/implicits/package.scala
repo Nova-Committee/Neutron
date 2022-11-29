@@ -36,11 +36,10 @@ package object implicits {
 
     def teleport(dim: Int, x: Double, y: Double, z: Double, yaw: Float, pitch: Float): Unit = {
       player match {
-        case mp: EntityPlayerMP => {
+        case mp: EntityPlayerMP =>
           if (dim != mp.dimension) mp.travelToDimension(dim)
           mp.playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch)
           mp.playNotifySound("mob.endermen.portal")
-        }
       }
     }
 
@@ -114,6 +113,24 @@ package object implicits {
     }
 
     def isOp: Boolean = MinecraftServer.getServer.getConfigurationManager.func_152596_g(player.getGameProfile)
+
+    def setWalkSpeed(walkSpeed: Float): Unit = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      mp.capabilities.walkSpeed = walkSpeed min 1.0F
+      mp.sendPlayerAbilities()
+      mp.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.walkSpeed.acted", String.valueOf(mp.capabilities.walkSpeed / 0.1F))
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+    }
+
+    def setFlySpeed(flySpeed: Float): Unit = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      mp.capabilities.flySpeed = flySpeed min 0.25F
+      mp.sendPlayerAbilities()
+      mp.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.flySpeed.acted", String.valueOf(mp.capabilities.flySpeed / 0.05F))
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+    }
 
     def getTpaCoolDown: Int = getNeutron.getTpaCoolDown
 
