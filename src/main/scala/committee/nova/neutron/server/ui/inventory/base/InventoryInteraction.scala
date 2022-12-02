@@ -1,11 +1,12 @@
 package committee.nova.neutron.server.ui.inventory.base
 
+import committee.nova.neutron.api.ui.inventory.IPageable
 import committee.nova.neutron.implicits._
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.reference.Tags
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.init.Blocks
+import net.minecraft.init.{Blocks, Items}
 import net.minecraft.inventory.InventoryBasic
 import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
@@ -25,11 +26,23 @@ object InventoryInteraction {
     tag.setTag(Tags.INTERACTABLE, interaction)
     stack.setTagDisplayName(Utilities.L10n.getFromCurrentLang(s"button.neutron.${if (isNext) "next" else "previous"}"))
   }
+
+  def getRefreshStack(current: String, arg: String): ItemStack = {
+    val stack = new ItemStack(Items.water_bucket)
+    val tag = stack.getOrCreateTag
+    val interaction = new NBTTagCompound
+    interaction.setString(Tags.CMD, s"/$current $arg")
+    tag.setTag(Tags.INTERACTABLE, interaction)
+    stack.setTagDisplayName(Utilities.L10n.getFromCurrentLang("button.neutron.refresh"))
+  }
 }
 
-abstract class InventoryInteraction(val player: EntityPlayerMP, val key: String, val size: Int, val page: Int)
-  extends InventoryBasic("", true, size) {
-  this.func_110133_a(Utilities.L10n.getFromCurrentLang(key) + " " + Utilities.L10n.getFromCurrentLang("ui.neutron.page", checkPage))
+abstract class InventoryInteraction(val player: EntityPlayerMP, val key: String, val size: Int)
+  extends InventoryBasic(Utilities.L10n.getFromCurrentLang(key), true, size) {
+  this match {
+    case pageable: IPageable => this.func_110133_a(Utilities.L10n.getFromCurrentLang(key) + " " + Utilities.L10n.getFromCurrentLang("ui.neutron.page", pageable.checkPage))
+    case _ =>
+  }
   this.init()
 
   override def closeInventory(): Unit = {
@@ -46,11 +59,4 @@ abstract class InventoryInteraction(val player: EntityPlayerMP, val key: String,
   override def isItemValidForSlot(index: Int, stack: ItemStack): Boolean = false
 
   def init(): Unit
-
-  def getTotal: Int
-
-  def checkPage: Int = {
-    val real = getTotal * 1.0 / 34
-    if (real + 1 >= page) page else 1
-  }
 }

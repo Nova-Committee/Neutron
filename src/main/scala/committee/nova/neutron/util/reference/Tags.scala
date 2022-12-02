@@ -46,6 +46,8 @@ object Tags {
   case object VANILLA_NAME extends Named("Name")
 
   case object VANILLA_LORE extends Named("Lore")
+
+  case object VANILLA_SKULL_OWNER extends Named("SkullOwner")
 }
 
 

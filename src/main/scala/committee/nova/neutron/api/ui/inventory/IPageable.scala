@@ -8,6 +8,15 @@ import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.nbt.NBTTagCompound
 
 trait IPageable {
+  def getPage: Int
+
+  def getTotal: Int
+
+  def checkPage: Int = {
+    val real = getTotal * 1.0 / 34
+    if (real + 1 >= getPage) getPage else 1
+  }
+
   def getPageableCommand: String
 
   def getPageStack(current: Int, isNext: Boolean): ItemStack = {

@@ -53,16 +53,11 @@ object CommandTeleport {
             return
           }
           val id = request.getId.toString
-          //sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-          //sender.addChatMessage(Utilities.L10n.getEmpty
-          //  .appendSibling(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
-          //    new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpcancel $id")
-          //  ))))
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.tp.requestSent", ServerConfig.getMaxTpExpirationTime).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
             new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpcancel $id"))))
           receiver.addChatMessage(
-            new ChatComponentServerTranslation("msg.neutron.cmd.tpa.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+            new ChatComponentServerTranslation("msg.neutron.cmd.tpa.request", sender.getCommandSenderName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
           receiver.addChatMessage(Utilities.L10n.mergeComponent(
             new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
               .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, s"/tpaccept $id"))),
@@ -120,7 +115,7 @@ object CommandTeleport {
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.action.cancel").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY).setChatClickEvent(
             new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpcancel"))))
           receiver.addChatMessage(
-            new ChatComponentServerTranslation("msg.neutron.cmd.tpahere.request", sender.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+            new ChatComponentServerTranslation("msg.neutron.cmd.tpahere.request", sender.getCommandSenderName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
           receiver.addChatMessage(Utilities.L10n.mergeComponent(
             new ChatComponentServerTranslation("msg.neutron.cmd.action.accept").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)
               .setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept"))),
@@ -148,6 +143,7 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.closeScreen()
       args.length match {
         case 0 =>
           var info = ""
@@ -157,9 +153,9 @@ object CommandTeleport {
               val receiver = r.getReceiver
               info = r.getInfo
               success = ServerStorage.teleportRequestSet.remove(r)
-              if (success) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
+              if (success && !r.wasIgnored) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED))))
-              break()
+              break
             }
           }
           sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.cancelled" else "msg.neutron.cmd.reply.tp.invalid",
@@ -175,7 +171,7 @@ object CommandTeleport {
               success = ServerStorage.teleportRequestSet.remove(r)
               if (success) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED))))
-              break()
+              break
             }
           }
           sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.cancelled" else "msg.neutron.cmd.reply.tp.invalid",
@@ -198,6 +194,7 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.closeScreen()
       args.length match {
         case 0 =>
           var success = false
@@ -212,7 +209,7 @@ object CommandTeleport {
                 c.setTpaCoolDown(ServerConfig.getTpCoolDown)
               })
               ServerStorage.teleportRequestSet.remove(r)
-              break()
+              break
             }
           }
           sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.accepted" else "msg.neutron.cmd.reply.tp.invalid",
@@ -231,7 +228,7 @@ object CommandTeleport {
                 c.setTpaCoolDown(ServerConfig.getTpCoolDown)
               })
               ServerStorage.teleportRequestSet.remove(r)
-              break()
+              break
             }
           }
           sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.accepted" else "msg.neutron.cmd.reply.tp.invalid",
@@ -255,6 +252,7 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.closeScreen()
       args.length match {
         case 0 =>
           var success = false
@@ -269,7 +267,7 @@ object CommandTeleport {
                 c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.denied", info)
                   .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
               })
-              break()
+              break
             }
           }
           sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.denied" else "msg.neutron.cmd.reply.tp.invalid",
@@ -288,7 +286,7 @@ object CommandTeleport {
                 c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.denied", info)
                   .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
               })
-              break()
+              break
             }
           }
           sender.addChatMessage(new ChatComponentServerTranslation(if (success) "msg.neutron.cmd.reply.tp.denied" else "msg.neutron.cmd.reply.tp.invalid",
@@ -310,6 +308,7 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.closeScreen()
       args.length match {
         case 0 =>
           var ignored = false
@@ -321,7 +320,7 @@ object CommandTeleport {
               ignored = true
               sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.ignored", info)
                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-              break()
+              break
             }
           }
           if (!ignored) sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.invalid")
@@ -337,7 +336,7 @@ object CommandTeleport {
               ignored = true
               sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.ignored", info)
                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-              break()
+              break
             }
           }
           if (!ignored) sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.invalid")
@@ -359,6 +358,7 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.closeScreen()
       if (args.length > 0) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))

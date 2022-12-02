@@ -28,7 +28,7 @@ object CommandPlayer {
         case 1 =>
           Utilities.Player.getPlayer(sender, args(0)).foreach(p => {
             p.healAndFeed()
-            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.heal.success", p.getDisplayName)
+            sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.heal.success", p.getCommandSenderName)
               .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
             return
           })
@@ -94,7 +94,7 @@ object CommandPlayer {
       if (args.length == 2) status.setNote(args(1))
       targetPlayer.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.mute.acted", status.getNote)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.mute.success", targetPlayer.getDisplayName, status.getNote)
+      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.mute.success", targetPlayer.getCommandSenderName, status.getNote)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }
 
@@ -132,7 +132,7 @@ object CommandPlayer {
       status.setNote("")
       targetPlayer.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.unmute.acted")
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
-      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.unmute.success", targetPlayer.getDisplayName)
+      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.unmute.success", targetPlayer.getCommandSenderName)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }
 

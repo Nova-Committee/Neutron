@@ -8,7 +8,7 @@ import net.minecraft.server.MinecraftServer
 import java.util
 
 object CommandSingleArgPlayer {
-  val filterSelf: (String, EntityPlayerMP) => Boolean = (s, p) => s == p.getDisplayName
+  val filterSelf: (String, EntityPlayerMP) => Boolean = (s, p) => s == p.getCommandSenderName
 }
 
 abstract class CommandSingleArgPlayer extends CommandBase {

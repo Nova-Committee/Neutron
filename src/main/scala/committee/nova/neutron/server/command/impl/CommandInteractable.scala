@@ -1,13 +1,17 @@
 package committee.nova.neutron.server.command.impl
 
+import com.google.common.collect.ImmutableList
 import committee.nova.neutron.implicits.PlayerImplicit
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
-import committee.nova.neutron.server.ui.inventory.impl.{InventoryBack, InventoryHome, InventoryTpList}
+import committee.nova.neutron.server.storage.ServerStorage
+import committee.nova.neutron.server.ui.inventory.impl.{InventoryBack, InventoryHome, InventoryTpList, InventoryTpRequest}
 import committee.nova.neutron.util.Utilities
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 
+import java.util
+import java.util.UUID
 import scala.util.Try
 
 object CommandInteractable {
@@ -89,11 +93,11 @@ object CommandInteractable {
         case 0 =>
           sender.displayGUIInteractable(gui.apply(sender, 1))
         case 1 =>
-          val f = Try(Integer.parseInt(args(0)))
-          if (f.isSuccess) {
-            sender.displayGUIInteractable(gui.apply(sender, f.get))
+          Try(Integer.parseInt(args(0))).foreach(l => {
+            sender.displayGUIInteractable(gui.apply(sender, l))
             return
-          }
+          })
+          // TODO:
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
         case _ => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
@@ -102,5 +106,39 @@ object CommandInteractable {
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+  }
+
+  class TpRequest extends CommandBase {
+    override def getCommandName: String = "tprequest"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/tprequest [TPID]"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      if (args.length != 1) {
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
+      }
+      Try(UUID.fromString(args(0))).foreach(uuid => {
+        if (!ServerStorage.teleportRequestSet.exists(r => uuid == r.getId)) {
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.invalid")
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+          return
+        }
+        sender.closeScreen()
+        sender.displayGUIInteractable(new InventoryTpRequest(sender, uuid))
+      })
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+
+    override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] = {
+      sender match {
+        case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, ServerStorage.getRelevantRequestsOn(p).map(r => r.getId.toString).toSeq: _*)
+        case _ => ImmutableList.of()
+      }
+    }
   }
 }

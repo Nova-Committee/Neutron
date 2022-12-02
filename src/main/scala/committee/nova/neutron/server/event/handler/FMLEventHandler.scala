@@ -37,5 +37,5 @@ class FMLEventHandler {
   }
 
   @SubscribeEvent
-  def onLogin(event: PlayerLoggedInEvent): Unit = ServerStorage.uuid2Name.put(event.player.getUniqueID, event.player.getDisplayName)
+  def onLogin(event: PlayerLoggedInEvent): Unit = ServerStorage.uuid2Name.put(event.player.getUniqueID, event.player.getCommandSenderName)
 }

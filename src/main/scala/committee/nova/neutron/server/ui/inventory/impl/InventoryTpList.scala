@@ -6,9 +6,9 @@ import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.player.request.{TeleportHereRequest, TeleportToRequest}
 import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.neutron.server.ui.inventory.base.InventoryInteraction
-import committee.nova.neutron.server.ui.inventory.base.InventoryInteraction.getNonInteractablePageStack
+import committee.nova.neutron.server.ui.inventory.base.InventoryInteraction.{getNonInteractablePageStack, getRefreshStack}
 import committee.nova.neutron.server.ui.inventory.impl.InventoryTpList.Filter._
-import committee.nova.neutron.server.ui.inventory.impl.InventoryTpList.{getRefreshStack, getRequestStack, getSwitchStack}
+import committee.nova.neutron.server.ui.inventory.impl.InventoryTpList.{getRequestStack, getSwitchStack}
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.reference.Tags
 import net.minecraft.entity.player.EntityPlayerMP
@@ -61,14 +61,6 @@ object InventoryTpList {
         Utilities.L10n.getFromCurrentLang(s"ui.neutron.tplist.$next")))
   }
 
-  def getRefreshStack(current: String, page: Int): ItemStack = {
-    val stack = new ItemStack(Items.water_bucket)
-    val tag = stack.getOrCreateTag
-    val interaction = new NBTTagCompound
-    interaction.setString(Tags.CMD, s"/$current $page")
-    tag.setTag(Tags.INTERACTABLE, interaction)
-    stack.setTagDisplayName(Utilities.L10n.getFromCurrentLang("button.neutron.refresh"))
-  }
 
   def getNextFilterId(current: Int): Int = (current + 1) % 5
 
@@ -78,13 +70,11 @@ object InventoryTpList {
   }
 
   object Filter {
-    def isBasicallyRelevant(player: EntityPlayerMP, request: ITeleportRequest): Boolean = Array(request.getSender, request.getReceiver).contains(player.getUniqueID)
+    case object ALL extends TpListFilter(0, "tplist", (p, r) => r.isRelevantTo(p))
 
-    case object ALL extends TpListFilter(0, "tplist", (p, r) => isBasicallyRelevant(p, r))
+    case object TO extends TpListFilter(1, "tptlist", (p, r) => r.isRelevantTo(p) && r.isInstanceOf[TeleportToRequest])
 
-    case object TO extends TpListFilter(1, "tptlist", (p, r) => isBasicallyRelevant(p, r) && r.isInstanceOf[TeleportToRequest])
-
-    case object HERE extends TpListFilter(2, "tphlist", (p, r) => isBasicallyRelevant(p, r) && r.isInstanceOf[TeleportHereRequest])
+    case object HERE extends TpListFilter(2, "tphlist", (p, r) => r.isRelevantTo(p) && r.isInstanceOf[TeleportHereRequest])
 
     case object SENT extends TpListFilter(3, "tpslist", (p, r) => r.getSender.equals(p.getUniqueID))
 
@@ -104,13 +94,13 @@ object InventoryTpList {
   class Received(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, RECEIVED)
 }
 
-class InventoryTpList(player: EntityPlayerMP, page: Int, filter: ITpListFilter) extends InventoryInteraction(player, Utilities.L10n.getFromCurrentLang(s"ui.neutron.tplist.${filter.getId}"), 36, page)
+class InventoryTpList(player: EntityPlayerMP, page: Int, filter: ITpListFilter) extends InventoryInteraction(player, Utilities.L10n.getFromCurrentLang(s"ui.neutron.tplist.${filter.getId}"), 36)
   with ISwitchable with IPageable {
   override def init(): Unit = {
     val requests = getRequests
     val real = checkPage
     setInventorySlotContents(28, getSwitchStack(getId))
-    setInventorySlotContents(34, getRefreshStack(getPageableCommand, page))
+    setInventorySlotContents(34, getRefreshStack(getPageableCommand, page.toString))
     setInventorySlotContents(27, if (real > 1) getPageStack(real, isNext = false) else getNonInteractablePageStack(false))
     val size = 33 min (requests.size - 32 * (real - 1))
     setInventorySlotContents(35, if (requests.size > 32 * (real - 1) + size) getPageStack(real, isNext = true) else getNonInteractablePageStack(true))
@@ -126,4 +116,6 @@ class InventoryTpList(player: EntityPlayerMP, page: Int, filter: ITpListFilter) 
   override def getId: Int = filter.getId
 
   override def getPageableCommand: String = filter.getCommand
+
+  override def getPage: Int = page
 }

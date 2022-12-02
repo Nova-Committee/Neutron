@@ -1,5 +1,7 @@
 package committee.nova.neutron.api.player.request
 
+import net.minecraft.entity.player.EntityPlayerMP
+
 import java.util.UUID
 
 trait ITeleportRequest {
@@ -18,4 +20,6 @@ trait ITeleportRequest {
   def getReceiver: UUID
 
   def getInfo: String
+
+  def isRelevantTo(player: EntityPlayerMP): Boolean = Array(getSender, getReceiver).contains(player.getUniqueID)
 }

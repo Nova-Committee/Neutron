@@ -26,7 +26,7 @@ object InventoryHome {
   }
 }
 
-class InventoryHome(player: EntityPlayerMP, page: Int) extends InventoryInteraction(player, "ui.neutron.home", 36, page) with IPageable {
+class InventoryHome(player: EntityPlayerMP, page: Int) extends InventoryInteraction(player, "ui.neutron.home", 36) with IPageable {
   override def init(): Unit = {
     val homes = player.getHomes.toList
     val real = checkPage
@@ -41,4 +41,6 @@ class InventoryHome(player: EntityPlayerMP, page: Int) extends InventoryInteract
   override def getTotal: Int = player.getHomes.toList.size
 
   override def getPageableCommand: String = "homegui"
+
+  override def getPage: Int = page
 }

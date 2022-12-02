@@ -2,14 +2,18 @@ package committee.nova.neutron.util
 
 import committee.nova.dateutils.DateUtils
 import committee.nova.neutron.Neutron
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.storage.ServerStorage
+import committee.nova.neutron.util.reference.Tags
 import committee.nova.sjl10n.L10nUtilities
 import committee.nova.sjl10n.L10nUtilities.JsonText
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.init.Items
+import net.minecraft.item.ItemStack
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatComponentText, DamageSource, IChatComponent, Vec3}
 import net.minecraft.world.WorldServer
@@ -77,8 +81,14 @@ object Utilities {
 
     def getPlayerNameByUUID(uuid: UUID): String = {
       ServerStorage.uuid2Name.get(uuid)
-        .orElse(Try(getPlayerByUUID(uuid).get.getDisplayName).toOption)
+        .orElse(Try(getPlayerByUUID(uuid).get.getCommandSenderName).toOption)
         .getOrElse(L10n.getFromCurrentLang("phr.neutron.unknownPlayer"))
+    }
+
+    def getSkullNameByUUID(uuid: UUID): String = {
+      ServerStorage.uuid2Name.get(uuid)
+        .orElse(Try(getPlayerByUUID(uuid).get.getCommandSenderName).toOption)
+        .getOrElse("Steve")
     }
 
     def getPlayerByUUID(uuid: UUID): Option[EntityPlayerMP] = {
@@ -89,6 +99,13 @@ object Utilities {
         }
       }
       None
+    }
+
+    def getPlayerSkull(uuid: UUID): ItemStack = {
+      val skull = new ItemStack(Items.skull, 1, 3)
+      val name = getSkullNameByUUID(uuid)
+      skull.getOrCreateTag.setString(Tags.VANILLA_SKULL_OWNER, name)
+      skull.setTagDisplayName(name)
     }
   }
 

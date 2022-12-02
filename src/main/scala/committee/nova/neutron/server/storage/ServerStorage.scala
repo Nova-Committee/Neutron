@@ -3,6 +3,7 @@ package committee.nova.neutron.server.storage
 import committee.nova.neutron.api.player.request.ITeleportRequest
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
 
 import java.util.UUID
@@ -23,4 +24,6 @@ object ServerStorage {
     teleportRequestSet.foreach(r => if (r.getSender.equals(request.getSender) || (r.getReceiver.equals(request.getSender) && !r.wasIgnored)) return false)
     teleportRequestSet.add(request)
   }
+
+  def getRelevantRequestsOn(player: EntityPlayerMP): mutable.LinkedHashSet[ITeleportRequest] = teleportRequestSet.filter(r => r.isRelevantTo(player))
 }

@@ -1,5 +1,9 @@
 {
   "ann.neutron.suicide": "{0}放弃挣扎了",
+  "button.neutron.accept": "同意",
+  "button.neutron.cancel": "取消",
+  "button.neutron.deny": "拒绝",
+  "button.neutron.ignore": "忽略",
   "button.neutron.first": "已是首页",
   "button.neutron.last": "已是末页",
   "button.neutron.next": "下一页",
@@ -20,6 +24,7 @@
   "ui.neutron.tplist.2": "传送请求[接收者 >> 发送者]",
   "ui.neutron.tplist.3": "发送的传送请求",
   "ui.neutron.tplist.4": "收到的传送请求",
+  "ui.neutron.tprequest": "传送请求",
   "ui.neutron.page": "第{0}页",
   "msg.neutron.chat.muted": "你已被禁言，聊天信息不会被发出。",
   "msg.neutron.cmd.action.cancel": "[取消]",

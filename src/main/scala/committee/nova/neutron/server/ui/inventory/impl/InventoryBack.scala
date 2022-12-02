@@ -28,7 +28,7 @@ object InventoryBack {
   }
 }
 
-class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteraction(player, "ui.neutron.back", 36, page) with IPageable {
+class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteraction(player, "ui.neutron.back", 36) with IPageable {
   override def init(): Unit = {
     val former = player.getFormerPos
     val real = checkPage
@@ -43,4 +43,6 @@ class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteract
   override def getTotal: Int = player.getFormerPos.size()
 
   override def getPageableCommand: String = "backgui"
+
+  override def getPage: Int = page
 }

@@ -100,7 +100,7 @@ object CommandItemStack {
         target.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.repair.successBy", sender.getCommandSenderName, stack.getDisplayName)
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.repair.successOther",
-          target.getDisplayName, stack.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
+          target.getCommandSenderName, stack.getDisplayName).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
       } else sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.repair.successSelf", stack.getDisplayName)
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
     }

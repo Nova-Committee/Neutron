@@ -161,7 +161,7 @@ object CommandLocation {
       breakable {
         for (home <- homes if name == home.getName) {
           removed = homes.remove(home)
-          break()
+          break
         }
       }
       sender.addChatMessage(new ChatComponentServerTranslation(if (removed) "msg.neutron.cmd.home.del.success" else "msg.neutron.cmd.home.notFound", name)
