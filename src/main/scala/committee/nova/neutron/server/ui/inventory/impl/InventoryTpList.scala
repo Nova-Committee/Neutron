@@ -72,26 +72,26 @@ object InventoryTpList {
   object Filter {
     case object ALL extends TpListFilter(0, "tplist", (p, r) => r.isRelevantTo(p))
 
-    case object TO extends TpListFilter(1, "tptlist", (p, r) => r.isRelevantTo(p) && r.isInstanceOf[TeleportToRequest])
+    case object RECEIVED extends TpListFilter(1, "tprlist", (p, r) => r.getReceiver.equals(p.getUniqueID))
 
-    case object HERE extends TpListFilter(2, "tphlist", (p, r) => r.isRelevantTo(p) && r.isInstanceOf[TeleportHereRequest])
+    case object SENT extends TpListFilter(2, "tpslist", (p, r) => r.getSender.equals(p.getUniqueID))
 
-    case object SENT extends TpListFilter(3, "tpslist", (p, r) => r.getSender.equals(p.getUniqueID))
+    case object TO extends TpListFilter(3, "tptlist", (p, r) => r.isRelevantTo(p) && r.isInstanceOf[TeleportToRequest])
 
-    case object RECEIVED extends TpListFilter(4, "tprlist", (p, r) => r.getReceiver.equals(p.getUniqueID))
+    case object HERE extends TpListFilter(4, "tphlist", (p, r) => r.isRelevantTo(p) && r.isInstanceOf[TeleportHereRequest])
 
     def getFilters: Array[ITpListFilter] = Array(ALL, TO, HERE, SENT, RECEIVED)
   }
 
   class All(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, ALL)
 
-  class To(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, TO)
-
-  class Here(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, HERE)
+  class Received(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, RECEIVED)
 
   class Sent(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, SENT)
 
-  class Received(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, RECEIVED)
+  class To(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, TO)
+
+  class Here(player: EntityPlayerMP, page: Int) extends InventoryTpList(player, page, HERE)
 }
 
 class InventoryTpList(player: EntityPlayerMP, page: Int, filter: ITpListFilter) extends InventoryInteraction(player, Utilities.L10n.getFromCurrentLang(s"ui.neutron.tplist.${filter.getId}"), 36)
