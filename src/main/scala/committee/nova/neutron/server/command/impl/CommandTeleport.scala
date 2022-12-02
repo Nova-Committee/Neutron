@@ -169,7 +169,7 @@ object CommandTeleport {
               val receiver = r.getReceiver
               info = r.getInfo
               success = ServerStorage.teleportRequestSet.remove(r)
-              if (success) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
+              if (success && !r.wasIgnored) Utilities.Player.getPlayerByUUID(receiver).foreach(c => c.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.reply.tp.cancelled", info)
                 .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED))))
               break
             }
