@@ -1,16 +1,18 @@
 package committee.nova.neutron.server.ui.inventory.impl
 
 import committee.nova.neutron.api.player.storage.IPosWithDim
+import committee.nova.neutron.api.ui.inventory.IPageable
 import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.ui.inventory.base.InventoryInteraction
 import committee.nova.neutron.server.ui.inventory.base.InventoryInteraction.getNonInteractablePageStack
-import committee.nova.neutron.server.ui.inventory.impl.InventoryBack.{getFormerPosStack, getPageStack}
+import committee.nova.neutron.server.ui.inventory.impl.InventoryBack.getFormerPosStack
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.reference.Tags
 import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.init.{Blocks, Items}
-import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.init.Items
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.EnumChatFormatting
 
 object InventoryBack {
   def getFormerPosStack(ordinal: Int, pos: IPosWithDim): ItemStack = {
@@ -20,22 +22,13 @@ object InventoryBack {
     val literal = ordinal + 1
     interaction.setString(Tags.CMD, s"/back $literal")
     tag.setTag(Tags.INTERACTABLE, interaction)
-    tag.getOrCreateTag("display").setString("Name", Utilities.L10n.getFromCurrentLang("phr.neutron.formerPos", literal.toString))
-    stack.appendExtraToolTip(Utilities.L10n.getFromCurrentLang("phr.neutron.position", s"DIM${pos.getDim}:${Utilities.Location.getLiteralFromVec3(pos.getPos)}"))
-  }
-
-  def getPageStack(current: Int, isNext: Boolean): ItemStack = {
-    val stack = new ItemStack(Item.getItemFromBlock(Blocks.wool), 1, if (isNext) 5 else 14)
-    val tag = stack.getOrCreateTag
-    val interaction = new NBTTagCompound
-    interaction.setString(Tags.CMD, s"/backgui ${current + (if (isNext) 1 else -1)}")
-    tag.setTag(Tags.INTERACTABLE, interaction)
-    tag.getOrCreateTag("display").setString("Name", Utilities.L10n.getFromCurrentLang(s"button.neutron.${if (isNext) "next" else "previous"}"))
-    stack
+    stack.setTagDisplayName(Utilities.L10n.getFromCurrentLang("phr.neutron.formerPos", literal.toString))
+      .appendExtraTooltip(EnumChatFormatting.YELLOW + Utilities.L10n.getFromCurrentLang("phr.neutron.position",
+        s"DIM${pos.getDim} >> ${Utilities.Location.getLiteralFromVec3(pos.getPos)}"))
   }
 }
 
-class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteraction(player, "ui.neutron.back", 36, page) {
+class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteraction(player, "ui.neutron.back", 36, page) with IPageable {
   override def init(): Unit = {
     val former = player.getFormerPos
     val real = checkPage
@@ -48,4 +41,6 @@ class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteract
   }
 
   override def getTotal: Int = player.getFormerPos.size()
+
+  override def getPageableCommand: String = "backgui"
 }

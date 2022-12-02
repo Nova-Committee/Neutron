@@ -46,6 +46,7 @@ minecraft {
 
 repositories {
     maven { url 'https://jitpack.io' }
+    maven { url "https://cursemaven.com" }
 }
 
 dependencies {

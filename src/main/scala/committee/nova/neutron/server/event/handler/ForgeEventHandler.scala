@@ -6,10 +6,8 @@ import committee.nova.neutron.server.event.impl.{InteractableItemClickEvent, Tel
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.NeutronEEP
 import committee.nova.neutron.server.player.storage.FormerPos
-import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.nbt.NBTTagCompound
@@ -20,7 +18,7 @@ import net.minecraftforge.event.ServerChatEvent
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
-import net.minecraftforge.event.entity.player.{ItemTooltipEvent, PlayerEvent}
+import net.minecraftforge.event.entity.player.PlayerEvent
 
 object ForgeEventHandler {
   def init(): Unit = MinecraftForge.EVENT_BUS.register(new ForgeEventHandler)
@@ -62,20 +60,9 @@ class ForgeEventHandler {
   }
 
   @SubscribeEvent
-  def onLogin(event: PlayerLoggedInEvent): Unit = ServerStorage.uuid2Name.put(event.player.getUniqueID, event.player.getDisplayName)
-
-  @SubscribeEvent
   def onInteractableItemClick(event: InteractableItemClickEvent): Unit = {
     val tag = event.stack.getOrCreateTag.getCompoundTag(Tags.INTERACTABLE)
     MinecraftServer.getServer.getCommandManager.executeCommand(event.player, tag.getString(Tags.CMD))
-  }
-
-  @SubscribeEvent
-  def onItemTooltip(event: ItemTooltipEvent): Unit = {
-    val stack = event.itemStack
-    if (!stack.hasTagCompound || !stack.getTagCompound.hasKey(Tags.TOOLTIPABLE)) return
-    val tooltipList = stack.getTagCompound.getTagList(Tags.TOOLTIPABLE, 8)
-    for (i <- 0 until tooltipList.tagCount) event.toolTip.add(tooltipList.getStringTagAt(i))
   }
 
   @SubscribeEvent

@@ -76,9 +76,9 @@ package object implicits {
       if (mp.openContainer != mp.inventoryContainer) mp.closeScreen()
       mp.getNextWindowId()
       mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 0, interactable.getInventoryName, interactable.getSizeInventory, interactable.hasCustomInventoryName))
-      mp.openContainer = new ContainerInteractable(mp.inventory, interactable);
-      mp.openContainer.windowId = mp.currentWindowId;
-      mp.openContainer.addCraftingToCrafters(mp);
+      mp.openContainer = new ContainerInteractable(mp.inventory, interactable)
+      mp.openContainer.windowId = mp.currentWindowId
+      mp.openContainer.addCraftingToCrafters(mp)
     }
 
     def displayGUIRemoteWorkbench(): Unit = {
@@ -109,8 +109,8 @@ package object implicits {
       val inv = mp.inventory
       mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 0, inv.getInventoryName, inv.getSizeInventory, inv.hasCustomInventoryName))
       mp.openContainer = new ContainerPlayer(inv, false, mp)
-      mp.openContainer.windowId = mp.currentWindowId;
-      mp.openContainer.addCraftingToCrafters(mp);
+      mp.openContainer.windowId = mp.currentWindowId
+      mp.openContainer.addCraftingToCrafters(mp)
     }
 
     def isOp: Boolean = MinecraftServer.getServer.getConfigurationManager.func_152596_g(player.getGameProfile)
@@ -160,11 +160,16 @@ package object implicits {
       stack.stackTagCompound
     }
 
-    def appendExtraToolTip(tooltips: String*): ItemStack = {
-      val tag = stack.getOrCreateTag
+    def setTagDisplayName(name: String): ItemStack = {
+      getOrCreateTag.getOrCreateTag(Tags.VANILLA_DISPLAY).setString(Tags.VANILLA_NAME, EnumChatFormatting.RESET + name)
+      stack
+    }
+
+    def appendExtraTooltip(tooltips: String*): ItemStack = {
+      val tag = stack.getOrCreateTag.getOrCreateTag(Tags.VANILLA_DISPLAY)
       val tooltipList = new NBTTagList
-      tooltips.foreach(t => tooltipList.appendTag(new NBTTagString(t)))
-      tag.setTag(Tags.TOOLTIPABLE, tooltipList)
+      tooltips.foreach(t => tooltipList.appendTag(new NBTTagString(EnumChatFormatting.RESET + t)))
+      tag.setTag(Tags.VANILLA_LORE, tooltipList)
       stack
     }
   }

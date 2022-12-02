@@ -35,7 +35,7 @@ class TeleportHereRequest(private val sender: UUID, private val receiver: UUID) 
 
   override def setIgnored(): Unit = ignored = true
 
-  override def getIgnored: Boolean = ignored
+  override def wasIgnored: Boolean = ignored
 
   override def getSender: UUID = sender
 

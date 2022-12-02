@@ -8,12 +8,22 @@ import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.init.Blocks
 import net.minecraft.inventory.InventoryBasic
 import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.nbt.NBTTagCompound
 
 object InventoryInteraction {
   def getNonInteractablePageStack(isLast: Boolean): ItemStack = {
     val stack = new ItemStack(Item.getItemFromBlock(Blocks.wool), 1, 7)
-    stack.getOrCreateTag.getOrCreateTag("display").setString("Name", Utilities.L10n.getFromCurrentLang(s"button.neutron.${if (isLast) "last" else "first"}"))
+    stack.setTagDisplayName(Utilities.L10n.getFromCurrentLang(s"button.neutron.${if (isLast) "last" else "first"}"))
     stack
+  }
+
+  def getPageStack(cmd: String, current: Int, isNext: Boolean): ItemStack = {
+    val stack = new ItemStack(Item.getItemFromBlock(Blocks.wool), 1, if (isNext) 5 else 14)
+    val tag = stack.getOrCreateTag
+    val interaction = new NBTTagCompound
+    interaction.setString(Tags.CMD, s"/$cmd ${current + (if (isNext) 1 else -1)}")
+    tag.setTag(Tags.INTERACTABLE, interaction)
+    stack.setTagDisplayName(Utilities.L10n.getFromCurrentLang(s"button.neutron.${if (isNext) "next" else "previous"}"))
   }
 }
 

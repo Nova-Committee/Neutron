@@ -11,7 +11,7 @@ trait ITeleportRequest {
 
   def setIgnored(): Unit
 
-  def getIgnored: Boolean
+  def wasIgnored: Boolean
 
   def getSender: UUID
 

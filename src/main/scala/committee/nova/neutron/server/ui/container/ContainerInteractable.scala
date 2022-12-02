@@ -8,6 +8,8 @@ import net.minecraft.inventory.{Container, IInventory, Slot}
 import net.minecraft.item.ItemStack
 import net.minecraftforge.common.MinecraftForge
 
+import scala.util.Try
+
 class ContainerInteractable(playerInv: InventoryPlayer, extraInv: IInventory) extends Container {
   private val numRows = extraInv.getSizeInventory / 9
   private val i: Int = (numRows - 4) * 8
@@ -30,11 +32,12 @@ class ContainerInteractable(playerInv: InventoryPlayer, extraInv: IInventory) ex
   override def slotClick(index: Int, i1: Int, i2: Int, player: EntityPlayer): ItemStack = {
     if (player.worldObj.isRemote) return null
     val mp = player.asInstanceOf[EntityPlayerMP]
-    val stack = getSlot(index).getStack
-    mp.sendContainerToPlayer(mp.inventoryContainer)
-    mp.sendContainerToPlayer(mp.openContainer)
-    if (stack == null || !stack.hasTagCompound || !stack.getTagCompound.hasKey(Tags.INTERACTABLE)) return null
-    MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(mp, stack))
+    Try(getSlot(index).getStack).foreach(stack => {
+      mp.sendContainerToPlayer(mp.inventoryContainer)
+      mp.sendContainerToPlayer(mp.openContainer)
+      if (stack == null || !stack.hasTagCompound || !stack.getTagCompound.hasKey(Tags.INTERACTABLE)) return null
+      MinecraftForge.EVENT_BUS.post(InteractableItemClickEvent(mp, stack))
+    })
     null
   }
 

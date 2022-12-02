@@ -24,6 +24,7 @@ object CommandInit {
       new Home, new SetHome, new DelHome, new Back,
       new Hat, new Trashcan,
       new HomeGui, new BackGui,
+      //new TpList.All, new TpList.To, new TpList.Here, new TpList.Sent, new TpList.Received,
       new Heal, new Suicide, new Mute, new Unmute, new FlySpeed, new WalkSpeed,
       new InvSee, new Craft, new EnderChest, new Anvil,
       new Repair

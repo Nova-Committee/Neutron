@@ -315,7 +315,7 @@ object CommandTeleport {
           var ignored = false
           var info = ""
           breakable {
-            for (r <- ServerStorage.teleportRequestSet.toList.reverse if r.getReceiver == sender.getUniqueID && !r.getIgnored) {
+            for (r <- ServerStorage.teleportRequestSet.toList.reverse if r.getReceiver == sender.getUniqueID && !r.wasIgnored) {
               info = r.getInfo
               r.setIgnored()
               ignored = true
@@ -330,7 +330,7 @@ object CommandTeleport {
           var ignored = false
           var info = ""
           breakable {
-            for (r <- ServerStorage.teleportRequestSet if (r.getReceiver == sender.getUniqueID && !r.getIgnored
+            for (r <- ServerStorage.teleportRequestSet if (r.getReceiver == sender.getUniqueID && !r.wasIgnored
               && r.getId == Try(UUID.fromString(args(0))).getOrElse(null))) {
               info = r.getInfo
               r.setIgnored()

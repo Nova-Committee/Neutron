@@ -41,7 +41,11 @@ object Tags {
 
   case object CMD extends Named("cmd")
 
-  case object TOOLTIPABLE extends Named("tooltipable")
+  case object VANILLA_DISPLAY extends Named("display")
+
+  case object VANILLA_NAME extends Named("Name")
+
+  case object VANILLA_LORE extends Named("Lore")
 }
 
 

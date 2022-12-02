@@ -5,6 +5,7 @@ import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.storage.ServerStorage
 import cpw.mods.fml.common.FMLCommonHandler
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent
 import cpw.mods.fml.common.gameevent.TickEvent.{Phase, PlayerTickEvent, ServerTickEvent}
 import cpw.mods.fml.relauncher.Side
 
@@ -34,4 +35,7 @@ class FMLEventHandler {
       player.setTpaCoolDown(player.getTpaCoolDown - 1)
     }
   }
+
+  @SubscribeEvent
+  def onLogin(event: PlayerLoggedInEvent): Unit = ServerStorage.uuid2Name.put(event.player.getUniqueID, event.player.getDisplayName)
 }
