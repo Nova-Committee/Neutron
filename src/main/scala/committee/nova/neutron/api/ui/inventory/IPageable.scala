@@ -12,8 +12,10 @@ trait IPageable {
 
   def getTotal: Int
 
+  def getPageCapacity: Int
+
   def checkPage: Int = {
-    val real = getTotal * 1.0 / 34
+    val real = getTotal * 1.0 / getPageCapacity
     if (real + 1 >= getPage) getPage else 1
   }
 

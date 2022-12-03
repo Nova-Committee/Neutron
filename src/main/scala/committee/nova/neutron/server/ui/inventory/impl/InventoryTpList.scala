@@ -118,4 +118,6 @@ class InventoryTpList(player: EntityPlayerMP, page: Int, filter: ITpListFilter) 
   override def getPageableCommand: String = filter.getCommand
 
   override def getPage: Int = page
+
+  override def getPageCapacity: Int = 32
 }

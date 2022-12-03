@@ -45,4 +45,6 @@ class InventoryBack(player: EntityPlayerMP, page: Int) extends InventoryInteract
   override def getPageableCommand: String = "backgui"
 
   override def getPage: Int = page
+
+  override def getPageCapacity: Int = 34
 }

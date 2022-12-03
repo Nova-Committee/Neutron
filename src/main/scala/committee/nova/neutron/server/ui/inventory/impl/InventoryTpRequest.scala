@@ -40,8 +40,8 @@ class InventoryTpRequest(player: EntityPlayerMP, tpid: UUID) extends InventoryIn
     setInventorySlotContents(8, getRefreshStack("tprequest", tpid.toString))
     for (request <- ServerStorage.teleportRequestSet if (tpid == request.getId && request.isRelevantTo(player))) {
       val to = request.isInstanceOf[TeleportToRequest]
-      setInventorySlotContents(if (to) 1 else 7, Utilities.Player.getPlayerSkull(request.getSender))
-      setInventorySlotContents(if (to) 7 else 1, Utilities.Player.getPlayerSkull(request.getReceiver))
+      setInventorySlotContents(if (to) 1 else 7, Utilities.Player.getPlayerSkull(Utilities.Player.getPlayerNameByUUID(request.getSender)))
+      setInventorySlotContents(if (to) 7 else 1, Utilities.Player.getPlayerSkull(Utilities.Player.getPlayerNameByUUID(request.getReceiver)))
       val isSender = request.getSender.equals(player.getUniqueID)
       if (isSender) setInventorySlotContents(4, getCancelStack(request)) else {
         setInventorySlotContents(3, getAcceptStack(request))

@@ -43,4 +43,6 @@ class InventoryHome(player: EntityPlayerMP, page: Int) extends InventoryInteract
   override def getPageableCommand: String = "homegui"
 
   override def getPage: Int = page
+
+  override def getPageCapacity: Int = 34
 }

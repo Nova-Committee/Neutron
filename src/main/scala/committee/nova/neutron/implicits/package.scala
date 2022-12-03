@@ -1,5 +1,6 @@
 package committee.nova.neutron
 
+import com.mojang.authlib.GameProfile
 import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
 import committee.nova.neutron.api.reference.INamed
 import committee.nova.neutron.server.command.init.CommandInit
@@ -15,7 +16,7 @@ import net.minecraft.command.{ICommand, ICommandSender}
 import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP}
 import net.minecraft.inventory.{ContainerPlayer, IInventory}
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.{NBTTagCompound, NBTTagList, NBTTagString}
+import net.minecraft.nbt.{NBTTagCompound, NBTTagList, NBTTagString, NBTUtil}
 import net.minecraft.network.play.server.{S29PacketSoundEffect, S2DPacketOpenWindow}
 import net.minecraft.potion.{Potion, PotionEffect}
 import net.minecraft.server.MinecraftServer
@@ -185,6 +186,11 @@ package object implicits {
     def getOrCreateTag(name: String): NBTTagCompound = {
       if (!tag.hasKey(name)) tag.setTag(name, new NBTTagCompound)
       tag.getCompoundTag(name)
+    }
+
+    def writeGameProfileIn(profile: GameProfile): NBTTagCompound = {
+      NBTUtil.func_152460_a(tag, profile)
+      tag
     }
   }
 
