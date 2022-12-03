@@ -90,6 +90,8 @@
   "phr.neutron.ignored": "已忽略",
   "phr.neutron.pending": "待定",
   "phr.neutron.unknown": "未知",
+  "phr.neutron.receiver": "接收者：{0}",
+  "phr.neutron.sender": "发送者：{0}",
   "phr.neutron.unknownPlayer": "未知玩家",
   "time.neutron.year": "年",
   "time.neutron.years": "年",

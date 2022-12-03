@@ -90,6 +90,8 @@
   "phr.neutron.ignored": "Ignored",
   "phr.neutron.pending": "Pending",
   "phr.neutron.unknown": "Unknown",
+  "phr.neutron.receiver": "Receiver: {0}",
+  "phr.neutron.sender": "Sender: {0}",
   "phr.neutron.unknownPlayer": "Unknown Player",
   "time.neutron.year": " Year ",
   "time.neutron.years": " Years ",
