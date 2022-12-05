@@ -38,7 +38,7 @@ object InventoryTpRequest {
 class InventoryTpRequest(player: EntityPlayerMP, tpid: UUID) extends InventoryInteraction(player, Utilities.L10n.getFromCurrentLang("ui.neutron.tprequest"), 9) {
   override def init(): Unit = {
     setInventorySlotContents(8, getRefreshStack("tprequest", tpid.toString))
-    for (request <- ServerStorage.teleportRequestSet if (tpid == request.getId && request.isRelevantTo(player))) {
+    for (request <- ServerStorage.teleportRequestSet if tpid == request.getId && request.isRelevantTo(player)) {
       val to = request.isInstanceOf[TeleportToRequest]
       setInventorySlotContents(if (to) 1 else 7, Utilities.Player.getPlayerSkull(Utilities.L10n.getFromCurrentLang("phr.neutron.sender", Utilities.Player.getPlayerNameByUUID(request.getSender))))
       setInventorySlotContents(if (to) 7 else 1, Utilities.Player.getPlayerSkull(Utilities.L10n.getFromCurrentLang("phr.neutron.receiver", Utilities.Player.getPlayerNameByUUID(request.getReceiver))))

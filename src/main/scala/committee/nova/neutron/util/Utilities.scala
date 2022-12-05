@@ -138,7 +138,7 @@ object Utilities {
     }
 
     def convertStringArgsToString(array: String*): String = {
-      convertIteratorToString[String](array.toIterator.filter(s => s.nonEmpty), (s, i) => s, "", "")
+      convertIteratorToString[String](array.toIterator.filter(s => s.nonEmpty), (s, _) => s, "", "")
     }
 
     def scale(d: Double, scale: Int): String = {

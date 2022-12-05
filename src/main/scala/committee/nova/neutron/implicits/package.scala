@@ -47,7 +47,6 @@ package object implicits {
 
     def teleportTo(that: EntityPlayerMP): Boolean = {
       if (!player.isInstanceOf[EntityPlayerMP]) return false
-      val mp = player.asInstanceOf[EntityPlayerMP]
       try {
         teleport(that.dimension, that.posX, that.posY, that.posZ, that.rotationYaw, that.rotationPitch)
       } catch {
