@@ -74,7 +74,7 @@ object Utilities {
       override def func_151519_b(e: EntityLivingBase): IChatComponent = new ChatComponentServerTranslation("ann.neutron.suicide", e.func_145748_c_.getFormattedText)
     }.setDamageBypassesArmor().setDamageAllowedInCreativeMode()
 
-    def getPlayer(sender: ICommandSender, name: String): Option[EntityPlayerMP] = Option(CommandBase.getPlayer(sender, name))
+    def getPlayer(sender: ICommandSender, name: String): Option[EntityPlayerMP] = Try(CommandBase.getPlayer(sender, name)).toOption
 
     def getPlayerByName(name: String): Option[EntityPlayerMP] = Option(MinecraftServer.getServer.getConfigurationManager.func_152612_a(name))
 
