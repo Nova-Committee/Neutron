@@ -132,7 +132,8 @@ object Utilities {
       val buffer = new StringBuffer()
       buffer.append(prefix)
       iterator.zipWithIndex.foreach(c => buffer.append(convertor.apply(c._1, c._2).+(", ")))
-      buffer.delete(buffer.lastIndexOf(","), buffer.length())
+      val lastIndex = buffer.lastIndexOf(",")
+      if (lastIndex > 0) buffer.delete(lastIndex, buffer.length())
       buffer.append(suffix)
       buffer.toString
     }
