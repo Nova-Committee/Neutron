@@ -9,6 +9,7 @@ import committee.nova.neutron.server.player.NeutronEEP
 import committee.nova.neutron.server.player.storage.{MuteStatus, StatsBeforeSuicide}
 import committee.nova.neutron.server.ui.container.ContainerInteractable
 import committee.nova.neutron.server.ui.container.vanilla.{ContainerRemoteAnvil, ContainerRemoteWorkbench}
+import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import committee.nova.neutron.util.reference.Tags
 import cpw.mods.fml.common.event.FMLServerStartingEvent
@@ -111,6 +112,11 @@ package object implicits {
       mp.openContainer = new ContainerPlayer(inv, false, mp)
       mp.openContainer.windowId = mp.currentWindowId
       mp.openContainer.addCraftingToCrafters(mp)
+    }
+
+    def hasPermOrElse(perm: String, defaultValue: Boolean): Boolean = player match {
+      case mp: EntityPlayerMP => Utilities.Perm.hasPermOrElse(mp, perm, _ => defaultValue)
+      case _ => false
     }
 
     def isOp: Boolean = MinecraftServer.getServer.getConfigurationManager.func_152596_g(player.getGameProfile)

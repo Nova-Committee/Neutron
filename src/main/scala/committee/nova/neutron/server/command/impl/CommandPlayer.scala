@@ -1,10 +1,11 @@
 package committee.nova.neutron.server.command.impl
 
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.command.base.CommandSingleArgPlayer
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
@@ -39,8 +40,10 @@ object CommandPlayer {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean =
-      !sender.isInstanceOf[EntityPlayerMP] || sender.asInstanceOf[EntityPlayerMP].isOp
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.HEAL, _ => p.isOp)
+      case _ => true
+    }
   }
 
   class Suicide extends CommandBase {
@@ -61,7 +64,10 @@ object CommandPlayer {
       sender.attackEntityFrom(Utilities.Player.suicide, Float.MaxValue)
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.SUICIDE, _ => true)
+      case _ => true
+    }
   }
 
   class Mute extends CommandSingleArgPlayer {
@@ -98,10 +104,12 @@ object CommandPlayer {
         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean =
-      !sender.isInstanceOf[EntityPlayerMP] || sender.asInstanceOf[EntityPlayerMP].isOp
-
     override def filterName(name: String, player: EntityPlayerMP): Boolean = false
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.MUTE, _ => p.isOp)
+      case _ => true
+    }
   }
 
   class Unmute extends CommandSingleArgPlayer {
@@ -137,6 +145,11 @@ object CommandPlayer {
     }
 
     override def filterName(name: String, player: EntityPlayerMP): Boolean = false
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.UNMUTE, _ => p.isOp)
+      case _ => true
+    }
   }
 
   class FlySpeed extends CommandSingleArgPlayer {
@@ -188,6 +201,11 @@ object CommandPlayer {
 
     override def getExtraCompletion(sender: ICommandSender, args: Array[String]): Array[String] = if (args.length == 1 || args.length == 2)
       Array("0.5", "1.0", "1.5", "2.0") else Array()
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.FLYSPEED, _ => p.isOp)
+      case _ => true
+    }
   }
 
   class WalkSpeed extends CommandSingleArgPlayer {
@@ -239,5 +257,10 @@ object CommandPlayer {
 
     override def getExtraCompletion(sender: ICommandSender, args: Array[String]): Array[String] = if (args.length == 1 || args.length == 2)
       Array("0.5", "1.0", "1.5", "2.0") else Array()
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.WALKSPEED, _ => p.isOp)
+      case _ => true
+    }
   }
 }

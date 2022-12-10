@@ -1,18 +1,17 @@
 package committee.nova.neutron.server.command.impl
 
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.command.base.CommandSingleArgPlayer
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.request.{TeleportHereRequest, TeleportToRequest}
 import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.event.ClickEvent
-import net.minecraft.potion.{Potion, PotionEffect}
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
-import net.minecraft.world.WorldServer
 
 import java.util.UUID
 import scala.util.Try
@@ -72,9 +71,12 @@ object CommandTeleport {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
-
     override def filterName(name: String, player: EntityPlayerMP): Boolean = CommandSingleArgPlayer.filterSelf.apply(name, player)
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Tp.TO, _ => true)
+      case _ => true
+    }
   }
 
   class TpaHere extends CommandSingleArgPlayer {
@@ -130,9 +132,12 @@ object CommandTeleport {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
-
     override def filterName(name: String, player: EntityPlayerMP): Boolean = CommandSingleArgPlayer.filterSelf.apply(name, player)
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Tp.HERE, _ => true)
+      case _ => true
+    }
   }
 
   class TpCancel extends CommandBase {
@@ -183,7 +188,10 @@ object CommandTeleport {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Tp.CANCEL, _ => true)
+      case _ => true
+    }
   }
 
   class TpAccept extends CommandBase {
@@ -241,7 +249,10 @@ object CommandTeleport {
 
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Tp.ACCEPT, _ => true)
+      case _ => true
+    }
   }
 
   class TpDeny extends CommandBase {
@@ -297,7 +308,10 @@ object CommandTeleport {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Tp.DENY, _ => true)
+      case _ => true
+    }
   }
 
   class TpIgnore extends CommandBase {
@@ -347,46 +361,9 @@ object CommandTeleport {
 
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
-  }
-
-  class Rtp extends CommandBase {
-    override def getCommandName: String = "rtp"
-
-    override def getCommandUsage(sender: ICommandSender): String = "/rtp"
-
-    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
-      if (!c.isInstanceOf[EntityPlayerMP]) return
-      val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.closeScreen()
-      if (args.length > 0) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
-          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-        return
-      }
-      val tries = sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime + 1
-      if (tries > ServerConfig.getMaxRtpChances) {
-        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.ranOut", sender.getRtpAccumulation % ServerConfig.getRtpChancesRecoveryTime)
-          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
-        return
-      }
-      val target = Utilities.Teleportation.getSafePosToTeleport(sender.worldObj.asInstanceOf[WorldServer], sender.posX.floor.toInt, sender.posZ.floor.toInt, 0)
-      val world = sender.worldObj
-      target.foreach(p => {
-        sender.ridingEntity = null
-        sender.teleport(sender.dimension, p.xCoord, p.yCoord, p.zCoord, sender.rotationYaw, sender.rotationPitch)
-        sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0))
-      })
-      if (target.isDefined) {
-        sender.setRtpAccumulation(sender.getRtpAccumulation + ServerConfig.getRtpChancesRecoveryTime)
-        world.playSoundAtEntity(sender, "mob.endermen.portal", 1.0F, 1.0F)
-        target.foreach(p => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", Utilities.Location.getLiteralFromVec3(p), (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
-          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))))
-      }
-      else sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.triesExceeded", ServerConfig.getRtpMaxTriesOnFindingPosition)
-        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Tp.IGNORE, _ => true)
+      case _ => true
     }
-
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 }

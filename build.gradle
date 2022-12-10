@@ -61,6 +61,7 @@ dependencies {
         exclude module: 'guava'
     }
     embed('com.github.Nova-Committee:DateUtils:Java-1.1.0')
+    implementation('com.github.Nova-Committee:Proton:Forge-1.7.10-0.0.1')
 }
 
 processResources {

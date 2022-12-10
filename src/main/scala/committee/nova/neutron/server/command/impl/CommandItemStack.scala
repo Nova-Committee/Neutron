@@ -1,9 +1,10 @@
 package committee.nova.neutron.server.command.impl
 
 import com.google.common.collect.ImmutableList
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
@@ -29,8 +30,13 @@ object CommandItemStack {
             case 0 => repairItem(p, p, p.getHeldItem)
             case 1 => args(0) match {
               case "hand" => repairItem(p, p, p.getHeldItem)
-              case "all" => repairItems(p, p)
+              case "all" => if (p.hasPermOrElse(PermNodes.ItemStack.REPAIR_ALL, p.isOp)) repairItems(p, p) else repairItem(p, p, p.getHeldItem)
               case y =>
+                if (!p.hasPermOrElse(PermNodes.ItemStack.REPAIR_OTHER, p.isOp)) {
+                  p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.noPerm")
+                    .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+                  return
+                }
                 val target = Utilities.Player.getPlayer(p, y)
                 target.foreach(t => repairItem(p, t, t.getHeldItem))
                 if (target.isDefined) return
@@ -38,6 +44,11 @@ object CommandItemStack {
                   .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
             }
             case 2 =>
+              if (!p.hasPermOrElse(PermNodes.ItemStack.REPAIR_OTHER, p.isOp)) {
+                p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.noPerm")
+                  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+                return
+              }
               val target = Utilities.Player.getPlayer(p, args(1))
               if (target.isEmpty) {
                 p.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(1))
@@ -111,18 +122,23 @@ object CommandItemStack {
     }
 
     override def addTabCompletionOptions(c: ICommandSender, args: Array[String]): util.List[_] = {
-      val a = Array("hand", "all")
+      if (!c.isInstanceOf[EntityPlayerMP]) return ImmutableList.of()
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      val a = Array("hand", if (sender.hasPermOrElse(PermNodes.ItemStack.REPAIR_ALL, sender.isOp)) "all" else "")
       args.length match {
         case 1 =>
-          val c = new mutable.MutableList[String].++(a).++(MinecraftServer.getServer.getAllUsernames)
-          CommandBase.getListOfStringsMatchingLastWord(args, c: _*)
+          val z = new mutable.MutableList[String].++(a).++(MinecraftServer.getServer.getAllUsernames)
+          CommandBase.getListOfStringsMatchingLastWord(args, z: _*)
         case 2 =>
           if (a.contains(args(0))) CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer.getAllUsernames.toSeq: _*)
           else ImmutableList.of()
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean =
-      !sender.isInstanceOf[EntityPlayerMP] || sender.asInstanceOf[EntityPlayerMP].isOp
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Array(PermNodes.ItemStack.REPAIR_ONE, PermNodes.ItemStack.REPAIR_OTHER, PermNodes.ItemStack.REPAIR_ALL)
+        .exists(n => p.hasPermOrElse(n.getName, p.isOp))
+      case _ => true
+    }
   }
 }

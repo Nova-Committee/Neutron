@@ -17,6 +17,7 @@ object Neutron {
   final val isServerSide = (e: FMLStateEvent) => e.getSide == Side.SERVER
 
   @EventHandler def preInit(e: FMLPreInitializationEvent): Unit = {
+    Utilities.Perm.initPermCompat()
     LOGGER = e.getModLog
     ServerConfig.init(e)
     val initialLang = Utilities.L10n.initializeL10n(ServerConfig.getLanguage)
@@ -39,6 +40,7 @@ object Neutron {
   @EventHandler def init(e: FMLInitializationEvent): Unit = {
     FMLEventHandler.init()
     ForgeEventHandler.init()
+    Utilities.Perm.loadPermCompat()
   }
 
   @EventHandler def postInit(e: FMLPostInitializationEvent): Unit = {}

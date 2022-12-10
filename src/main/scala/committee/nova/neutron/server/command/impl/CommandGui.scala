@@ -1,9 +1,11 @@
 package committee.nova.neutron.server.command.impl
 
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.command.base.CommandSingleArgPlayer
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
+import committee.nova.neutron.server.ui.inventory.impl.InventoryTrashcan
 import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
@@ -33,7 +35,7 @@ object CommandGui {
     }
 
     override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
-      case p: EntityPlayerMP => p.isOp
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Gui.INVSEE, p => p.isOp)
       case _ => false
     }
 
@@ -56,7 +58,10 @@ object CommandGui {
       sender.displayGUIRemoteWorkbench()
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Gui.CRAFT_GUI, _ => true)
+      case _ => true
+    }
   }
 
   class EnderChest extends CommandBase {
@@ -75,7 +80,10 @@ object CommandGui {
       sender.displayGUIChest(sender.getInventoryEnderChest)
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Gui.ENDERCHEST_GUI, _ => true)
+      case _ => true
+    }
   }
 
   class Anvil extends CommandBase {
@@ -94,6 +102,27 @@ object CommandGui {
       sender.displayGUIRemoteAnvil()
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Gui.ANVIL_GUI, _ => true)
+      case _ => true
+    }
+  }
+
+  class Trashcan extends CommandBase {
+    override def getCommandName: String = "trashcan"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/trashcan"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+
+      sender.displayGUIChest(new InventoryTrashcan(sender))
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Gui.TRASHCAN, _ => true)
+      case _ => true
+    }
   }
 }

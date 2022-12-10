@@ -2,6 +2,7 @@ package committee.nova.neutron.util
 
 import committee.nova.dateutils.DateUtils
 import committee.nova.neutron.Neutron
+import committee.nova.neutron.compat.ProtonCompat
 import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
@@ -154,6 +155,26 @@ object Utilities {
       var sum = 0L
       for (v <- values) sum += v
       sum / values.length
+    }
+  }
+
+  object Perm {
+    private var protonLoaded = false
+
+    def initPermCompat(): Unit = {
+      protonLoaded = Try(Class.forName("committee.nova.proton.core.perm.Group")).isSuccess
+    }
+
+    def loadPermCompat(): Unit = {
+      if (protonLoaded) ProtonCompat.init()
+    }
+
+    def isProtonLoaded: Boolean = protonLoaded
+
+    def hasPermOrElse(player: EntityPlayerMP, perm: String, defaultValue: EntityPlayerMP => Boolean): Boolean = {
+      if (isProtonLoaded) return ProtonCompat.hasPerm(player, perm)
+      //...
+      defaultValue.apply(player)
     }
   }
 }

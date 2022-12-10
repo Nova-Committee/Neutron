@@ -1,11 +1,12 @@
 package committee.nova.neutron.server.command.impl
 
 import com.google.common.collect.ImmutableList
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.neutron.server.ui.inventory.impl.{InventoryBack, InventoryHome, InventoryTpList, InventoryTpRequest}
 import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
@@ -39,7 +40,10 @@ object CommandInteractable {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Interactable.HOME_GUI, _ => true)
+      case _ => true
+    }
   }
 
   class BackGui extends CommandBase {
@@ -66,7 +70,10 @@ object CommandInteractable {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Interactable.BACK_GUI, _ => true)
+      case _ => true
+    }
   }
 
   object TpList {
@@ -105,7 +112,10 @@ object CommandInteractable {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Interactable.TPLIST_GUI, _ => true)
+      case _ => true
+    }
   }
 
   class TpRequest extends CommandBase {
@@ -132,7 +142,10 @@ object CommandInteractable {
       })
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Interactable.TPREQUEST_GUI, _ => true)
+      case _ => true
+    }
 
     override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] = {
       sender match {

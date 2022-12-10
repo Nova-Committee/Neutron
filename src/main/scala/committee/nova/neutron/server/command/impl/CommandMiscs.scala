@@ -1,7 +1,9 @@
 package committee.nova.neutron.server.command.impl
 
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
-import committee.nova.neutron.server.ui.inventory.impl.InventoryTrashcan
+import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.{ChatStyle, EnumChatFormatting}
@@ -27,20 +29,9 @@ object CommandMiscs {
       sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.hat"))
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
-  }
-
-  class Trashcan extends CommandBase {
-    override def getCommandName: String = "trashcan"
-
-    override def getCommandUsage(sender: ICommandSender): String = "/trashcan"
-
-    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
-      if (!c.isInstanceOf[EntityPlayerMP]) return
-      val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.displayGUIChest(new InventoryTrashcan(sender))
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Miscs.HAT, _ => true)
+      case _ => true
     }
-
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
   }
 }

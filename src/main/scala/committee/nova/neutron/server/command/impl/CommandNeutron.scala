@@ -1,12 +1,14 @@
 package committee.nova.neutron.server.command.impl
 
+import com.google.common.collect.ImmutableList
 import committee.nova.dateutils.DateUtils
-import committee.nova.neutron.implicits.{ICommandSenderImplicit, PlayerImplicit}
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.command.init.CommandInit
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.Utilities.Str.timeFormatter
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.server.MinecraftServer
@@ -34,10 +36,13 @@ class CommandNeutron extends CommandBase {
       )
       return
     }
-    if (!sender.isOp) {
-      sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.noPerm")
-        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-      return
+    sender match {
+      case p: EntityPlayerMP => if (!Utilities.Perm.hasPermOrElse(p, PermNodes.Neutron.MANAGE, _ => p.isOp)) {
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.noPerm")
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+        return
+      }
+      case _ =>
     }
     args(0) match {
       case "reload" =>
@@ -86,9 +91,13 @@ class CommandNeutron extends CommandBase {
 
   override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
 
-  override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] =
-    CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else if (sender.isOp) Array("reload", "gc", "tps", "help") else Array("help")
-      ): _*)
+  override def addTabCompletionOptions(sender: ICommandSender, args: Array[String]): util.List[_] = {
+    sender match {
+      case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else if (Utilities.Perm.hasPermOrElse(p, PermNodes.Neutron.MANAGE, _ => p.isOp)) Array("reload", "gc", "tps", "help") else Array("help")
+        ): _*)
+      case _ => ImmutableList.of()
+    }
+  }
 
   private def getColorFromTps(tps: Double): EnumChatFormatting = tps match {
     case a if a >= 19.0 => EnumChatFormatting.AQUA

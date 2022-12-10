@@ -1,17 +1,20 @@
 package committee.nova.neutron.server.command.impl
 
 import com.google.common.collect.ImmutableList
-import committee.nova.neutron.api.player.storage.IHome
-import committee.nova.neutron.implicits.PlayerImplicit
+import committee.nova.neutron.api.player.storage.{IHome, IPosWithDim}
+import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
 import committee.nova.neutron.server.event.impl.TeleportFromEvent
 import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.storage.{Home => SHome}
 import committee.nova.neutron.util.Utilities
+import committee.nova.neutron.util.reference.PermNodes
 import net.minecraft.command.{CommandBase, ICommandSender}
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.potion.{Potion, PotionEffect}
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.{ChatStyle, EnumChatFormatting, Vec3}
+import net.minecraft.world.WorldServer
 import net.minecraftforge.common.MinecraftForge
 
 import java.util
@@ -46,10 +49,13 @@ object CommandLocation {
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
         case y if y > 1 =>
-          //sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-          //Utilities.L10n.getComponentArrayFromIterator(homes.iterator, (h: IHome, i: Int) => s"${i + 1}. ${h.getName} > DIM${h.getDim}:${Utilities.Location.getLiteralFromVec3(h.getPos)}")
-          //  .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
-          MinecraftServer.getServer.getCommandManager.executeCommand(sender, "/homegui")
+          if (Utilities.Perm.hasPermOrElse(sender, PermNodes.Interactable.HOME_GUI, _ => true)) {
+            MinecraftServer.getServer.getCommandManager.executeCommand(sender, "/homegui")
+            return
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.vague", y).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+          Utilities.L10n.getComponentArrayFromIterator(homes.iterator, (h: IHome, i: Int) => s"${i + 1}. ${h.getName} > DIM${h.getDim}:${Utilities.Location.getLiteralFromVec3(h.getPos)}")
+            .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
           return
       }
       if (l != 1) {
@@ -82,7 +88,10 @@ object CommandLocation {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Location.HOME, _ => true)
+      case _ => true
+    }
   }
 
   class SetHome extends CommandBase {
@@ -107,8 +116,6 @@ object CommandLocation {
       setHomeForPlayer(sender, args(0), homes)
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
-
     private def setHomeForPlayer(sender: EntityPlayerMP, name: String, homes: mutable.LinkedHashSet[IHome]): Unit = {
       if (homes.size() >= ServerConfig.getMaxHomeNumber) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.set.exceeded"))
@@ -118,6 +125,11 @@ object CommandLocation {
       val added = homes.add(home)
       sender.addChatMessage(new ChatComponentServerTranslation(if (added) "msg.neutron.cmd.home.set.success" else "msg.neutron.cmd.home.set.failure", home.getName)
         .setChatStyle(new ChatStyle().setColor(if (added) EnumChatFormatting.GREEN else EnumChatFormatting.RED)))
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Location.SET_HOME, _ => true)
+      case _ => true
     }
   }
 
@@ -178,7 +190,10 @@ object CommandLocation {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Location.DEL_HOME, _ => true)
+      case _ => true
+    }
   }
 
   class Back extends CommandBase {
@@ -209,12 +224,15 @@ object CommandLocation {
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
         case y if y > 1 =>
-          MinecraftServer.getServer.getCommandManager.executeCommand(sender, "/backgui")
-          //sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.vague", y)
-          //  .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
-          //Utilities.L10n.getComponentArrayFromIterator(former.iterator, (f: IPosWithDim, i) =>
-          //  s"${i + 1}. DIM${f.getDim}:${Utilities.Location.getLiteralFromVec3(f.getPos)}")
-          //  .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
+          if (Utilities.Perm.hasPermOrElse(sender, PermNodes.Interactable.BACK_GUI, _ => true)) {
+            MinecraftServer.getServer.getCommandManager.executeCommand(sender, "/backgui")
+            return
+          }
+          sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.vague", y)
+            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)))
+          Utilities.L10n.getComponentArrayFromIterator(former.iterator, (f: IPosWithDim, i) =>
+            s"${i + 1}. DIM${f.getDim}:${Utilities.Location.getLiteralFromVec3(f.getPos)}")
+            .foreach(i => sender.addChatMessage(i.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED))))
           return
       }
       Try(Integer.parseInt(args(0))).toOption match {
@@ -243,6 +261,53 @@ object CommandLocation {
       }
     }
 
-    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = true
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Location.BACK, _ => true)
+      case _ => true
+    }
+  }
+
+
+  class Rtp extends CommandBase {
+    override def getCommandName: String = "rtp"
+
+    override def getCommandUsage(sender: ICommandSender): String = "/rtp"
+
+    override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      sender.closeScreen()
+      if (args.length > 0) {
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
+      }
+      val tries = sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime + 1
+      if (tries > ServerConfig.getMaxRtpChances) {
+        sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.ranOut", sender.getRtpAccumulation % ServerConfig.getRtpChancesRecoveryTime)
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
+        return
+      }
+      val target = Utilities.Teleportation.getSafePosToTeleport(sender.worldObj.asInstanceOf[WorldServer], sender.posX.floor.toInt, sender.posZ.floor.toInt, 0)
+      val world = sender.worldObj
+      target.foreach(p => {
+        sender.ridingEntity = null
+        sender.teleport(sender.dimension, p.xCoord, p.yCoord, p.zCoord, sender.rotationYaw, sender.rotationPitch)
+        sender.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0))
+      })
+      if (target.isDefined) {
+        sender.setRtpAccumulation(sender.getRtpAccumulation + ServerConfig.getRtpChancesRecoveryTime)
+        world.playSoundAtEntity(sender, "mob.endermen.portal", 1.0F, 1.0F)
+        target.foreach(p => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.success", Utilities.Location.getLiteralFromVec3(p), (ServerConfig.getMaxRtpChances - sender.getRtpAccumulation * 1.0 / ServerConfig.getRtpChancesRecoveryTime).toInt)
+          .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN))))
+      }
+      else sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.rtp.triesExceeded", ServerConfig.getRtpMaxTriesOnFindingPosition)
+        .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
+    }
+
+    override def canCommandSenderUseCommand(sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Location.RTP, _ => true)
+      case _ => true
+    }
   }
 }
