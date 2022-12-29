@@ -8,7 +8,7 @@ import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
 import committee.nova.neutron.server.player.NeutronEEP
 import committee.nova.neutron.server.player.storage.{MuteStatus, StatsBeforeSuicide}
 import committee.nova.neutron.server.ui.container.ContainerInteractable
-import committee.nova.neutron.server.ui.container.vanilla.{ContainerRemoteAnvil, ContainerRemoteWorkbench}
+import committee.nova.neutron.server.ui.container.vanilla.{ContainerRemoteAnvil, ContainerRemoteChest, ContainerRemoteWorkbench}
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import committee.nova.neutron.util.reference.Tags
@@ -78,6 +78,17 @@ package object implicits {
       mp.getNextWindowId()
       mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 0, interactable.getInventoryName, interactable.getSizeInventory, interactable.hasCustomInventoryName))
       mp.openContainer = new ContainerInteractable(mp.inventory, interactable)
+      mp.openContainer.windowId = mp.currentWindowId
+      mp.openContainer.addCraftingToCrafters(mp)
+    }
+
+    def displayGUIRemoteChest(inv: IInventory): Unit = {
+      if (!player.isInstanceOf[EntityPlayerMP]) return
+      val mp = player.asInstanceOf[EntityPlayerMP]
+      if (mp.openContainer != mp.inventoryContainer) mp.closeScreen()
+      mp.getNextWindowId()
+      mp.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(mp.currentWindowId, 0, inv.getInventoryName, inv.getSizeInventory, inv.hasCustomInventoryName))
+      mp.openContainer = new ContainerRemoteChest(mp.inventory, inv)
       mp.openContainer.windowId = mp.currentWindowId
       mp.openContainer.addCraftingToCrafters(mp)
     }

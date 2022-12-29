@@ -26,7 +26,7 @@ object CommandGui {
       }
       Utilities.Player.getPlayer(sender, args(0)) match {
         case Some(target) =>
-          if (sender != target) sender.displayGUIChest(target.inventory)
+          if (sender != target) sender.displayGUIRemoteChest(target.inventory)
           else sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.invsee.self")
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound")
