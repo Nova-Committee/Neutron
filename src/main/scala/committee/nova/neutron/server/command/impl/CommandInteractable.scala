@@ -137,7 +137,6 @@ object CommandInteractable {
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED)))
           return
         }
-        sender.closeScreen()
         sender.displayGUIInteractable(new InventoryTpRequest(sender, uuid))
       })
     }

@@ -44,7 +44,6 @@ object CommandLocation {
           MinecraftForge.EVENT_BUS.post(TeleportFromEvent(sender, sender.dimension, sender.posX, sender.posY, sender.posZ))
           val pos = home.getPos
           sender.teleport(home.getDim, pos.xCoord, pos.yCoord, pos.zCoord, sender.rotationYaw, sender.rotationPitch)
-          sender.closeScreen()
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.teleport.success", home.getName)
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
@@ -68,7 +67,6 @@ object CommandLocation {
         MinecraftForge.EVENT_BUS.post(TeleportFromEvent(sender, sender.dimension, sender.posX, sender.posY, sender.posZ))
         val pos = home.getPos
         sender.teleport(home.getDim, pos.xCoord, pos.yCoord, pos.zCoord, sender.rotationYaw, sender.rotationPitch)
-        sender.closeScreen()
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.home.teleport.success", home.getName)
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
         return
@@ -219,7 +217,6 @@ object CommandLocation {
         case 1 =>
           val pos = former.get(0)
           sender.teleport(pos.getDim, pos.getX, pos.getY, pos.getZ, sender.rotationYaw, sender.rotationPitch)
-          sender.closeScreen()
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromVec3(pos.getPos))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
           return
@@ -245,7 +242,6 @@ object CommandLocation {
           }
           val pos = former.get(index)
           sender.teleport(pos.getDim, pos.getX, pos.getY, pos.getZ, sender.rotationYaw, sender.rotationPitch)
-          sender.closeScreen()
           sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.back.success", Utilities.Location.getLiteralFromVec3(pos.getPos))
             .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GREEN)))
         case None => sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.illegalArg", args(0))
@@ -276,7 +272,6 @@ object CommandLocation {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.closeScreen()
       if (args.length > 0) {
         sender.addChatMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getCommandUsage(sender))
           .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)))

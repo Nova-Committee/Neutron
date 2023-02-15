@@ -148,7 +148,6 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.closeScreen()
       args.length match {
         case 0 =>
           var info = ""
@@ -202,7 +201,7 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.closeScreen()
+
       args.length match {
         case 0 =>
           var success = false
@@ -263,7 +262,6 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.closeScreen()
       args.length match {
         case 0 =>
           var success = false
@@ -322,7 +320,6 @@ object CommandTeleport {
     override def processCommand(c: ICommandSender, args: Array[String]): Unit = {
       if (!c.isInstanceOf[EntityPlayerMP]) return
       val sender = c.asInstanceOf[EntityPlayerMP]
-      sender.closeScreen()
       args.length match {
         case 0 =>
           var ignored = false

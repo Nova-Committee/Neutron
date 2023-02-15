@@ -46,6 +46,7 @@ minecraft {
 
 repositories {
     maven { url 'https://jitpack.io' }
+    maven { url 'https://maven.nova-committee.cn/releases' }
     maven { url "https://cursemaven.com" }
 }
 
@@ -60,8 +61,8 @@ dependencies {
         exclude module: 'gson'
         exclude module: 'guava'
     }
-    embed('com.github.Nova-Committee:DateUtils:Java-1.1.0')
-    implementation('com.github.Nova-Committee:Proton:Forge-1.7.10-0.0.1')
+    embed('committee.nova:DateUtils:1.0.0')
+    implementation('com.github.Nova-Committee:Proton:Forge-1.7.10-0.0.2')
 }
 
 processResources {
