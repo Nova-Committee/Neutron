@@ -1,0 +1,172 @@
+package committee.nova.neutron.util
+
+import committee.nova.dateutils.DateUtils
+import committee.nova.neutron.Neutron
+import committee.nova.neutron.compat.ProtonCompat
+import committee.nova.neutron.implicits._
+import committee.nova.neutron.server.config.ServerConfig
+import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
+import committee.nova.neutron.server.storage.ServerStorage
+import committee.nova.sjl10n.L10nUtilitiesJ
+import committee.nova.sjl10n.L10nUtilitiesJ.JsonText
+import net.minecraft.command.{CommandBase, ICommandSender}
+import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.init.Items
+import net.minecraft.item.ItemStack
+import net.minecraft.server.MinecraftServer
+import net.minecraft.util.DamageSource
+import net.minecraft.util.math.{BlockPos, Vec3d}
+import net.minecraft.util.text.{ITextComponent, TextComponentString}
+import net.minecraft.world.WorldServer
+
+import java.lang.{String => JString}
+import java.math.{RoundingMode, BigDecimal => JDecimal}
+import java.text.{DecimalFormat, MessageFormat}
+import java.util.UUID
+import scala.annotation.tailrec
+import scala.collection.mutable
+import scala.util.Try
+
+object Utilities {
+  object L10n {
+    val l10nMap: mutable.Map[String, JsonText] = new mutable.HashMap[String, JsonText]()
+
+    def getFromCurrentLang(key: String): String = getL10n(ServerConfig.getLanguage).get(key)
+
+    def getFromCurrentLang(key: String, args: Any*): String = MessageFormat.format(getFromCurrentLang(key), args.toArray.asInstanceOf[Array[AnyRef]].toSeq: _*)
+
+    def getL10n(lang: String): JsonText = {
+      l10nMap.foreach(m => if (lang == m._1) return m._2)
+      val n = L10nUtilitiesJ.create(Neutron.MODID, lang)
+      l10nMap.put(lang, n)
+      n
+    }
+
+    def initializeL10n(lang: String): JsonText = {
+      if (lang != "en_us") getL10n(lang)
+      getL10n("en_us")
+    }
+
+    def formatDate(raw: String): String = {
+      var formatted = raw
+      for (i <- DateUtils.units.reverse) formatted = formatted.replaceAllLiterally(i, getFromCurrentLang(s"time.neutron.$i"))
+      formatted
+    }
+
+    def getComponentArrayFromIterator[T](iterator: Iterator[T], converter: (T, Int) => String): mutable.MutableList[ITextComponent] = {
+      val list = new mutable.MutableList[ITextComponent]
+      iterator.zipWithIndex.foreach(z => list.+=(new TextComponentString(converter.apply(z._1, z._2))))
+      list
+    }
+
+    def getSpace: ITextComponent = new TextComponentString(" ")
+
+    def getEmpty: ITextComponent = new TextComponentString("")
+
+    def mergeComponent(parent: ITextComponent, children: ITextComponent*): ITextComponent = {
+      var merged = parent
+      for (c <- children) merged = merged.appendSibling(c)
+      merged
+    }
+  }
+
+  object Player {
+    val suicide: DamageSource = new DamageSource("suicide") {
+      override def getDeathMessage(e: EntityLivingBase): ITextComponent = new ChatComponentServerTranslation("ann.neutron.suicide", e.getName)
+    }.setDamageBypassesArmor().setDamageAllowedInCreativeMode()
+
+    def getPlayer(server: MinecraftServer, sender: ICommandSender, name: String): Option[EntityPlayerMP] = Try(CommandBase.getPlayer(server, sender, name)).toOption
+
+    def getPlayerByName(server: MinecraftServer, name: String): Option[EntityPlayerMP] = Option(server.getPlayerList.getPlayerByUsername(name))
+
+    def getPlayerNameByUUID(server: MinecraftServer, uuid: UUID): String = {
+      ServerStorage.uuid2Name.get(uuid)
+        .orElse(Try(getPlayerByUUID(server, uuid).get.getName).toOption)
+        .getOrElse(L10n.getFromCurrentLang("phr.neutron.unknownPlayer"))
+    }
+
+    def getPlayerByUUID(server: MinecraftServer, uuid: UUID): Option[EntityPlayerMP] = Option(server.getPlayerList.getPlayerByUUID(uuid))
+
+    def getPlayerSkull(name: String): ItemStack = new ItemStack(Items.SKULL, 1, 3).setTagDisplayName(name)
+  }
+
+  object Teleportation {
+    def getSafeHeight(world: WorldServer, pos: BlockPos): Int = {
+      val n = world.getPrecipitationHeight(pos)
+      if (!world.getBlockState(n.down()).getMaterial.blocksMovement()) Int.MinValue else n.getY
+    }
+
+    @tailrec
+    def getSafePosToTeleport(world: WorldServer, sender: EntityPlayerMP, tries: Int): Option[Vec3d] = {
+      val dist = ServerConfig.getRtpMaxVerticalAxisRange
+      val x = sender.getPosition.getX
+      val z = sender.getPosition.getZ
+      val x1 = x - dist + world.rand.nextInt(2 * dist)
+      val z1 = z - dist + world.rand.nextInt(2 * dist)
+      val y = getSafeHeight(world, new BlockPos(x1, sender.getPosition.getY, z1))
+      if (y != Int.MinValue) return Some(new Vec3d(x1 + 0.5, y + 0.2, z1 + 0.5))
+      if (tries >= ServerConfig.getRtpMaxTriesOnFindingPosition) None else getSafePosToTeleport(world, sender, tries + 1)
+    }
+  }
+
+  object Location {
+    def getLiteralFromPosTuple3(x: Double, y: Double, z: Double): String = s"[${scale1(x)}, ${scale1(y)}, ${scale1(z)}]"
+
+    def getLiteralFromVec3(pos: Vec3d): String = getLiteralFromPosTuple3(pos.x, pos.y, pos.z)
+
+    private def scale1(d: Double): String = Str.scale(d, 1)
+  }
+
+  object Str {
+    val timeFormatter = new DecimalFormat("########0.000")
+
+    def convertIteratorToString[T](iterator: Iterator[T], convertor: (T, Int) => String, prefix: String, suffix: String): String = {
+      val buffer = new StringBuffer()
+      buffer.append(prefix)
+      iterator.zipWithIndex.foreach(c => buffer.append(convertor.apply(c._1, c._2).+(", ")))
+      val lastIndex = buffer.lastIndexOf(",")
+      if (lastIndex > 0) buffer.delete(lastIndex, buffer.length())
+      buffer.append(suffix)
+      buffer.toString
+    }
+
+    def convertStringArgsToString(array: String*): String = {
+      convertIteratorToString[String](array.toIterator.filter(s => s.nonEmpty), (s, _) => s, "", "")
+    }
+
+    def scale(d: Double, scale: Int): String = {
+      if (scale <= 0) return JString.valueOf(d)
+      val decimal = new JDecimal(d).setScale(scale, RoundingMode.HALF_UP)
+      JString.valueOf(decimal.doubleValue())
+    }
+  }
+
+  object Math {
+    def mean(values: Array[Long]): Long = {
+      var sum = 0L
+      for (v <- values) sum += v
+      sum / values.length
+    }
+  }
+
+  object Perm {
+    private var protonLoaded = false
+
+    def initPermCompat(): Unit = {
+      protonLoaded = Try(Class.forName("committee.nova.proton.core.perm.Group")).isSuccess
+    }
+
+    def loadPermCompat(): Unit = {
+      if (protonLoaded) ProtonCompat.init()
+    }
+
+    def isProtonLoaded: Boolean = protonLoaded
+
+    def hasPermOrElse(player: EntityPlayerMP, perm: String, defaultValue: EntityPlayerMP => Boolean): Boolean = {
+      if (isProtonLoaded) return ProtonCompat.hasPerm(player, perm)
+      //...
+      defaultValue.apply(player)
+    }
+  }
+}
