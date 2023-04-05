@@ -18,6 +18,7 @@ import net.minecraftforge.common.DimensionManager
 
 import java.lang.management.ManagementFactory
 import java.util
+import scala.util.Try
 
 class CommandNeutron extends CommandBase {
   override def getName: String = "neutron"
@@ -85,6 +86,15 @@ class CommandNeutron extends CommandBase {
           world.loadedEntityList.size, world.loadedTileEntityList.size)
           .setStyle(new Style().setColor(TextFormatting.GREEN))
         )
+      case "cleanram" =>
+        new Thread(new Runnable {
+          override def run(): Unit = {
+            Try(Thread.sleep(5000))
+            System.gc()
+            Try(Thread.sleep(1024))
+            System.gc()
+          }
+        }).start()
       case _ => sender.sendMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getUsage(sender))
         .setStyle(new Style().setColor(TextFormatting.YELLOW)))
     }
@@ -94,7 +104,7 @@ class CommandNeutron extends CommandBase {
 
   override def getTabCompletions(server: MinecraftServer, sender: ICommandSender, args: Array[String], pos: BlockPos): util.List[String] = {
     sender match {
-      case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else if (Utilities.Perm.hasPermOrElse(p, PermNodes.Neutron.MANAGE, _ => p.isOp)) Array("reload", "gc", "tps", "help") else Array("help")
+      case p: EntityPlayerMP => CommandBase.getListOfStringsMatchingLastWord(args, (if (args.length != 1) Array() else if (Utilities.Perm.hasPermOrElse(p, PermNodes.Neutron.MANAGE, _ => p.isOp)) Array("reload", "gc", "tps", "help", "cleanram") else Array("help")
         ): _*)
       case _ => ImmutableList.of()
     }
