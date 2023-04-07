@@ -5,12 +5,11 @@ import committee.nova.neutron.Neutron
 import committee.nova.neutron.compat.ProtonCompat
 import committee.nova.neutron.implicits._
 import committee.nova.neutron.server.config.ServerConfig
-import committee.nova.neutron.server.l10n.ChatComponentServerTranslation
+import committee.nova.neutron.server.player.damageSource.DamageSourceSuicide
 import committee.nova.neutron.server.storage.ServerStorage
 import committee.nova.sjl10n.L10nUtilitiesJ
 import committee.nova.sjl10n.L10nUtilitiesJ.JsonText
 import net.minecraft.command.{CommandBase, ICommandSender}
-import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
@@ -72,9 +71,7 @@ object Utilities {
   }
 
   object Player {
-    val suicide: DamageSource = new DamageSource("suicide") {
-      override def getDeathMessage(e: EntityLivingBase): ITextComponent = new ChatComponentServerTranslation("ann.neutron.suicide", e.getName)
-    }.setDamageBypassesArmor().setDamageAllowedInCreativeMode()
+    val suicide: DamageSource = new DamageSourceSuicide
 
     def getPlayer(server: MinecraftServer, sender: ICommandSender, name: String): Option[EntityPlayerMP] = Try(CommandBase.getPlayer(server, sender, name)).toOption
 
