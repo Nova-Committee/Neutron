@@ -120,8 +120,8 @@ object CommandItemStack {
     }
 
     private def repairItems(sender: ICommandSender, target: EntityPlayerMP): Unit = {
-      target.inventory.armorInventory.filter(p => p != null).foreach(s => repairItem(sender, target, s))
-      target.inventory.mainInventory.filter(p => p != null).foreach(s => repairItem(sender, target, s))
+      target.inventory.armorInventory.filter(p => !p.isEmpty).foreach(s => repairItem(sender, target, s))
+      target.inventory.mainInventory.filter(p => !p.isEmpty).foreach(s => repairItem(sender, target, s))
     }
 
     override def getTabCompletions(server: MinecraftServer, c: ICommandSender, args: Array[String], pos: BlockPos): util.List[String] = {
