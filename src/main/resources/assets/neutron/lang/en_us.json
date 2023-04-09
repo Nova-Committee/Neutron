@@ -54,6 +54,8 @@
   "msg.neutron.cmd.home.set.failure": "Failed to set home \"{0}\", please check if a home with the same name is existed.",
   "msg.neutron.cmd.home.set.exceeded": "Max number of homes exceeded!",
   "msg.neutron.cmd.invsee.self": "No need for such trouble.",
+  "msg.neutron.cmd.makeunbreakable.executed": "{0} is made to be unbreakable!",
+  "msg.neutron.cmd.makeunbreakable.revoked": "{0} is made to be no longer unbreakable!",
   "msg.neutron.cmd.mute.acted": "You were muted. Reason: {0}",
   "msg.neutron.cmd.mute.success": "{0} is muted. Reason: {0}",
   "msg.neutron.cmd.neutron.reload.inProgress": "Reloading neutron configurations...",

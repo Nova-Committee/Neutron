@@ -135,11 +135,77 @@ object CommandItemStack {
         case 2 =>
           if (a.contains(args(0))) CommandBase.getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames.toSeq: _*)
           else ImmutableList.of()
+        case _ => ImmutableList.of()
       }
     }
 
     override def checkPermission(server: MinecraftServer, sender: ICommandSender): Boolean = sender match {
       case p: EntityPlayerMP => Array(PermNodes.ItemStack.REPAIR_ONE, PermNodes.ItemStack.REPAIR_OTHER, PermNodes.ItemStack.REPAIR_ALL)
+        .exists(n => p.hasPermOrElse(n.getName, p.isOp))
+      case _ => true
+    }
+  }
+
+  class MakeUnbreakable extends CommandBase {
+    override def getName: String = "makeunbreakable"
+
+    override def getUsage(sender: ICommandSender): String = if (!sender.isInstanceOf[EntityPlayerMP]) "/makeunbreakable [UserName]" else "/makeunbreakable [UserName], /makeunbreakable"
+
+    override def execute(server: MinecraftServer, c: ICommandSender, args: Array[String]): Unit = {
+      c match {
+        case p: EntityPlayerMP => {
+          args.length match {
+            case 0 => makeUnbreakable(p, p)
+            case 1 => {
+              if (!p.hasPermOrElse(PermNodes.ItemStack.MAKE_UNBREAKABLE_OTHER, p.isOp)) {
+                p.sendMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.noPerm")
+                  .setStyle(new Style().setColor(TextFormatting.RED)))
+                return
+              }
+              Utilities.Player.getPlayer(server, p, args(0)) match {
+                case Some(t) => makeUnbreakable(p, t)
+                case None => p.sendMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(1))
+                  .setStyle(new Style().setColor(TextFormatting.DARK_RED)))
+              }
+            }
+            case _ => p.sendMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getUsage(p))
+              .setStyle(new Style().setColor(TextFormatting.YELLOW)))
+          }
+        }
+        case t => {
+          if (args.length != 1) {
+            t.sendMessage(new ChatComponentServerTranslation("msg.neutron.cmd.usage", getUsage(t))
+              .setStyle(new Style().setColor(TextFormatting.YELLOW)))
+            return
+          }
+          Utilities.Player.getPlayer(server, t, args(0)) match {
+            case Some(x) => makeUnbreakable(t, x)
+            case None => t.sendMessage(new ChatComponentServerTranslation("msg.neutron.cmd.err.playerNotFound", args(1))
+              .setStyle(new Style().setColor(TextFormatting.DARK_RED)))
+          }
+        }
+      }
+    }
+
+    private def makeUnbreakable(sender: ICommandSender, player: EntityPlayerMP): Unit = {
+      val stack = player.getHeldItemMainhand
+      val tag = stack.getOrCreateTag
+      val unbreakable = !tag.getBoolean("Unbreakable")
+      tag.setBoolean("Unbreakable", unbreakable)
+      sender.sendMessage(new ChatComponentServerTranslation(s"msg.neutron.cmd.makeunbreakable.${if (unbreakable) "executed" else "revoked"}", stack.getDisplayName).setStyle(new Style().setColor(TextFormatting.YELLOW)))
+    }
+
+    override def getTabCompletions(server: MinecraftServer, c: ICommandSender, args: Array[String], targetPos: BlockPos): util.List[String] = {
+      if (!c.isInstanceOf[EntityPlayerMP]) return ImmutableList.of()
+      val sender = c.asInstanceOf[EntityPlayerMP]
+      args.length match {
+        case 1 => CommandBase.getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames: _*)
+        case _ => ImmutableList.of()
+      }
+    }
+
+    override def checkPermission(server: MinecraftServer, sender: ICommandSender): Boolean = sender match {
+      case p: EntityPlayerMP => Array(PermNodes.ItemStack.MAKE_UNBREAKABLE_SELF, PermNodes.ItemStack.MAKE_UNBREAKABLE_OTHER)
         .exists(n => p.hasPermOrElse(n.getName, p.isOp))
       case _ => true
     }

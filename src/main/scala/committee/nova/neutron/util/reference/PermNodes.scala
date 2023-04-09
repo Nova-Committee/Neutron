@@ -47,6 +47,10 @@ object PermNodes {
     case object REPAIR_OTHER extends NeutronPerm("item.repair.other")
 
     case object REPAIR_ALL extends NeutronPerm("item.repair.all")
+
+    case object MAKE_UNBREAKABLE_SELF extends NeutronPerm("item.unbreakable.self")
+
+    case object MAKE_UNBREAKABLE_OTHER extends NeutronPerm("item.unbreakable.other")
   }
 
   object Location {
@@ -97,7 +101,7 @@ object PermNodes {
   final val MANAGER_PERMS: Array[NeutronPerm] = mutable.Buffer[NeutronPerm](
     Gui.ENDERCHEST_GUI, Gui.ANVIL_GUI, Gui.INVSEE,
     Player.HEAL, Player.MUTE, Player.UNMUTE, Player.FLYSPEED, Player.WALKSPEED,
-    ItemStack.REPAIR_ONE, ItemStack.REPAIR_ALL, ItemStack.REPAIR_OTHER
+    ItemStack.REPAIR_ONE, ItemStack.REPAIR_ALL, ItemStack.REPAIR_OTHER, ItemStack.MAKE_UNBREAKABLE_SELF, ItemStack.MAKE_UNBREAKABLE_OTHER
   ).++=(COMMON_PERMS).toArray
 
   final val ADMIN_PERMS: Array[NeutronPerm] = mutable.Buffer[NeutronPerm](

@@ -54,6 +54,8 @@
   "msg.neutron.cmd.home.set.failure": "未能设置名为“{0}”的家，请检查名称是否重复。",
   "msg.neutron.cmd.home.set.exceeded": "已经设置了最大数量的家！",
   "msg.neutron.cmd.invsee.self": "不需要这么麻烦。",
+  "msg.neutron.cmd.makeunbreakable.executed": "{0}现在不可摧毁！",
+  "msg.neutron.cmd.makeunbreakable.revoked": "{0}现在可被摧毁！",
   "msg.neutron.cmd.mute.acted": "你被禁言了。原因：{0}",
   "msg.neutron.cmd.mute.success": "{0}被禁言了。原因：{0}",
   "msg.neutron.cmd.neutron.reload.inProgress": "重载 Neutron 配置文件...",
