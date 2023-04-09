@@ -15,7 +15,7 @@ import java.lang.{Float => JFloat}
 import scala.util.Try
 
 object CommandPlayer {
-  class Heal extends CommandBase {
+  class Heal extends CommandSingleArgPlayer {
     override def getName: String = "heal"
 
     override def getUsage(p_71518_1_ : ICommandSender): String = Utilities.Str.convertStringArgsToString("/heal", "/heal [UserName]")
@@ -45,6 +45,8 @@ object CommandPlayer {
       case p: EntityPlayerMP => Utilities.Perm.hasPermOrElse(p, PermNodes.Player.HEAL, _ => p.isOp)
       case _ => true
     }
+
+    override def filterName(name: String, player: EntityPlayerMP): Boolean = false
   }
 
   class Suicide extends CommandBase {
