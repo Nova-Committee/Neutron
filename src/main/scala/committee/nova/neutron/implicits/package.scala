@@ -10,6 +10,7 @@ import committee.nova.neutron.server.player.storage.capability.api.INeutronCapab
 import committee.nova.neutron.server.player.storage.{MuteStatus, StatsBeforeSuicide}
 import committee.nova.neutron.server.ui.container.ContainerInteractable
 import committee.nova.neutron.server.ui.container.vanilla.ContainerRemoteChest
+import committee.nova.neutron.server.world.teleporter.NeutronTeleporter
 import committee.nova.neutron.util.Utilities
 import committee.nova.neutron.util.collection.LimitedLinkedList
 import committee.nova.neutron.util.reference.Tags
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList, NBTTagString, NBTUtil}
 import net.minecraft.network.play.server.{SPacketOpenWindow, SPacketSoundEffect}
 import net.minecraft.potion.PotionEffect
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.{Style, TextFormatting}
 import net.minecraft.util.{SoundCategory, SoundEvent}
 import net.minecraftforge.common.MinecraftForge
@@ -45,7 +47,7 @@ package object implicits {
     def teleport(dim: Int, x: Double, y: Double, z: Double, yaw: Float, pitch: Float): Unit = {
       player match {
         case mp: EntityPlayerMP =>
-          if (dim != mp.dimension) mp.changeDimension(dim)
+          if (dim != mp.dimension) mp.changeDimension(dim, NeutronTeleporter(new BlockPos(x, y, z)))
           mp.connection.setPlayerLocation(x, y, z, yaw, pitch)
           mp.playNotifySound(SoundEvents.ENTITY_ENDERMEN_TELEPORT)
       }
