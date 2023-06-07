@@ -53,7 +53,8 @@ class ForgeEventHandler {
       val suicide = newPlayer.getStatsBeforeSuicide
       if (!suicide.isValid) return
       newPlayer.setHealth(suicide.getHealth)
-      newPlayer.getFoodStats.addStats(suicide.getFoodLevel, suicide.getSaturation)
+      newPlayer.getFoodStats.setFoodLevel(suicide.getFoodLevel)
+      newPlayer.getFoodStats.foodSaturationLevel = suicide.getSaturation
       suicide.setValid(false)
     }
   }
