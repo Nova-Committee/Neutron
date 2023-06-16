@@ -9,6 +9,7 @@
   "desc.neutron.alias": "别名：",
   "msg.neutron.home.set.success": "成功设定名为%s的新家！",
   "msg.neutron.home.set.failure": "未能设定名为%s的新家（名称重复，或已达到最大设定数量）",
+  "msg.neutron.tp.cd": "传送冷却中，还剩%s秒。",
   "msg.neutron.tp.success": "传送中……",
   "msg.neutron.tp.failure": "传送失败……",
   "msg.neutron.tp.success.specific": "正在传送到%s……",

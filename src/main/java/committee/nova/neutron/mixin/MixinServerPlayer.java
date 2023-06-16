@@ -32,6 +32,10 @@ public abstract class MixinServerPlayer extends Player implements INeutronPlayer
     private final Set<INamedPos> homes = new LinkedHashSet<>();
     private final LtdLinkedList<IPos> footsteps = new LtdLinkedList<>();
 
+    private int warpCd;
+    private int homeCd;
+    private int backCd;
+
     public MixinServerPlayer(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(level, blockPos, f, gameProfile);
     }
@@ -69,14 +73,49 @@ public abstract class MixinServerPlayer extends Player implements INeutronPlayer
     }
 
     @Override
+    public int getWarpCd() {
+        return warpCd;
+    }
+
+    @Override
+    public int getHomeCd() {
+        return homeCd;
+    }
+
+    @Override
+    public int getBackCd() {
+        return backCd;
+    }
+
+    @Override
+    public void setWarpCd(int warpCd) {
+        this.warpCd = warpCd;
+    }
+
+    @Override
+    public void setHomeCd(int homeCd) {
+        this.homeCd = homeCd;
+    }
+
+    @Override
+    public void setBackCd(int backCd) {
+        this.backCd = backCd;
+    }
+
+    @Override
     public CompoundTag write() {
         final CompoundTag tag = new CompoundTag();
         final ListTag homesTag = new ListTag();
         homes.forEach(h -> homesTag.add(h.write()));
         final ListTag footstepsTag = new ListTag();
         footsteps.forEach(f -> footstepsTag.add(f.write()));
+        final CompoundTag cds = new CompoundTag();
+        cds.putInt("warp", warpCd);
+        cds.putInt("home", homeCd);
+        cds.putInt("back", backCd);
         tag.put("homes", homesTag);
         tag.put("footsteps", footstepsTag);
+        tag.put("cds", cds);
         return tag;
     }
 
@@ -90,6 +129,19 @@ public abstract class MixinServerPlayer extends Player implements INeutronPlayer
         if (tag.contains("footsteps")) tag.getList("footsteps", 10).forEach(t -> {
             if (t instanceof CompoundTag c) footsteps.add(Pos.createPos(c));
         });
+        if (tag.contains("cds")) {
+            final CompoundTag cds = tag.getCompound("cds");
+            warpCd = cds.getInt("warp");
+            homeCd = cds.getInt("home");
+            backCd = cds.getInt("back");
+        }
+    }
+
+    @Inject(method = "doTick", at = @At("HEAD"))
+    private void inject$doTick(CallbackInfo ci) {
+        if (warpCd > 0) warpCd--;
+        if (homeCd > 0) homeCd--;
+        if (backCd > 0) backCd--;
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("HEAD"))

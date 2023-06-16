@@ -87,4 +87,20 @@ public class Neutron implements ModInitializer {
         cfg = AutoConfig.getConfigHolder(NeutronConfig.class).getConfig();
         return reloaded;
     }
+
+    public static int getWarpCd() {
+        return getActualTick(getCfg().warpCd);
+    }
+
+    public static int getHomeCd() {
+        return getActualTick(getCfg().homeCd);
+    }
+
+    public static int getBackCd() {
+        return getActualTick(getCfg().backCd);
+    }
+
+    private static int getActualTick(double t) {
+        return (int) (t * 20.0);
+    }
 }

@@ -1,6 +1,8 @@
 package committee.nova.neutron.api.storage;
 
+import committee.nova.neutron.Neutron;
 import committee.nova.neutron.api.ITagSerializable;
+import committee.nova.neutron.api.player.INeutronPlayer;
 import committee.nova.neutron.callback.TeleportToPlaceCallback;
 import committee.nova.neutron.storage.Pos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +12,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.function.Consumer;
 
 public interface IPos extends ITagSerializable {
     ResourceKey<Level> getWorld();
@@ -42,13 +46,25 @@ public interface IPos extends ITagSerializable {
         if (targetWorld == null) return false;
         final IPos formerPos = Pos.createPos(player.level.dimension(), player.position());
         player.teleportTo(targetWorld, getPosition().x(), getPosition().y(), getPosition().z(), player.getYRot(), player.getXRot());
+        tpType.applyCd(player);
         TeleportToPlaceCallback.EVENT.invoker().postTeleport(player, formerPos, this, tpType);
         return true;
     }
 
     enum TeleportationType {
-        HOME,
-        BACK,
-        WARP
+        HOME(p -> p.setHomeCd(Neutron.getHomeCd())),
+        BACK(p -> p.setBackCd(Neutron.getBackCd())),
+        WARP(p -> p.setWarpCd(Neutron.getWarpCd()));
+
+
+        private final Consumer<INeutronPlayer> cdSetter;
+
+        TeleportationType(Consumer<INeutronPlayer> cdSetter) {
+            this.cdSetter = cdSetter;
+        }
+
+        public void applyCd(ServerPlayer player) {
+            this.cdSetter.accept((INeutronPlayer) player);
+        }
     }
 }

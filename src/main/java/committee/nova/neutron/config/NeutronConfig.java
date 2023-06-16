@@ -13,6 +13,12 @@ public class NeutronConfig implements ConfigData {
     public int maxHomes = 5;
     @Comment("The maximum number of footprints a player can store")
     public int maxFootprints = 5;
+    @Comment("The cool-down time(tick) applied after a successful home teleportation")
+    public double homeCd = 60.0;
+    @Comment("The cool-down time(tick) applied after a successful warp teleportation")
+    public double warpCd = 60.0;
+    @Comment("The cool-down time(tick) applied after a successful back teleportation")
+    public double backCd = 60.0;
     @Comment("Alternatives of /ntnsethome")
     public List<String> saSethome = List.of("sethome");
     @Comment("Alternatives of /ntnhome")

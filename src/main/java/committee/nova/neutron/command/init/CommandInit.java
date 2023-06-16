@@ -54,6 +54,11 @@ public class CommandInit {
                             final CommandSourceStack src = ctx.getSource();
                             final ServerPlayer player = src.getPlayerOrException();
                             final INeutronPlayer ntn = (INeutronPlayer) player;
+                            final int cd = ntn.getHomeCd();
+                            if (cd > 0) {
+                                src.sendFailure(new TranslatableComponent("msg.neutron.tp.cd", Utilities.getActualSecondStr(cd)));
+                                return 0;
+                            }
                             final String name = StringArgumentType.getString(ctx, "home");
                             for (final var home : ntn.getHomes()) {
                                 if (!home.getName().equals(name)) continue;
@@ -72,6 +77,11 @@ public class CommandInit {
                     final CommandSourceStack src = ctx.getSource();
                     final ServerPlayer player = src.getPlayerOrException();
                     final INeutronPlayer ntn = (INeutronPlayer) player;
+                    final int cd = ntn.getHomeCd();
+                    if (cd > 0) {
+                        src.sendFailure(new TranslatableComponent("msg.neutron.tp.cd", Utilities.getActualSecondStr(cd)));
+                        return 0;
+                    }
                     final List<INamedPos> homes = ntn.getHomes();
                     switch (homes.size()) {
                         case 0 -> {
@@ -154,6 +164,11 @@ public class CommandInit {
                             final CommandSourceStack src = ctx.getSource();
                             final ServerPlayer player = src.getPlayerOrException();
                             final INeutronPlayer ntn = (INeutronPlayer) player;
+                            final int cd = ntn.getBackCd();
+                            if (cd > 0) {
+                                src.sendFailure(new TranslatableComponent("msg.neutron.tp.cd", Utilities.getActualSecondStr(cd)));
+                                return 0;
+                            }
                             final int index = IntegerArgumentType.getInteger(ctx, "index");
                             if (index + 1 >= ntn.getFootprints().size()) {
                                 src.sendFailure(new TranslatableComponent("msg.neutron.footprint.not_found"));
@@ -171,6 +186,11 @@ public class CommandInit {
                     final CommandSourceStack src = ctx.getSource();
                     final ServerPlayer player = src.getPlayerOrException();
                     final INeutronPlayer ntn = (INeutronPlayer) player;
+                    final int cd = ntn.getBackCd();
+                    if (cd > 0) {
+                        src.sendFailure(new TranslatableComponent("msg.neutron.tp.cd", Utilities.getActualSecondStr(cd)));
+                        return 0;
+                    }
                     final List<IPos> footprints = ntn.getFootprints();
                     switch (footprints.size()) {
                         case 0 -> {
@@ -190,7 +210,7 @@ public class CommandInit {
                             final int size = footprints.size();
                             for (int i = 0; i < size; i++) {
                                 final IPos footprint = footprints.get(i);
-                                src.sendSuccess(new TextComponent(footprint.getDesc()).setStyle(Style.EMPTY
+                                src.sendSuccess(new TextComponent((i + 1) + ". " + footprint.getDesc()).setStyle(Style.EMPTY
                                         .withColor(ChatFormatting.YELLOW)
                                         .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntnback " + i))
                                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("selection.neutron.teleport_to", footprint.getDesc())))
@@ -206,6 +226,12 @@ public class CommandInit {
                         .executes(ctx -> {
                             final CommandSourceStack src = ctx.getSource();
                             final ServerPlayer player = src.getPlayerOrException();
+                            final INeutronPlayer ntn = (INeutronPlayer) player;
+                            final int cd = ntn.getHomeCd();
+                            if (cd > 0) {
+                                src.sendFailure(new TranslatableComponent("msg.neutron.tp.cd", Utilities.getActualSecondStr(cd)));
+                                return 0;
+                            }
                             final NeutronPersistentState state = NeutronPersistentState.getNeutron(src.getServer());
                             final String name = StringArgumentType.getString(ctx, "warp");
                             for (final var warp : state.getWarps()) {

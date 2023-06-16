@@ -9,6 +9,7 @@
   "desc.neutron.alias": "Alias: ",
   "msg.neutron.home.set.success": "Successfully set a home named %s",
   "msg.neutron.home.set.failure": "Failed to set a home named %s (duplicated name or exceeded the maximum number of homes can be set)",
+  "msg.neutron.tp.cd": "Teleportation cooling down, %s second(s) left.",
   "msg.neutron.tp.success": "Teleporting...",
   "msg.neutron.tp.failure": "Failed to teleport...",
   "msg.neutron.tp.success.specific": "Teleporting to %s...",

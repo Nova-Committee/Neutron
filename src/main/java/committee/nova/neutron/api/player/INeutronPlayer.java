@@ -18,4 +18,16 @@ public interface INeutronPlayer extends ITagSerializable {
     void addFootprint(IPos footprint);
 
     int getFootprintsLimit();
+
+    int getWarpCd();
+
+    int getHomeCd();
+
+    int getBackCd();
+
+    void setWarpCd(int warpCd);
+
+    void setHomeCd(int homeCd);
+
+    void setBackCd(int backCd);
 }
