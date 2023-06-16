@@ -4,6 +4,7 @@
   "package": "committee.nova.neutron.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MixinServerPlayer"
   ],
   "client": [
   ],

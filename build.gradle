@@ -35,11 +35,11 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "fr.catcore:server-translations-api:1.4.12+1.18.2"
+    //modImplementation "fr.catcore:server-translations-api:1.4.12+1.18.2"
     // modImplementation 'net.luckperms:api:5.4'
     modImplementation include("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:6.4.90"
-    modImplementation include("committee.nova.tprequest.fabric:tprequest-1.18.2:1.1.0") {
+    modImplementation include("committee.nova.tprequest.fabric:tprequest-1.18.2:1.1.0.a") {
         transitive = false
     }
     modLocalRuntime "maven.modrinth:luckperms:5.3.86"
