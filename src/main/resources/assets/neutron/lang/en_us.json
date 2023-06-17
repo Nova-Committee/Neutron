@@ -7,6 +7,7 @@
   "desc.neutron.ntndelwarp": "/ntndelwarp : Delete a warp point. If more than one, list them.",
   "desc.neutron.ntnback": "/ntnback : Teleport back to a footprint. If more than one, list them.",
   "desc.neutron.alias": "Alias: ",
+  "msg.neutron.hat": "Enjoy your new hat!",
   "msg.neutron.home.set.success": "Successfully set a home named %s",
   "msg.neutron.home.set.failure": "Failed to set a home named %s (duplicated name or exceeded the maximum number of homes can be set)",
   "msg.neutron.tp.cd": "Teleportation cooling down, %s second(s) left.",

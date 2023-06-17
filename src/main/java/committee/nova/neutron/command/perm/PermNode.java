@@ -8,6 +8,7 @@ public enum PermNode {
     COMMON_HOME_TP,
     COMMON_BACK,
     COMMON_WARP_TP,
+    COMMON_HAT,
     COMMON_HELP,
     ADMIN_WARP_ADD,
     ADMIN_WARP_DEL,

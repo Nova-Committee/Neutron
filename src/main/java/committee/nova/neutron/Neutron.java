@@ -81,6 +81,7 @@ public class Neutron implements ModInitializer {
             case "ntnaddwarp" -> cfg.saAddwarp;
             case "ntndelwarp" -> cfg.saDelwarp;
             case "ntnback" -> cfg.saBack;
+            case "ntnhat" -> cfg.saHat;
             default -> Collections.emptyList();
         };
     }

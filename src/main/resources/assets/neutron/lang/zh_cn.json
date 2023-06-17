@@ -7,6 +7,7 @@
   "desc.neutron.ntndelwarp": "/ntndelwarp：删除一个已设定的传送点。如果不止一个，则将它们列出。",
   "desc.neutron.ntnback": "/ntnback：传送回一处足迹。如果不止一处，则将它们列出。",
   "desc.neutron.alias": "别名：",
+  "msg.neutron.hat": "享受你的新帽子！",
   "msg.neutron.home.set.success": "成功设定名为%s的新家！",
   "msg.neutron.home.set.failure": "未能设定名为%s的新家（名称重复，或已达到最大设定数量）",
   "msg.neutron.tp.cd": "传送冷却中，还剩%s秒。",

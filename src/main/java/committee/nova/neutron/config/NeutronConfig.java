@@ -33,6 +33,8 @@ public class NeutronConfig implements ConfigData {
     public List<String> saAddwarp = List.of("addwarp");
     @Comment("Alternatives of /ntnsetwarp")
     public List<String> saDelwarp = List.of("delwarp");
+    @Comment("Alternatives of /ntnhat")
+    public List<String> saHat = List.of("hat");
     @Comment("Notification sound to be played after a teleportation to a place. Leave a blank to disable.")
     public String notificationSound = "minecraft:entity.enderman.teleport";
 }

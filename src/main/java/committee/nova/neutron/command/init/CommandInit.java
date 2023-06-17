@@ -17,6 +17,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.*;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -325,6 +328,19 @@ public class CommandInit {
                     return 1;
                 })
                 .requires(p -> Utilities.checkPerm(p, PermNode.ADMIN_WARP_DEL, p.getServer().getOperatorUserPermissionLevel()))));
+        cmds.put("ntnhat", dispatcher.register(Commands.literal("ntnhat")
+                .executes(ctx -> {
+                    final CommandSourceStack src = ctx.getSource();
+                    final ServerPlayer player = src.getPlayerOrException();
+                    final ItemStack hand = player.getItemInHand(InteractionHand.MAIN_HAND);
+                    final ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+                    player.setItemInHand(InteractionHand.MAIN_HAND, helmet);
+                    player.setItemSlot(EquipmentSlot.HEAD, hand);
+                    src.sendSuccess(new TranslatableComponent("msg.neutron.hat").withStyle(ChatFormatting.GREEN), false);
+                    return 1;
+                })
+                .requires(p -> Utilities.checkPerm(p, PermNode.COMMON_HAT, 0))
+        ));
         dispatcher.register(Commands.literal("neutron")
                 .then(Commands.literal("help").executes(ctx -> {
                     final CommandSourceStack src = ctx.getSource();
