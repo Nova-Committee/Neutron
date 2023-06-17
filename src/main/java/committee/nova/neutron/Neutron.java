@@ -34,13 +34,16 @@ public class Neutron implements ModInitializer {
         AutoConfig.register(NeutronConfig.class, YamlConfigSerializer::new);
         cfg = AutoConfig.getConfigHolder(NeutronConfig.class).getConfig();
         getPixelArt().forEach(LOGGER::info);
+        LOGGER.info("Registering commands...");
         CommandRegistrationCallback.EVENT.register(CommandInit::register);
+        LOGGER.info("Handling callbacks...");
         TeleportationCallback.EVENT.register((s, r, t, w, p) -> ((INeutronPlayer) (t.equals(TeleportRequest.TeleportationType.TO) ? s : r))
                 .addFootprint(Pos.createPos(w, p)));
         TeleportToPlaceCallback.EVENT.register((s, f, p, t) -> {
             getNotificationSound().ifPresent(n -> s.playNotifySound(n, SoundSource.PLAYERS, 1.0F, 1.0F));
             ((INeutronPlayer) s).addFootprint(f);
         });
+        LOGGER.info("Neutron initialized!");
     }
 
     public static List<String> getPixelArt() {
@@ -53,7 +56,7 @@ public class Neutron implements ModInitializer {
                 " $$ |\\$$$ |$$   ____|$$ |  $$ |  $$ |$$\\ $$ |      $$ |  $$ |$$ |  $$ | ",
                 " $$ | \\$$ |\\$$$$$$$\\ \\$$$$$$  |  \\$$$$  |$$ |      \\$$$$$$  |$$ |  $$ | ",
                 " \\__|  \\__| \\_______| \\______/    \\____/ \\__|       \\______/ \\__|  \\__| ",
-                "Activating Neutron..."
+                "Initializing Neutron..."
         );
     }
 
