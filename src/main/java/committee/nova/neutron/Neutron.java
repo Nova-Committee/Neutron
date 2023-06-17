@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import org.slf4j.Logger;
@@ -86,10 +87,23 @@ public class Neutron implements ModInitializer {
         };
     }
 
-    public static boolean reload() {
+    public static boolean reload(MinecraftServer server) {
         final var reloaded = AutoConfig.getConfigHolder(NeutronConfig.class).load();
         cfg = AutoConfig.getConfigHolder(NeutronConfig.class).getConfig();
+        postReload(server);
         return reloaded;
+    }
+
+    private static void postReload(MinecraftServer server) {
+        final int backCd = getBackCd();
+        final int homeCd = getHomeCd();
+        final int warpCd = getWarpCd();
+        server.getPlayerList().getPlayers().forEach(p -> {
+            final INeutronPlayer n = (INeutronPlayer) p;
+            if (n.getBackCd() > backCd) n.setBackCd(backCd);
+            if (n.getHomeCd() > homeCd) n.setHomeCd(homeCd);
+            if (n.getWarpCd() > warpCd) n.setWarpCd(warpCd);
+        });
     }
 
     public static int getWarpCd() {

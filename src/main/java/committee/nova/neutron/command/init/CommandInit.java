@@ -104,7 +104,7 @@ public class CommandInit {
                             src.sendSuccess(new TranslatableComponent("msg.neutron.home.following"), false);
                             homes.forEach(h -> src.sendSuccess(new TextComponent(h.getDesc()).setStyle(Style.EMPTY
                                     .withColor(ChatFormatting.YELLOW)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntnhome " + h.getName()))
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntnhome \"" + h.getName() + "\""))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("selection.neutron.teleport_to", h.getName())))
                             ), false));
                             return 1;
@@ -153,7 +153,7 @@ public class CommandInit {
                             src.sendSuccess(new TranslatableComponent("msg.neutron.home.following"), false);
                             homes.forEach(h -> src.sendSuccess(new TextComponent(h.getDesc()).setStyle(Style.EMPTY
                                     .withColor(ChatFormatting.DARK_RED)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntndelhome " + h.getName()))
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntndelhome \"" + h.getName() + "\""))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("selection.neutron.del", h.getName())))
                             ), false));
                             return 1;
@@ -261,7 +261,7 @@ public class CommandInit {
                     src.sendSuccess(new TranslatableComponent("msg.neutron.warp.following"), false);
                     warps.forEach(h -> src.sendSuccess(new TextComponent(h.getDesc()).setStyle(Style.EMPTY
                             .withColor(ChatFormatting.YELLOW)
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntnwarp " + h.getName()))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntnwarp \"" + h.getName() + "\""))
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("selection.neutron.teleport_to", h.getName())))
                     ), false));
                     return 1;
@@ -322,7 +322,7 @@ public class CommandInit {
                     src.sendSuccess(new TranslatableComponent("msg.neutron.warp.following"), false);
                     warps.forEach(h -> src.sendSuccess(new TextComponent(h.getDesc()).setStyle(Style.EMPTY
                             .withColor(ChatFormatting.DARK_RED)
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntndelwarp " + h.getName()))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ntndelwarp \"" + h.getName() + "\""))
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("selection.neutron.del", h.getName())))
                     ), false));
                     return 1;
@@ -354,7 +354,7 @@ public class CommandInit {
                     return 1;
                 }).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_HELP, 0)))
                 .then(Commands.literal("reload").executes(ctx -> {
-                    final var success = Neutron.reload();
+                    final var success = Neutron.reload(ctx.getSource().getServer());
                     ctx.getSource().sendSuccess(new TranslatableComponent("msg.neutron.reload." + (success ? "success" : "failure")
                             .formatted(success ? ChatFormatting.GREEN : ChatFormatting.RED)), false);
                     return success ? 1 : 0;
