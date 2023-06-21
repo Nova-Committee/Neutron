@@ -39,7 +39,7 @@ dependencies {
     // modImplementation 'net.luckperms:api:5.4'
     modImplementation include("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
     modImplementation "me.shedaniel.cloth:cloth-config-fabric:6.4.90"
-    modImplementation include("committee.nova.tprequest.fabric:tprequest-1.18.2:1.1.1.c") {
+    modImplementation include("committee.nova.tprequest.fabric:tprequest-1.18.2:1.1.2") {
         transitive = false
     }
     modLocalRuntime "maven.modrinth:luckperms:5.3.86"
