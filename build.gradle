@@ -51,7 +51,7 @@ repositories {
 }
 
 dependencies {
-    embed('com.github.Nova-Committee:ServersideJsonL10n:Scala-1.2.0') {
+    embed("committee.nova:sjl10n-scala:1.0.0") {
         exclude module: 'scala-library'
         exclude module: 'scala-reflect'
         exclude module: 'log4j-api'
@@ -63,6 +63,7 @@ dependencies {
     }
     embed('committee.nova:DateUtils:1.0.0')
     implementation('com.github.Nova-Committee:Proton:Forge-1.7.10-0.0.2')
+    compileOnly("curse.maven:worldborder-forge-233231:2266362")
 }
 
 processResources {
@@ -77,6 +78,11 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+}
+
 
 jar {
     from configurations.embed.collect {
