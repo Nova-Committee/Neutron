@@ -109,8 +109,8 @@ object Utilities {
       val dist = ServerConfig.getRtpMaxVerticalAxisRange
       val x1 = x - dist + world.rand.nextInt(2 * dist)
       val z1 = z - dist + world.rand.nextInt(2 * dist)
-      if (x1 >= ServerConfig.getRtpMinX && x1 <= ServerConfig.getRtpMaxX ||
-        z1 >= ServerConfig.getRtpMinZ || z1 <= ServerConfig.getRtpMaxZ) {
+      if (x1 >= ServerConfig.getRtpMinX && x1 <= ServerConfig.getRtpMaxX &&
+        z1 >= ServerConfig.getRtpMinZ && z1 <= ServerConfig.getRtpMaxZ) {
         val y = getSafeHeight(world, x1, z1)
         if (y != Int.MinValue) {
           world.markBlockForUpdate(x1, y, z1)
